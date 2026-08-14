@@ -476,9 +476,7 @@ body.showRight {
     opacity: 1;
   }
 }
-body[baidu] .new-pmd .c-img-s{
-  display: none;
-}
+// 百度新版结果卡片依赖缩略图维持网格宽度，隐藏后会导致标题和摘要错位。
 body[baidu].pc-fresh-wrapper-con .new-pmd .c-span12 {
   width: unset;
 }
@@ -497,9 +495,7 @@ body[baidu].pc-fresh-wrapper-con .new-pmd .c-span12 {
       div[class*='tag-wrapper'] {
         margin-left: unset;
 
-        div[class*='tag-scroll'] {
-          text-align: center;
-        }
+        // 标签使用百度原生对齐，避免新版 new-pmd 容器被强制居中。
       }
     }
   }

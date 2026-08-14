@@ -92,6 +92,19 @@ div[two-child] {
 }
 }
 
+/* Native AI and knowledge modules must not be squeezed into one result column. */
+#eKIzJc.SePcAf,
+#kp-wp-tab-overview,
+#rcnt > :has(#eKIzJc.SePcAf),
+#rso > :has(#kp-wp-tab-overview),
+div[two-father] > :has(#kp-wp-tab-overview) {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 #rso > div[two-child] ~ div:not(div[two-child]),
 #rcnt #botstuff > div[two-child] ~ div:not(div[two-child]) {
 margin-bottom: 10px;

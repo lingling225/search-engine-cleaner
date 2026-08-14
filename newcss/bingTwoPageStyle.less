@@ -23,13 +23,15 @@
   padding: 0 0 10px 0 !important;
 }
 
-#b_content #b_results > li:not(#mfa_root) {
+#b_content #b_results > li.b_algo {
   width: 98%;
   margin-left: 1%;
 }
 
-#b_results li:nth-child(even)[class*="b_ans"] {
+#b_content #b_results > li.b_ans:not(.b_algo) {
   grid-column: 1 / -1;
+  width: auto;
+  margin-left: 0;
 }
 
 #b_content #b_pole {

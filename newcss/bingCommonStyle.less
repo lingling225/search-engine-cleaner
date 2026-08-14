@@ -20,7 +20,7 @@ main #b_mcw {
   --wideansw: unset !important;
 }
 .b_dark {
-  #b_content #b_results > li:not(#mfa_root) {
+  #b_content #b_results > li.b_algo {
     background-color: #292929;
   }
   .AC.sp-separator {
@@ -36,7 +36,7 @@ main #b_mcw {
   width: unset;
 }
 
-#b_content #b_results > li:not(#mfa_root) {
+#b_content #b_results > li.b_algo {
   z-index: 1;
   width: 670px;
   padding: 12px 20px !important;
@@ -66,14 +66,14 @@ main #b_mcw {
   font-size: medium;
 }
 
-#b_content #b_results > li:hover {
+#b_content #b_results > li.b_algo:hover {
   border: 1px solid rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 1px grey;
   -webkit-box-shadow: 0 0 1px grey;
   -moz-box-shadow: 0 0 1px gray;
 }
 
-#b_content > #b_results li:not(#mfa_root) h2 {
+#b_content > #b_results li.b_algo h2 {
   background-color: #f8f8f8;
   margin: -12px -20px 10px -20px;
   padding: 8px 20px 5px;
