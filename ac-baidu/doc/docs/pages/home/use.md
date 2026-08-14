@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: keywords
-      content: AC-Baidu,配置项说明,AC-Baidu优化脚本,百度优化脚本,谷歌优化脚本,必应优化脚本,搜索优化脚本,搜索结果优化,搜索结果
+      content: Search Engine Cleaner,配置项说明,油猴脚本,百度优化脚本,谷歌优化脚本,必应优化脚本,搜索优化脚本,搜索结果优化
 ---
 # 设置开启
 

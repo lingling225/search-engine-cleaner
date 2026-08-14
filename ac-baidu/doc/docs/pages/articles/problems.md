@@ -2,11 +2,8 @@
 head:
   - - meta
     - name: keywords
-      content: AC-Baidu,常见问题汇总,AC-Baidu优化脚本,百度优化脚本,谷歌优化脚本,必应优化脚本,搜索优化脚本,搜索结果优化,搜索结果
+      content: Search Engine Cleaner,常见问题汇总,油猴脚本,百度优化脚本,谷歌优化脚本,必应优化脚本,搜索优化脚本,搜索结果优化
 ---
-<component is="script" src="/inject.js">
-</component>
-
 # 常见问题汇总
 
 ### 1. 脚本为什么没有生效
@@ -39,7 +36,7 @@ onMounted(async () => {
   show-icon
 />
 
-> 1. 检查是否安装顺利，安装失败的可能需要重新安装一下，注意最新的版本是27.19，`27.09`版本有百度显示不全的问题（这个版本刚好是greasyfork被墙时间的版本，打不开greayfork走代理，用梯子解决greasyfork打不开的问题：<a href='https://bboo.boo/#/?code=g4WEkq4j' target='_blank'>一元机场.PLUS</a>）
+> 1. 检查脚本是否安装成功，并从项目发布页更新到最新版本。
 > 2. <span style='color:red'>检查油猴脚本的版本是否最新，目前TamperMonkey的最新版本应该在5.2.3以上，至少4.x的版本是肯定不对的（尤其是Chrome127以上），尝试使用尽量新的版本：<a href='/pages/home/start.html' target='_blank'>如何安装点这里</a> </span>
 > 3. <span style='color:red'>检查是否开启【**开发者模式**】，Chrome Manifest V3对于现有油猴脚本影响挺大的，当前开启方式：<a href='https://www.tampermonkey.net/faq.php?locale=zh#Q209' target='_blank' rel='nofllow'>Chrome Manifest V3</a> </span>
 > 4. <span style='color:red'>如果打开之后，油猴下拉发现是有脚本的，但是打开网页发现没有生效，这时候请及时反馈</span>

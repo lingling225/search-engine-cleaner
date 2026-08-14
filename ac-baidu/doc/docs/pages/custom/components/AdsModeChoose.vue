@@ -1,8 +1,8 @@
 <template>
-  <el-form-item for="nothing" label="显示模式优化" label-position="left">
-    <el-radio-group v-model="state.adsStyleMode">
-      <el-switch inline-prompt size="large" v-model="state.adsStyleEnable" active-text="开启" inactive-text="关闭" style="margin-right: 20px"/>
-      <div v-show="state.adsStyleEnable">
+  <el-form-item data-config-key="adsStyleEnable adsStyleMode" for="nothing" label="搜索结果布局" label-position="left">
+    <div class="layout-mode-control">
+      <el-switch inline-prompt size="large" v-model="state.adsStyleEnable" active-text="开启" inactive-text="关闭" />
+      <el-radio-group v-show="state.adsStyleEnable" v-model="state.adsStyleMode">
         <el-tooltip class="box-item" effect="dark" :hide-after=20 placement="top" content="原始模式，默认状态，不做任何显示变更" >
           <el-radio value="0">原始模式</el-radio>
         </el-tooltip>
@@ -21,8 +21,8 @@
         <el-tooltip class="box-item" effect="dark" :hide-after=20 placement="top" content="双列居中，显示元素四列效果 + 效果优化" >
           <el-radio value="5">四列</el-radio>
         </el-tooltip>
-      </div>
-    </el-radio-group>
+      </el-radio-group>
+    </div>
   </el-form-item>
 </template>
 <script setup lang="ts">
@@ -75,5 +75,24 @@ watch(() => propState, () => {
 })
 </script>
 <style scoped lang="scss">
+.layout-mode-control {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+}
 
+.el-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+  .layout-mode-control {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
 </style>

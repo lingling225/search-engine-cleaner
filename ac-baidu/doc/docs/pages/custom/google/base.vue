@@ -1,20 +1,24 @@
 <template>
   <div>
     <el-form :model="state" label-width="auto" style="max-width: 800px">
-      <el-text class="mx-1" size="large" style="padding-bottom: 8px" tag="div">显示设置项：</el-text>
+      <div class="config-group-title"><span>常用设置</span><small>Google 专属行为与页面效果</small></div>
 
-      <el-form-item for="nothing" label="独有1-谷歌-伪装百度Logo" label-position="left">
+      <el-form-item data-config-key="useBaiduLogo" for="nothing" label="使用百度 Logo" label-position="left">
         <el-tooltip class="box-item" effect="dark" :hide-after=20 content="启用后会尽可能尝试将谷歌的部分LOGO替换为百度的LOGO" placement="right">
           <el-switch inline-prompt size="large" v-model="state.useBaiduLogo" active-text="开启" inactive-text="关闭"/>
         </el-tooltip>
       </el-form-item>
       
-      <el-divider />
-      <el-form-item for="nothing" label="谷歌护眼模式" label-position="left">
-        <el-tooltip class="box-item" effect="dark" :hide-after=20 content="谷歌护眼模式，注意根据不同的主题，请自己选择" placement="top">
-          <div style="display: flex">
+      <el-form-item data-config-key="HuYanMode HuYanMode_Color" for="nothing" label-position="left">
+        <template #label>
+          <span>Google 护眼模式</span>
+          <el-tooltip effect="dark" content="谷歌护眼模式，注意根据不同的主题，请自己选择" placement="top">
+            <el-icon class="config-label-help" aria-label="护眼模式说明"><QuestionFilled /></el-icon>
+          </el-tooltip>
+        </template>
+        <div class="color-setting">
              <el-switch inline-prompt size="large" v-model="state.HuYanMode" active-text="开启" inactive-text="关闭"/>
-            <div v-show="state.HuYanMode" style="margin-left: 30px; display: flex; align-items: center">
+            <div v-show="state.HuYanMode" class="color-palette">
               <el-color-picker v-model="state.HuYanMode_Color" />
               
               <label data-value="#3A3A3A" class="item-color-select-choose" @click="changeColor">&nbsp;&nbsp;&nbsp;&nbsp;</label>
@@ -25,16 +29,19 @@
               <label data-value="#F3F2EE" class="item-color-select-choose" @click="changeColor">&nbsp;&nbsp;&nbsp;&nbsp;</label>
               <label data-value="#E5E5E5" class="item-color-select-choose" @click="changeColor">&nbsp;&nbsp;&nbsp;&nbsp;</label>
             </div>
-          </div>
-        </el-tooltip>
+        </div>
       </el-form-item>
 
-      <el-divider />
       <ads-mode-choose :state="state" :baseItemKey="baseItemKey" @update_state="updateState" />
-      <bg-choose :state="state" :baseItemKey="baseItemKey" @update_state="updateState" />
-      
-      <el-divider />
-      <less-c-s-s-comp siteName="谷歌" :baseItemKey="baseItemKey" :state="state" :recommendStyleList="recommendStyleList" @update_state="updateState"/>
+
+      <details class="config-advanced">
+        <summary><span>背景与自定义样式</span><small>背景图、自动适应与 Less.js</small></summary>
+        <div class="advanced-content">
+          <bg-choose :state="state" :baseItemKey="baseItemKey" @update_state="updateState" />
+          <el-divider />
+          <less-c-s-s-comp siteName="谷歌" :baseItemKey="baseItemKey" :state="state" :recommendStyleList="recommendStyleList" @update_state="updateState"/>
+        </div>
+      </details>
     </el-form>
     <save-alert siteName="谷歌" :saveKey="baseItemKey" :saveData="state" />
   </div>
@@ -44,11 +51,12 @@ import BgChoose from "./../components/BgChoose.vue";
 import SaveAlert from "./../components/SaveAlert.vue";
 import LessCSSComp from "./../components/LessCSSComp/index.vue";
 import AdsModeChoose from "./../components/AdsModeChoose.vue";
+import { loadConfig, previewConfig } from '../bridge';
 
 const baseItemKey = 'op_google'
 // const baseData = JSON.parse(localStorage.getItem(baseItemKey) || '{}')
 const baseData = {}
-const scriptData = await safeFunc(() => window.AC_GM_Interface.get(baseItemKey, '{}'))
+const scriptData = await loadConfig(baseItemKey)
 import {onMounted, reactive, watch} from 'vue'
 
 const base = reactive({
@@ -63,7 +71,7 @@ const defaultOptions = {
   useBaiduLogo: false, // 默认不使用百度logo
 
   adsStyleEnable: true, // 是否开启默认效果优化
-  adsStyleMode: '1', // 0-不带css；1-单列靠左；2-单列居中；3-双列居中
+  adsStyleMode: '3', // 0-不带css；1-单列靠左；2-单列居中；3-双列居中
   HuYanMode: false, // 护眼模式-必应
   HuYanMode_Color: '#ffffff', // 护眼模式-必应-颜色
 
@@ -80,22 +88,14 @@ const defaultOptions = {
 const state = reactive(Object.assign({}, defaultOptions, baseData, scriptData))
 
 const recommendStyleList = [
-  {
-    title: '默认推荐样式',
-    description: '本样式为个人优化样式，取名晴空，点击查看大图效果',
-    img: '',
-    link: 'https://ibaidu.tujidu.com/newcss/dogeTwoPageStyle.less?t=23.6'
-  }
 ]
 
-watch(state, (newVal) => {
+watch(state, () => {
   base.hasChanged = true
-  safeFunc(() => {
-    const keys = Object.keys(defaultOptions)
-    const values = keys.map(one => state[one])
-    const newOptions = Object.fromEntries(keys.map((key, index) => [key, values[index]]));
-    AC_GM_Interface.change(baseItemKey, newOptions) // 局部更新：调用GM接口：生效 && 保存数据，并刷新原搜索引擎页面，以使设置生效
-  })
+  const keys = Object.keys(defaultOptions)
+  const values = keys.map(one => state[one])
+  const newOptions = Object.fromEntries(keys.map((key, index) => [key, values[index]]));
+  void previewConfig(baseItemKey, newOptions)
 })
 
 onMounted(() => {
@@ -103,13 +103,6 @@ onMounted(() => {
     one.style.backgroundColor = one.dataset.value
   })
 })
-
-function safeFunc(callback, failed_res = '') {
-  try{ 
-    return callback() 
-  }catch(e){}
-  return failed_res
-}
 
 function changeColor(env) {
   state.HuYanMode_Color = env.target.dataset.value
@@ -122,7 +115,7 @@ function updateState(newVal) {
 </script>
 <style lang="scss" scoped>
 .el-collapse {
-  :deep &-item__header {
+  :deep(.el-collapse-item__header) {
     border: unset;
   }
 
@@ -133,14 +126,14 @@ function updateState(newVal) {
   border: unset;
 }
 .el-card {
-  :deep &__body{
+  :deep(.el-card__body) {
     img {
       max-height: 120px;
     }
   }
   
-  :deep &__header,
-  :deep &__footer {
+  :deep(.el-card__header),
+  :deep(.el-card__footer) {
     overflow-wrap: anywhere;
     word-break: break-all;  
     padding: calc(var(--el-card-padding) - 14px) calc(var(--el-card-padding) - 4px);
@@ -154,7 +147,7 @@ function updateState(newVal) {
   margin-left: 24px;
 }
 .el-color-picker {
-  :deep &__icon {
+  :deep(.el-color-picker__icon) {
     color: red;
   }
 }

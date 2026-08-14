@@ -1,5 +1,5 @@
 <template>
-  <a :href="href" target="_blank">
+  <a :href="resolvedHref" target="_blank">
     <el-tooltip
       class="box-item"
       effect="dark" :hide-after=20
@@ -13,6 +13,8 @@
   </a>
 </template>
 <script>
+import { withBase } from 'vitepress'
+
 export default {
   props: {
     href: {
@@ -27,6 +29,11 @@ export default {
       type: String,
       default: 'QuestionFilled'
     }
+  },
+  computed: {
+    resolvedHref() {
+      return this.href.startsWith('/') ? withBase(this.href) : this.href
+    },
   },
 }
 </script>

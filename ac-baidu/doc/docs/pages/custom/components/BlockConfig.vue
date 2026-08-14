@@ -1,30 +1,29 @@
 <template>
-  <el-text class="mx-1" size="large" style="padding-bottom: 4px" tag="div">
-    拦截功能-按需开启
+  <el-form-item data-config-key="isBlockEnable" for="nothing" label="启用域名拦截" label-position="left">
     <el-tooltip class="box-item" effect="dark" :hide-after=20 content="开启拦截之前必须开启【附加0-重定向】功能" placement="top">
       <el-switch inline-prompt size="large" v-model="state.isBlockEnable" :disabled="!propState.isRedirectEnable.value" active-text="开启" inactive-text="关闭"/>
     </el-tooltip>
-    <el-button v-show="state.isBlockEnable && propState.isRedirectEnable.value" style="margin-left: 30px" @click="base.isBlockPanelShow=true">编辑规则<el-icon class="el-icon--right"><Edit /></el-icon></el-button>
-  </el-text>
+    <el-button v-show="state.isBlockEnable && propState.isRedirectEnable.value" @click="base.isBlockPanelShow=true">编辑规则<el-icon class="el-icon--right"><Edit /></el-icon></el-button>
+  </el-form-item>
   <div v-show="state.isBlockEnable && propState.isRedirectEnable.value">
-    <el-form-item for="nothing" label="显示拦截按钮" label-position="left">
+    <el-form-item data-config-key="isBlockBtnDisplay" for="nothing" label="显示拦截按钮" label-position="left">
       <el-tooltip class="box-item" effect="dark" :hide-after=20 content="页面中会显示拦截的Block按钮" placement="top">
         <el-switch inline-prompt size="large" v-model="state.isBlockBtnDisplay" active-text="开启" inactive-text="关闭" style="margin-left: 15px;" />
       </el-tooltip>
     </el-form-item>
-    <el-form-item for="nothing" label="拦截之后隐藏" label-position="left">
+    <el-form-item data-config-key="isBlockResultDisplay" for="nothing" label="隐藏已拦截结果" label-position="left">
       <el-tooltip class="box-item" effect="dark" :hide-after=20 content="拦截成功后，将不会显示被拦截的标签" placement="top">
         <el-switch inline-prompt size="large" v-model="state.isBlockResultDisplay" active-text="开启" inactive-text="关闭" style="margin-left: 15px;" />
       </el-tooltip>
     </el-form-item>
   </div>
-  <el-drawer v-model="base.isBlockPanelShow" direction="rtl">
+  <el-drawer v-model="base.isBlockPanelShow" direction="rtl" size="min(560px, 100%)">
     <template #header>
       <div style="display: flex;">
         <span>规则自定义</span>
-        <div style="color: #d17d1a; margin-left: 70px">
+        <div class="drawer-warning">
           <el-icon style="vertical-align: text-top;"><Warning /></el-icon>
-          <span>如果有修改，清注意修改完成之后保存</span>
+          <span>规则修改后会立即保存</span>
         </div>
       </div>
     </template>
@@ -39,7 +38,7 @@
           <div>
             <el-input
               v-model="base.inputRule"
-              style="width: 14vw"
+              class="rule-input"
               placeholder="输入拦截的域，例如：blog.csdn.net"
             />
             <el-button @click="addBlockRule">
@@ -238,9 +237,27 @@ function removeRule(index) {
     color: #0b8235;
   }
 
-  :deep &__content {
-    min-width: 400px;
+  :deep(.el-tag__content) {
+    min-width: min(400px, 70vw);
     text-align: center;
+  }
+}
+
+.drawer-warning {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 28px;
+  color: var(--el-color-warning);
+}
+
+.rule-input {
+  width: min(300px, 100%);
+}
+
+@media (max-width: 600px) {
+  .drawer-warning {
+    display: none;
   }
 }
 </style>

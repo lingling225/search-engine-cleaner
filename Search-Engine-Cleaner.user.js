@@ -23,13 +23,12 @@
 // @include    *://xueshu.baidu.com/s*
 // @include    *://www.so.com/s?*
 // @include    *://*.bing.com/*
-// @include    *://encrypted.google.*/search*
-// @include    *://*.google*/search*
+// @include    /^https?:\/\/(?:(?:www|encrypted|images|video)\.)?(?:google\.com\.af|google\.com\.ag|google\.com\.ar|google\.com\.au|google\.com\.bd|google\.com\.bh|google\.com\.bn|google\.com\.bo|google\.com\.br|google\.com\.bz|google\.com\.co|google\.com\.cu|google\.com\.cy|google\.com\.do|google\.com\.ec|google\.com\.eg|google\.com\.et|google\.com\.fj|google\.com\.gh|google\.com\.gi|google\.com\.gt|google\.com\.hk|google\.com\.jm|google\.com\.kh|google\.com\.kw|google\.com\.lb|google\.com\.ly|google\.com\.mm|google\.com\.mt|google\.com\.mx|google\.com\.my|google\.com\.na|google\.com\.ng|google\.com\.ni|google\.com\.np|google\.com\.om|google\.com\.pa|google\.com\.pe|google\.com\.pg|google\.com\.ph|google\.com\.pk|google\.com\.pr|google\.com\.py|google\.com\.qa|google\.com\.sa|google\.com\.sb|google\.com\.sg|google\.com\.sl|google\.com\.sv|google\.com\.tj|google\.com\.tr|google\.com\.tw|google\.com\.ua|google\.com\.uy|google\.com\.vc|google\.com\.vn|google\.co\.ao|google\.co\.bw|google\.co\.ck|google\.co\.cr|google\.co\.id|google\.co\.il|google\.co\.in|google\.co\.jp|google\.co\.ke|google\.co\.kr|google\.co\.ls|google\.co\.ma|google\.co\.mz|google\.co\.nz|google\.co\.th|google\.co\.tz|google\.co\.ug|google\.co\.uk|google\.co\.uz|google\.co\.ve|google\.co\.vi|google\.co\.za|google\.co\.zm|google\.co\.zw|google\.cat|google\.com|google\.ad|google\.ae|google\.al|google\.am|google\.as|google\.at|google\.az|google\.ba|google\.be|google\.bf|google\.bg|google\.bi|google\.bj|google\.bs|google\.bt|google\.by|google\.ca|google\.cd|google\.cf|google\.cg|google\.ch|google\.ci|google\.cl|google\.cm|google\.cn|google\.cv|google\.cz|google\.de|google\.dj|google\.dk|google\.dm|google\.dz|google\.ee|google\.es|google\.fi|google\.fm|google\.fr|google\.ga|google\.ge|google\.gg|google\.gl|google\.gm|google\.gr|google\.gy|google\.hn|google\.hr|google\.ht|google\.hu|google\.ie|google\.im|google\.iq|google\.is|google\.it|google\.je|google\.jo|google\.kg|google\.ki|google\.kz|google\.la|google\.li|google\.lk|google\.lt|google\.lu|google\.lv|google\.md|google\.me|google\.mg|google\.mk|google\.ml|google\.mn|google\.mu|google\.mv|google\.mw|google\.ne|google\.nl|google\.no|google\.nr|google\.nu|google\.pl|google\.pn|google\.ps|google\.pt|google\.ro|google\.rs|google\.ru|google\.rw|google\.sc|google\.se|google\.sh|google\.si|google\.sk|google\.sm|google\.sn|google\.so|google\.sr|google\.st|google\.td|google\.tg|google\.tl|google\.tm|google\.tn|google\.to|google\.tt|google\.vu|google\.ws)\/(?:search|webhp)(?:[/?#].*)?$/
 // @include    *://scholar.google.com/scholar*
-// @include    *://*.google*/webhp*
-// @include    *://*duckduckgo.com/*
-// @include    https://lingling225.github.io/search-engine-cleaner/*
-// @exclude    *://*.google*/sorry*
+// @include    *://duckduckgo.com/*
+// @include    *://*.duckduckgo.com/*
+// @include    https://lingling225.github.io/search-engine-cleaner/pages/custom/
+// @include    https://lingling225.github.io/search-engine-cleaner/pages/custom/index.html
 // @exclude    https://zhidao.baidu.com/*
 // @exclude    https://*.zhidao.baidu.com/*
 // @exclude    https://www.baidu.com/img/*
@@ -475,9 +474,38 @@
         CONST.acpush_acremoveInit()
       }
     })
-    if (location.hostname === 'lingling225.github.io' && location.pathname.startsWith('/search-engine-cleaner/')) {
+    if (location.hostname === 'lingling225.github.io' && /^\/search-engine-cleaner\/pages\/custom(?:\/|\/index\.html)?$/.test(location.pathname)) {
       let bridgeQueue = Promise.resolve()
       let syncRevision = 0
+      const bridgeSectionKeys = new Map([
+        ['op_common', 'common'],
+        ['op_baidu', 'baidu'],
+        ['op_google', 'google'],
+        ['op_bing', 'bing'],
+        ['op_duckduckgo', 'duck'],
+        ['op_haosou', 'haosou'],
+      ])
+      const allowedBridgeKeys = new Set([...bridgeSectionKeys.keys(), 'ACBlockRules'])
+      const styleApprovalStorageKey = 'ACApprovedStyleOrigins'
+      const approvedStyleOrigins = new Set([
+        'https://raw.githubusercontent.com',
+        'https://gist.githubusercontent.com',
+        'https://cdn.jsdelivr.net',
+        'https://lingling225.github.io',
+      ])
+      let styleApprovalsLoaded = false
+      const nativeConfirm = window.confirm.bind(window)
+
+      const assertBridgeKey = (key) => {
+        if (typeof key !== 'string' || !allowedBridgeKeys.has(key)) {
+          throw new Error('配置页请求了不受支持的存储项')
+        }
+      }
+      const getBridgeSection = (key) => {
+        const section = bridgeSectionKeys.get(key)
+        if (!section) throw new Error('该操作仅支持站点配置项')
+        return section
+      }
 
       const parseStoredJSON = (value, fallback, label) => {
         if (value === undefined || value === null || value === '') return fallback
@@ -498,7 +526,12 @@
         if (!data || typeof data !== 'object' || Array.isArray(data)) {
           throw new TypeError(`${section} 配置必须是对象`)
         }
-        const result = { ...data }
+        const defaults = getConfigDefaults()[section]
+        if (!defaults || typeof defaults !== 'object') {
+          throw new Error(`不支持的配置分区：${section}`)
+        }
+        const allowedKeys = new Set(Object.keys(defaults))
+        const result = Object.fromEntries(Object.entries(data).filter(([key]) => allowedKeys.has(key)))
         const invalidPrefix = section === 'common' ? 'customStyle' : 'commonStyle'
         delete result[`${invalidPrefix}Enable`]
         delete result[`${invalidPrefix}Link`]
@@ -515,9 +548,10 @@
       unsafeWindow.AC_GM_Interface = {
         async get(key, dataStr) {
           await bridgeQueue
+          assertBridgeKey(key)
           const fallback = parseStoredJSON(dataStr, {}, `${key} 默认配置`)
-          if (key.includes('op_')) {
-            const trueKey = trueKeyFix(key)
+          if (bridgeSectionKeys.has(key)) {
+            const trueKey = getBridgeSection(key)
             const config = parseStoredJSON(await GM.getValue('ACConfig', '{}'), {}, 'ACConfig')
             const defaults = getConfigDefaults()[trueKey] || fallback
             let res = { ...defaults, ...sanitizeSection(trueKey, config[trueKey] || fallback) }
@@ -531,8 +565,9 @@
         },
         async save(key, dataObj) {
           return enqueueBridgeWrite(async () => {
-            if (key.includes('op_')) {
-              const trueKey = trueKeyFix(key)
+            assertBridgeKey(key)
+            if (bridgeSectionKeys.has(key)) {
+              const trueKey = getBridgeSection(key)
               const config = parseStoredJSON(await GM.getValue('ACConfig', '{}'), {}, 'ACConfig')
               const storedSection = config[trueKey] && typeof config[trueKey] === 'object' ? config[trueKey] : {}
               config[trueKey] = {
@@ -542,37 +577,108 @@
               await GM.setValue('ACConfig', JSON.stringify(config))
               await publishSync({ refreshUrl: true })
             } else {
-              await GM.setValue(key, JSON.stringify(dataObj))
+              if (!Array.isArray(dataObj) || dataObj.some(rule => typeof rule !== 'string')) {
+                throw new TypeError('拦截规则必须是字符串数组')
+              }
+              await GM.setValue('ACBlockRules', JSON.stringify(dataObj))
             }
           })
         },
         async change(key, dataObj) {
           return enqueueBridgeWrite(async () => {
-            const trueKey = trueKeyFix(key)
+            const trueKey = getBridgeSection(key)
             // 只广播当前分区，避免未保存的其他分区被持久化快照回滚。
             await publishSync({ [trueKey]: sanitizeSection(trueKey, dataObj) })
           })
         },
-        requestText(url) {
-          return new Promise((resolve, reject) => {
-            let parsedUrl
+        async requestText(url) {
+          let parsedUrl
+          try {
+            parsedUrl = new URL(url)
+          } catch (error) {
+            throw new Error('样式地址格式无效')
+          }
+          if (parsedUrl.protocol !== 'https:') {
+            throw new Error('远程样式地址仅支持 HTTPS')
+          }
+          if (parsedUrl.username || parsedUrl.password) {
+            throw new Error('样式地址不能包含登录凭据')
+          }
+
+          const hostname = parsedUrl.hostname.toLowerCase().replace(/^\[|\]$/g, '')
+          const ipv4 = hostname.split('.').map(Number)
+          const isValidIpv4 = ipv4.length === 4 && ipv4.every((part) => Number.isInteger(part) && part >= 0 && part <= 255)
+          const isPrivateIpv4 = isValidIpv4 && (
+            ipv4[0] === 0 || ipv4[0] === 10 || ipv4[0] === 127 ||
+            (ipv4[0] === 100 && ipv4[1] >= 64 && ipv4[1] <= 127) ||
+            (ipv4[0] === 169 && ipv4[1] === 254) ||
+            (ipv4[0] === 172 && ipv4[1] >= 16 && ipv4[1] <= 31) ||
+            (ipv4[0] === 192 && ipv4[1] === 168) ||
+            (ipv4[0] === 198 && ipv4[1] >= 18 && ipv4[1] <= 19) ||
+            ipv4[0] >= 224
+          )
+          const isIpv6 = hostname.includes(':')
+          const ipv6Prefix = Number.parseInt(hostname.split(':')[0] || '0', 16)
+          const isPrivateIpv6 = isIpv6 && (
+            hostname === '::' || hostname === '::1' ||
+            hostname.startsWith('::ffff:') ||
+            (Number.isInteger(ipv6Prefix) && (ipv6Prefix & 0xfe00) === 0xfc00) ||
+            (Number.isInteger(ipv6Prefix) && (ipv6Prefix & 0xffc0) === 0xfe80) ||
+            (Number.isInteger(ipv6Prefix) && (ipv6Prefix & 0xff00) === 0xff00)
+          )
+          const isPrivateHostname = (!hostname.includes('.') && !isIpv6) ||
+            hostname === 'localhost' || hostname.endsWith('.localhost') ||
+            hostname.endsWith('.local') || hostname.endsWith('.internal') || hostname.endsWith('.lan')
+          if (isPrivateIpv4 || isPrivateIpv6 || isPrivateHostname) {
+            throw new Error('远程样式地址不能指向本机或局域网')
+          }
+
+          if (!styleApprovalsLoaded) {
             try {
-              parsedUrl = new URL(url)
+              const storedOrigins = await GM.getValue(styleApprovalStorageKey, '[]')
+              const parsedOrigins = Array.isArray(storedOrigins) ? storedOrigins : JSON.parse(storedOrigins)
+              if (Array.isArray(parsedOrigins)) {
+                parsedOrigins.forEach((origin) => {
+                  if (typeof origin === 'string') approvedStyleOrigins.add(origin)
+                })
+              }
             } catch (error) {
-              reject(new Error('样式地址格式无效'))
-              return
+              console.warn('[AC-Script] 远程样式授权列表读取失败', error)
             }
-            if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
-              reject(new Error('样式地址仅支持 HTTP 或 HTTPS'))
-              return
-            }
+            styleApprovalsLoaded = true
+          }
+          if (!approvedStyleOrigins.has(parsedUrl.origin)) {
+            const approved = nativeConfirm(`Search Engine Cleaner 将匿名读取远程 Less 样式：\n${parsedUrl.origin}\n\n仅在你信任该来源时允许。`)
+            if (!approved) throw new Error('已取消远程样式请求')
+            approvedStyleOrigins.add(parsedUrl.origin)
+            await GM.setValue(styleApprovalStorageKey, JSON.stringify([...approvedStyleOrigins]))
+          }
+
+          return new Promise((resolve, reject) => {
             GM_xmlhttpRequest({
               method: 'GET',
               url: parsedUrl.href,
+              anonymous: true,
               timeout: 10000,
               onload(response) {
                 if (response.status >= 200 && response.status < 300) {
-                  resolve(response.responseText)
+                  let finalUrl
+                  try {
+                    finalUrl = new URL(response.finalUrl || response.responseURL || parsedUrl.href)
+                  } catch (error) {
+                    reject(new Error('远程样式响应地址无效'))
+                    return
+                  }
+                  if (finalUrl.origin !== parsedUrl.origin) {
+                    reject(new Error('远程样式请求被重定向到未授权域名'))
+                    return
+                  }
+                  const responseText = response.responseText || ''
+                  if (responseText.length > 1024 * 1024) {
+                    reject(new Error('远程样式超过 1 MiB 限制'))
+                  } else {
+                    resolve(responseText)
+                  }
                 } else {
                   reject(new Error(`远程服务器返回 ${response.status}`))
                 }
@@ -586,10 +692,6 @@
             })
           })
         }
-      }
-      function trueKeyFix(key) {
-        const configKey = key.replace(/^op_/, '')
-        return configKey === 'duckduckgo' ? 'duck' : configKey
       }
 
       function getConfigDefaults() {
@@ -752,20 +854,7 @@
           nextLink: "id('pnnext')|id('navbar navcnt nav')//td[span]/following-sibling::td[1]/a|id('nn')/parent::a",
           pageElement: "id('rso')|id('center_col')/style[contains(.,'relative')][id('rso')]",
           HT_insert: ["id('botstuff')", 1], // 1 = beforebegin; 2 = beforeend
-          replaceE: '//div[@id="navcnt"] | //div[@id="rcnt"]//div[@role="navigation"]',
-          afertPagerAutoCallFunc: (pageElements, scriptElements, toElement) => {
-            // 插入scripts & style - 保证js加载
-            scriptElements.forEach((one) => {
-              const newScript = document.createElement('script')
-              newScript.textContent = one.textContent
-              newScript.type = one.type
-              newScript.nonce = one.nonce
-              try {
-                toElement.appendChild(newScript)
-              } catch (e) {
-              }
-            })
-          } // 执行完脚本后，执行这个函数
+          replaceE: '//div[@id="navcnt"] | //div[@id="rcnt"]//div[@role="navigation"]'
         }
       }
     }
@@ -1417,18 +1506,16 @@
     }
 
     _getSiteName() {
-      const specialRule = {
-        'xueshu.baidu.com': 'baidu_xueshu',
-        'scholar.google.com': 'google_scholar',
-        'so.com': 'haosou',
-      }
-      let useRule = Object.keys(specialRule).find(one => location.host.includes(one))
-      if (!useRule) {
-        useRule = location.host.replace(/.*(baidu|google|bing|duck).*/, '$1')
-      } else {
-        return specialRule[useRule]
-      }
-      return useRule
+      const hostname = location.hostname.toLowerCase().replace(/\.$/, '')
+      const matchesDomain = (domain) => hostname === domain || hostname.endsWith(`.${domain}`)
+      if (hostname === 'xueshu.baidu.com') return 'baidu_xueshu'
+      if (hostname === 'scholar.google.com') return 'google_scholar'
+      if (matchesDomain('so.com')) return 'haosou'
+      if (matchesDomain('baidu.com')) return 'baidu'
+      if (matchesDomain('bing.com')) return 'bing'
+      if (matchesDomain('duckduckgo.com')) return 'duck'
+      if (hostname.split('.').includes('google')) return 'google'
+      return ''
     }
   }
 
@@ -1656,7 +1743,7 @@
                 if (changeNode.text && changeNode.text.length < 10 && !changeNode.text.includes(host)
                   // 不能是redirect url 不能是h2\h3下直属链接
                   && !changeNode.parentElement.tagName.toLowerCase().includes("h")) {
-                  changeNode.insertAdjacentHTML("beforeEnd", "&nbsp;-&nbsp;" + host);
+                  changeNode.appendChild(document.createTextNode(` - ${host}`));
                 }
               }
             })
@@ -1854,18 +1941,18 @@
                   continue;
                 }
                 targetNode = targetNode?.querySelector(CONST.options.useItem.FaviconAddTo);
-                let host = curHost.replace(/[^.]+\.([^.]+)\.([^.]+)/, "$1.$2");
+                let faviconHost = ''
+                try {
+                  const parsedHost = new URL(/^https?:\/\//i.test(curHost) ? curHost : `https://${curHost}`)
+                  faviconHost = parsedHost.hostname.toLowerCase().replace(/\.$/, '')
+                } catch (e) {
+                }
 
-                if (targetNode && !targetNode.hasAttribute("data-favicon-t") && host.length >= 3) {
-                  let faviconUrl = curNode.href || host
-                  if (CONST.options.useItem.SiteTypeID === CONST.options.baidu.SiteTypeID && faviconUrl.includes("baidu.com/link")) {
-                    faviconUrl = host
-                  }
-
-                  targetNode.setAttribute('data-favicon-t', faviconUrl)
+                if (targetNode && !targetNode.hasAttribute("data-favicon-t") && faviconHost.includes('.')) {
+                  targetNode.setAttribute('data-favicon-t', faviconHost)
                   CONST.cssFavionList.list.push({
                     tagName: targetNode.tagName.toLowerCase(),
-                    url: faviconUrl
+                    url: faviconHost
                   })
                 }
               }
@@ -2177,18 +2264,42 @@
 
           return doc;
         },
+        sanitizeFetchedDocument: function (doc) {
+          if (!doc?.querySelectorAll) return doc
+          doc.querySelectorAll('script, iframe, object, embed, base, meta[http-equiv="refresh"], link[rel="import"]').forEach((node) => node.remove())
+          const urlAttributes = new Set(['href', 'src', 'xlink:href', 'action', 'formaction'])
+          doc.querySelectorAll('*').forEach((element) => {
+            Array.from(element.attributes || []).forEach((attribute) => {
+              const attributeName = attribute.name.toLowerCase()
+              if (attributeName.startsWith('on') || attributeName === 'srcdoc') {
+                element.removeAttribute(attribute.name)
+                return
+              }
+              if (urlAttributes.has(attributeName) && /^\s*(?:javascript|vbscript):/i.test(attribute.value)) {
+                element.removeAttribute(attribute.name)
+              }
+            })
+          })
+          return doc
+        },
         loadMorePage: async function () {
           const pager = CONST.options.useItem.pager
           if (!pager) return false
 
           const curPageEle = MyApi.getElementByXpath(pager.nextLink)
           let url = this.getFullHref(curPageEle)
-          if (CONST.options.useItem.SiteTypeID === CONST.options.google.SiteTypeID && navigator.userAgent.toLowerCase().includes('macintosh')) {
-            // MARK 为了兼容百度在safari下的
-            url = url.replace('https://', 'http://')
-          }
           if (!url || CONST.options.useItem.pageUrl === url) {
             console.mylog('没有可加载的下一页')
+            return false
+          }
+          try {
+            const nextUrl = new URL(url, location.href)
+            if (nextUrl.origin !== location.origin) {
+              throw new Error('拒绝加载跨域翻页地址')
+            }
+            url = nextUrl.href
+          } catch (error) {
+            console.warn('[AC-Script]', error)
             return false
           }
 
@@ -2224,12 +2335,15 @@
                     if (response.status && (response.status < 200 || response.status >= 300)) {
                       throw new Error(`翻页请求失败：HTTP ${response.status}`)
                     }
-                    const newBody = ShowPager.createDocumentByString(response.responseText)
+                    const finalUrl = new URL(response.finalUrl || response.responseURL || url, location.href)
+                    if (finalUrl.origin !== location.origin) {
+                      throw new Error('翻页请求被重定向到其他站点')
+                    }
+                    const newBody = ShowPager.sanitizeFetchedDocument(ShowPager.createDocumentByString(response.responseText))
                     if (!newBody) throw new Error('翻页响应无法解析')
 
                     const [Rule_insertTo = '', Rule_insertMode = 1] = pager.HT_insert || []
                     const pageElems = MyApi.getAllElements(pager.pageElement, newBody, newBody)
-                    const scriptElems = MyApi.getAllElements('//script', newBody, newBody);
 
                     let toElement;
 
@@ -2291,7 +2405,7 @@
                       loaded = true
 
                       if (pager.afertPagerAutoCallFunc) {
-                        pager.afertPagerAutoCallFunc(pageElems, scriptElems, toElement)
+                        pager.afertPagerAutoCallFunc(pageElems, toElement)
                       }
 
                       // 替换待替换元素 - 一般是替换翻页的按钮
@@ -2304,7 +2418,7 @@
                               throw "翻页-替换翻页元素 无 'replaceE' 待替换的";
                             }
                             for (let i = 0; i < oriE.length; i++) {
-                              oriE[i].outerHTML = repE[i].outerHTML;
+                              oriE[i].replaceWith(repE[i]);
                             }
                           }
                         }
@@ -2599,7 +2713,22 @@
         const imgSrc = one.dataset.src
         const bm = one.dataset.bm
         if (imgSrc) {
-          one.outerHTML = `<img src="${imgSrc}" height="${height}" width="${width}" data-priority="2" role="presentation" class="${toClass}" data-bm="${bm}">`
+          try {
+            const imageUrl = new URL(imgSrc, location.href)
+            if (!['http:', 'https:', 'data:'].includes(imageUrl.protocol)) return
+            if (imageUrl.protocol === 'data:' && !imageUrl.href.startsWith('data:image/')) return
+
+            const image = document.createElement('img')
+            image.src = imageUrl.href
+            if (height) image.setAttribute('height', height)
+            if (width) image.setAttribute('width', width)
+            image.dataset.priority = '2'
+            image.setAttribute('role', 'presentation')
+            if (toClass) image.className = toClass
+            if (bm) image.dataset.bm = bm
+            one.replaceWith(image)
+          } catch (e) {
+          }
         }
       })
     }
@@ -2629,10 +2758,6 @@
           let faviconNode = curNode.querySelector(this.curSite.FaviconType);
           let host = PageFunc.getNodeHost(faviconNode).curHost;
           let faNode = curNode.querySelector(this.curSite.BlockType);
-          let nodeStyle = "display:unset;";
-          if (!CONST.curConfig.isBlockBtnDisplay) {
-            nodeStyle = "display:none;";
-          }
           // 避免父节点出现两个block按钮
           if (faNode && !faNode.hasAttribute('hasInsert')) {
             faNode.setAttribute("hasInsert", "1");
@@ -2640,7 +2765,15 @@
             if (CONST.options.useItem.SiteTypeID === CONST.options.google.SiteTypeID) {
               insertTo = faNode
             }
-            insertTo.insertAdjacentHTML("beforeend", `<button style='${nodeStyle}' class='ghhider ghhb' href="${faviconNode?.href || faviconNode?.innerText}" meta="${host}" data-host="${host}" title='${this._getBlockBtnTitle(host)}'>block</button>`);
+            const blockButton = document.createElement('button')
+            blockButton.style.display = CONST.curConfig.isBlockBtnDisplay ? 'unset' : 'none'
+            blockButton.className = 'ghhider ghhb'
+            blockButton.setAttribute('href', faviconNode?.href || faviconNode?.innerText || '')
+            blockButton.dataset.meta = host
+            blockButton.dataset.host = host
+            blockButton.title = this._getBlockBtnTitle(host)
+            blockButton.textContent = 'block'
+            insertTo.appendChild(blockButton)
           }
           curNode.setAttribute("bhandle", "1");
         } catch (e) {
@@ -2713,7 +2846,11 @@
 
                 const blockShow = curNode.querySelector(".blockShow");
                 if (!blockShow) {
-                  curNode.insertAdjacentHTML("afterBegin", `<span class="blockShow" title="如果需要一直显示，请在自定义中DIY目录移除本地址">${curTitle}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -block by ${curHost}</span>`);
+                  const blockMessage = document.createElement('span')
+                  blockMessage.className = 'blockShow'
+                  blockMessage.title = '如果需要一直显示，请在自定义中DIY目录移除本地址'
+                  blockMessage.textContent = `${curTitle}${String.fromCharCode(160).repeat(5)} -block by ${curHost}`
+                  curNode.prepend(blockMessage)
                   // 已经屏蔽之后的内容，点击一下显示原始内容
                   curNode.addEventListener("click", function (env) {
                     if (!curNode.querySelector(".blockShow")) return
@@ -3000,7 +3137,7 @@
           let nowCSS = ''
           if (url) {
             //如果地址不正确，那么丢弃
-            const imgUrl = "https://favicon.yandex.net/favicon/v2/" + url + "?size=32"
+            const imgUrl = "https://favicon.yandex.net/favicon/v2/" + encodeURIComponent(url) + "?size=32"
             nowCSS = tagName + `[data-favicon-t='${url}']:before{background-image: url('${imgUrl}');}`
           }
           return preCSS + nowCSS
