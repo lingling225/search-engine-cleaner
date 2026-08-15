@@ -19,7 +19,116 @@ body>div.result-op,
 
 body[baidu] {
   background-color: #fAfAfA;
-  /*transition: all ease-out 0.8s;*/
+}
+
+body[baidu].pc-fresh-wrapper-con {
+  width: 100% !important;
+  min-width: 0 !important;
+  --ac-baidu-page-gutter: clamp(16px, 2.4vw, 40px);
+  --ac-baidu-search-width: max(220px, min(900px, calc(100vw - 600px)));
+  --ac-baidu-results-width: min(900px, calc(100vw - var(--ac-baidu-page-gutter) - var(--ac-baidu-page-gutter)));
+  --ac-baidu-multi-results-width: min(1600px, calc(100vw - var(--ac-baidu-page-gutter) - var(--ac-baidu-page-gutter)));
+  --ac-baidu-layout-gap: clamp(20px, 2.5vw, 40px);
+  --ac-baidu-sidebar-width: min(400px, 24vw);
+  --ac-baidu-logo-width: 101px;
+  --ac-baidu-header-gap: 20px;
+
+  #head {
+    min-width: 0;
+  }
+
+  #wrapper_wrapper {
+    width: 100%;
+    min-width: 0;
+  }
+
+  #head .head_wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-columns:
+      minmax(var(--ac-baidu-page-gutter), 1fr)
+      minmax(0, var(--ac-baidu-search-width))
+      minmax(var(--ac-baidu-page-gutter), 1fr);
+    transform: none;
+  }
+
+  #head .head_wrapper > .s_form {
+    grid-column: 2;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding-inline: 0 !important;
+    box-sizing: border-box;
+  }
+
+  #head .s_form_wrapper {
+    position: relative;
+    width: 100%;
+    height: 70px;
+    min-width: 0;
+    margin: 0 !important;
+    display: block;
+  }
+
+  #head .s_form_wrapper #result_logo {
+    position: absolute;
+    top: 18px;
+    right: calc(100% + var(--ac-baidu-header-gap));
+    width: var(--ac-baidu-logo-width);
+    margin: 0;
+  }
+
+  #head .s_form_wrapper #main-wrapper,
+  #head .s_form_wrapper #form {
+    position: relative;
+    top: 12px;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
+
+  #head #chat-input-main {
+    width: 100%;
+    min-width: 0;
+  }
+
+  #head form.fm .s_ipt_wr.bg {
+    width: 100%;
+    min-width: 0;
+  }
+
+  #wrapper #rs table {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #wrapper > .result-molecule.new-pmd[tpl='app/head-tab'] {
+    width: 100%;
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+    display: grid;
+    grid-template-columns:
+      minmax(var(--ac-baidu-page-gutter), 1fr)
+      minmax(0, var(--ac-baidu-results-width))
+      minmax(var(--ac-baidu-page-gutter), 1fr);
+    transform: none;
+  }
+
+  #wrapper > .result-molecule.new-pmd[tpl='app/head-tab'] #s_tab {
+    grid-column: 2;
+    width: 100%;
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+  }
+
+  #wrapper > .result-molecule.new-pmd[tpl='app/head-tab'] .s_tab_inner {
+    width: 100%;
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+    box-sizing: border-box;
+    justify-content: flex-start;
+    gap: clamp(18px, 1.5vw, 32px);
+  }
 }
 
 #ala_img_results {
@@ -123,7 +232,9 @@ form.fm {
   box-sizing: border-box;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    border-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 
   /* 初始不可见，由 JS 或通用类触发展示 */
   &.ac-entry-ani {
@@ -481,6 +592,27 @@ body[baidu].pc-fresh-wrapper-con .new-pmd .c-span12 {
   width: unset;
 }
 
+body[baidu].pc-fresh-wrapper-con #wrapper #content_left .c-group-wrapper {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+body[baidu].pc-fresh-wrapper-con #wrapper_wrapper > .result-molecule.new-pmd[tpl='app/footer'] #foot,
+body[baidu].pc-fresh-wrapper-con #wrapper_wrapper > .result-molecule.new-pmd[tpl='app/footer'] .foot-inner {
+  width: 100% !important;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+body[baidu].pc-fresh-wrapper-con #wrapper #content_left [class*='summary-text'] {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .result-molecule {
   #searchTag {
     background: unset;
@@ -542,67 +674,9 @@ body[baidu].pc-fresh-wrapper-con .new-pmd .c-span12 {
   }
 }
 
-@media screen and (min-width: 1921px) {
-
-  /*Baidu in 2K screen default in : center*/
-  #head .head_wrapper {
-    transform: translateX(-100px);
-    justify-content: center;
-    display: flex;
-  }
-
-  body[baidu] {
-    .wrapper_new #s_tab.s_tab .s_tab_inner {
-      align-items: center;
-      padding-left: 200px;
-
-      &>*:after {
-        display: none; // 下划线 none掉
-      }
-    }
-
-    #container.sam_newgrid {
-      padding-left: 316px;
-    }
-
-    .result-molecule.new-pmd[tpl="app/search-tag"] {
-      padding-left: calc(51.56vw - 810px)
-    }
-  }
-
-  form.fm .s_ipt_wr.bg {
-    min-width: 480px;
-  }
-
-  body.showRight {
-    #head .head_wrapper {
-      transform: translateX(45px);
-    }
-  }
-
-  /* 标准密度设备 */
-  @media screen and (resolution: 1dppx) {
-
-    #wrapper #rs,
-    #wrapper #content_left .result,
-    #wrapper #content_left .result-op,
-    #wrapper #content_left>.c-container {
-      min-width: 888px;
-      margin-left: calc(var(--wrapper-padding)* -1.3);
-    }
-  }
-
-  #wrapper #content_right table {
-    margin-left: 100px;
-  }
-}
-
-@media screen and (min-width: 1921px) and (min-resolution: 1.2dppx) and (max-resolution: 2dppx) {
-
-  #wrapper #rs,
-  #wrapper #content_left .result,
-  #wrapper #content_left .result-op,
-  #wrapper #content_left>.c-container {
-    margin-left: calc(var(--wrapper-padding)* -1.3);
+@media screen and (max-width: 1280px) {
+  body[baidu].pc-fresh-wrapper-con {
+    --ac-baidu-header-gap: 14px;
+    --ac-baidu-logo-width: 92px;
   }
 }

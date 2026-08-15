@@ -35,7 +35,7 @@ jobs:
         run: node --check Search-Engine-Cleaner.user.js
 
       - name: Test userscript release contract
-        run: node --test tests/userscript-release.test.mjs
+        run: node --test tests/userscript-release.test.mjs tests/baidu-layout.test.mjs
 
       - name: Install dependencies
         working-directory: ac-baidu/doc
@@ -44,6 +44,10 @@ jobs:
       - name: Type-check configuration site
         working-directory: ac-baidu/doc
         run: npm run type-check
+
+      - name: Check Baidu Less styles
+        working-directory: ac-baidu/doc
+        run: npm run check:styles
 
       - name: Build configuration site
         working-directory: ac-baidu/doc

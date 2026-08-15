@@ -7,7 +7,7 @@
 // @license      GPL-3.0-only
 // @create     2015-11-25
 // @run-at     document-start
-// @version    1.0.0
+// @version    1.0.1
 // @connect    baidu.com
 // @connect    google.com
 // @connect    google.com.hk
@@ -42,6 +42,7 @@
 // @lastmodified  2026-08-14
 // @feedback-url  https://github.com/lingling225/search-engine-cleaner/issues
 // @note    Source: https://github.com/langren1353/GM_script (GPL-3.0-only)
+// @note    1.0.1 重构百度响应式布局，修复宽屏溢出、顶部错位和登录按钮被裁切。
 // @note    1.0.0 保留百度、Google、Bing、DuckDuckGo、360 搜索的完整配置与功能，清理无关内容。
 // @resource  baiduCommonStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduCommonStyle.less
 // @resource  baiduOnePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduOnePageStyle.less
@@ -1276,7 +1277,7 @@
 
     async loadStyleByName_WithLessCache(styleName) {
       if (CONST.curConfig.isDevMode && CONST.curConfig.isLocalDevMode && CONST.curConfig.localDebugBaseUrl) {
-        const renderCSSKeyName = '__AC.RenderCSS__' + styleName
+        const renderCSSKeyName = '__AC.RenderCSS__' + GM_info.script.version + ':' + styleName
         return await setLocalLessData(renderCSSKeyName, getDebugStyle) // 不带缓存，随时刷新了
         // return await cacheStyle(renderCSSKeyName, getDebugStyle) // 带缓存，随时刷新了
       } else {
@@ -1284,7 +1285,7 @@
       }
 
       async function cacheStyle(styleName, getLessDataFunc) {
-        const renderCSSKeyName = '__AC.RenderCSS__' + styleName
+        const renderCSSKeyName = '__AC.RenderCSS__' + GM_info.script.version + ':' + styleName
         const localData = localStorage.getItem(renderCSSKeyName)
         if (localData) {
           setTimeout(() => {
@@ -1379,8 +1380,8 @@
     getMultiPageStyle() {
       return this.options.useItem.MultiPageType +
         (+this.curConfig.adsStyleMode === 4 ?
-          "{grid-template-columns: repeat(3, 33.3%); grid-template-areas:'xmain xmain xmain';}" :
-          "{grid-template-columns: repeat(4, 25%); grid-template-areas:'xmain xmain xmain xmain';}")
+          "{grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-areas:'xmain xmain xmain';}" :
+          "{grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-areas:'xmain xmain xmain xmain';}")
     }
 
     async getHuyanStyle() {
@@ -1653,7 +1654,7 @@
           parent.style.width = "auto";
           let userAdiv = document.createElement("div");
           userAdiv.id = "myuser";
-          userAdiv.innerHTML = `<input type='submit' class='myuserconfig' value='自定义'/><span class='ac-newversionDisplay' style='background-color: red;float: left;height: 8px;width: 8px;border-radius: 4px;display: none'>&nbsp;</span>`;
+          userAdiv.innerHTML = `<button type='button' class='myuserconfig'>自定义</button><span class='ac-newversionDisplay' style='background-color: red;float: left;height: 8px;width: 8px;border-radius: 4px;display: none'>&nbsp;</span>`;
 
           parent.insertBefore(userAdiv, parent.childNodes[0]);
           document.querySelector("#myuser .myuserconfig").addEventListener("click", function (e) {
@@ -2121,7 +2122,51 @@
           pointer-events: none;
         }
       `)
-      CONST.cssAutoInsert.add("menuBtn", ".achide{display:none;}.newFuncHighLight{color:red;background-color:yellow;font-weight:600}#sp-ac-container label{display:inline}body:not([baidu]) #u{width:319px}#u #myuser{display:inline-block;margin:13px -10px 0 24px}body[baidu] #u{right:0!important;left:auto!important;width:auto!important;display:flex!important;justify-content:flex-end!important;padding-right:16px!important;pointer-events:none!important}body[baidu] #u>*{pointer-events:auto!important}body[baidu] #u #myuser{position:fixed!important;top:52px!important;right:164px!important;margin:0!important;z-index:100000!important}@media(max-width:1050px){body[baidu] #u #myuser{top:96px!important;right:16px!important}}.site-wrapper #myuser,#gbw #myuser{margin-right:15px}#gb #myuser{margin-top:7px}#myuser,#myuser .myuserconfig{padding:0;margin:0}#myuser .myuserconfig{display:inline-block;line-height:1.5;background:#4e6ef2;color:#fff;font-weight:700;text-align:center;padding:6px;border:2px solid #e5e5e5;box-shadow:0 0 10px 3px rgba(0,0,0,.1);border-radius:6px}#myuser .myuserconfig:hover{background:#4662d9!important;color:#fff;cursor:pointer;border-color:#73a6f8}body[haosou] #myuser{margin-top:-10px}")
+      CONST.cssAutoInsert.add("menuBtn", `
+        .achide { display: none; }
+        .newFuncHighLight { color: red; background-color: yellow; font-weight: 600; }
+        #sp-ac-container label { display: inline; }
+        body:not([baidu]) #u { width: 319px; }
+        #u #myuser { display: inline-flex; align-items: center; margin: 13px -10px 0 24px; }
+        body[baidu] #u {
+          right: 24px !important;
+          left: auto !important;
+          width: auto !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: flex-end !important;
+          padding-right: 0 !important;
+          pointer-events: auto !important;
+        }
+        body[baidu] #u #myuser {
+          position: static !important;
+          flex: 0 0 auto;
+          margin: 0 18px 0 0 !important;
+          z-index: auto !important;
+        }
+        .site-wrapper #myuser, #gbw #myuser { margin-right: 15px; }
+        #gb #myuser { margin-top: 7px; }
+        #myuser, #myuser .myuserconfig { margin: 0; }
+        #myuser .myuserconfig {
+          min-height: 30px;
+          padding: 3px 10px;
+          border: 1px solid #4e6ef2;
+          border-radius: 4px;
+          background: #4e6ef2;
+          color: #fff;
+          font: 600 13px/22px Arial, sans-serif;
+          text-align: center;
+          white-space: nowrap;
+          box-shadow: none;
+          cursor: pointer;
+        }
+        #myuser .myuserconfig:hover {
+          border-color: #315dcc;
+          background: #315dcc !important;
+          color: #fff;
+        }
+        body[haosou] #myuser { margin-top: -10px; }
+      `)
 
       if (CONST.curConfig.baiduLiteEnable) {
         CONST.cssAutoInsert.add("baiduLiteStyle", CONST.adsCSSList.baiduLiteStyle)
