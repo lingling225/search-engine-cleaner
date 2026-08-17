@@ -13,6 +13,7 @@ const configConsole = read('ac-baidu/doc/docs/pages/custom/ConfigConsole.vue')
 const lessEditor = read('ac-baidu/doc/docs/pages/custom/components/LessCSSComp/index.vue')
 const saveAlert = read('ac-baidu/doc/docs/pages/custom/components/SaveAlert.vue')
 const eyeCareStyle = read('newcss/HuYanStyle.less')
+const baiduStyle = read('newcss/baiduCommonStyle.less')
 
 test('configuration previews are debounced and invalid Less stays out of the runtime', () => {
   assert.match(bridge, /previewTimers\s*=\s*new Map/)
@@ -53,6 +54,16 @@ test('favicon and counters reserve only their own inline space', () => {
   assert.doesNotMatch(userscript, /ele\.style\s*=/)
   assert.match(userscript, /\.AC-CounterT\{[^}]*inline-flex[^}]*min-width:/s)
   assert.match(userscript, /\*\[data-favicon-t\]::before\{[^}]*flex:\s*0 0 auto/s)
+})
+
+test('baidu title rows stay stable when favicon and counters toggle', () => {
+  assert.doesNotMatch(userscript, /CounterType:\s*"[^"]*a:first-child/)
+  assert.match(userscript, /CounterType:\s*"[^"]*h3\[class~=t\]/)
+  assert.ok((userscript.match(/CounterType:\s*"[^"]*h3\[class~=t\][^"]*"/g) || []).length >= 2)
+  assert.match(userscript, /remove\("faviconStyle"\)/)
+  assert.match(userscript, /remove\("counterStyle"\)/)
+  assert.match(userscript, /removeAttribute\('data-favicon-t'\)/)
+  assert.match(baiduStyle, /h3\[class\*='title'\][^{]*\{[^}]*display:\s*flex\s*!important[^}]*width:\s*calc\(100% \+ 28px\)\s*!important/s)
 })
 
 test('background and eye-care layers preserve card geometry', () => {

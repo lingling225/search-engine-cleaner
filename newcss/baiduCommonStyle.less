@@ -273,6 +273,23 @@ form.fm {
   border-top-right-radius: 8px;
 }
 
+#wrapper #content_left>.result h3[class*='title'],
+#wrapper #content_left>.c-container h3[class*='title'] {
+  display: flex !important;
+  align-items: center;
+  flex: 0 0 calc(100% + 28px);
+  width: calc(100% + 28px) !important;
+  max-width: calc(100% + 28px);
+  min-width: 0;
+  box-sizing: border-box;
+
+  > a {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
 .title-box_4YBsj {
   width: 100%;
 }

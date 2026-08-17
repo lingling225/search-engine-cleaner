@@ -7,7 +7,7 @@
 // @license      GPL-3.0-only
 // @create     2015-11-25
 // @run-at     document-start
-// @version    1.0.1
+// @version    1.0.2
 // @connect    baidu.com
 // @connect    google.com
 // @connect    google.com.hk
@@ -806,7 +806,7 @@
         Stype_Normal: "h3.t>a, .c-container article a",
         FaviconType: "h3 a",
         FaviconAddTo: "h3",
-        CounterType: "#content_left>#double>div[srcid] *[class~=t]>a:first-child,[class~=op_best_answer_question],#content_left>div[srcid] *[class~=t]>a:first-child,[class~=op_best_answer_question]",
+        CounterType: "#content_left>#double>div[srcid] h3[class~=t],#content_left>div[srcid] h3[class~=t],#content_left>div[srcid] [class~=op_best_answer_question]",
         BlockType: "h3 a",
         MultiPageType: "#container #content_left, body[news] #container #content_left>div:not([class]):not([id])",
         pager: {
@@ -922,7 +922,7 @@
         Stype_Normal: "h3.t>a, #results .c-container>.c-blocka",
         FaviconType: "h3",
         FaviconAddTo: "h3",
-        CounterType: "#content_left>#double>div[srcid] *[class~=t]>a,[class~=op_best_answer_question],#content_left>div[srcid] *[class~=t]>a,[class~=op_best_answer_question]",
+        CounterType: "#content_left>#double>div[srcid] h3[class~=t],#content_left>div[srcid] h3[class~=t],#content_left>div[srcid] [class~=op_best_answer_question]",
         BlockType: "h3 a",
       }
     }
@@ -2271,6 +2271,8 @@
 
       if (CONST.curConfig.isFaviconEnable) {
         CONST.cssAutoInsert.add("faviconStyle", CONST.adsCSSList.faviconStyle) // 插入Favicon图标
+      } else {
+        CONST.cssAutoInsert.remove("faviconStyle")
       }
 
       if (CONST.curConfig.isALineDisable) {
@@ -2278,7 +2280,9 @@
       }
 
       if (CONST.curConfig.isCounterEnable) {
-        CONST.cssAutoInsert.add("counterStyle", ".AC-CounterT{position:relative;z-index:1;display:inline-flex!important;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 auto;min-width:20px;height:20px;margin:0 6px 0 0!important;padding:0 5px!important;border-radius:10px;background:#FD9999;color:#fff;font:600 12px/20px Arial,sans-serif;text-align:center;vertical-align:middle;white-space:nowrap}body #sp-ac-container{position:fixed;top:3.9vw;right:8.8vw}")
+        CONST.cssAutoInsert.add("counterStyle", ".AC-CounterT{position:relative;z-index:1;display:inline-flex!important;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 auto;min-width:20px;height:20px;margin:0 6px 0 0!important;padding:0 5px!important;border-radius:10px;background:#FD9999;color:#fff;font:600 12px/20px Arial,sans-serif;text-align:center;vertical-align:middle;white-space:nowrap}body[baidu] h3>.AC-CounterT,body[baidu_xueshu] h3>.AC-CounterT{order:-1}body #sp-ac-container{position:fixed;top:3.9vw;right:8.8vw}")
+      } else {
+        CONST.cssAutoInsert.remove("counterStyle")
       }
 
       // if(CONST.options.useItem.SiteTypeID === CONST.options.google.SiteTypeID && CONST.curConfig.useBaiduLogo) {
@@ -3198,6 +3202,10 @@
         document.querySelectorAll(CONST.options.useItem.FaviconType || '').forEach((one) => {
           one.removeAttribute("ac_faviconstatus");
         })
+        document.querySelectorAll('[data-favicon-t]').forEach((one) => {
+          one.removeAttribute('data-favicon-t')
+        })
+        if (CONST.cssFavionList.list.length) CONST.cssFavionList.list.splice(0)
       }
       if (CONST.curConfig.isCounterEnable) {
         PageFunc.addCounter(document.querySelectorAll(CONST.options.useItem.CounterType)); // 显示计数器
