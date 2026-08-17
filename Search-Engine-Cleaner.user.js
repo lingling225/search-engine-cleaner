@@ -471,8 +471,16 @@
       if (unsafeWindow.webInterface) {
         unsafeWindow.webInterface.update()
       } else {
-        CONST.blockRuleList = JSON.parse(newVal) // 将对象设置到CONST上
-        CONST.acpush_acremoveInit()
+        try {
+          const blockRules = JSON.parse(newVal)
+          if (!Array.isArray(blockRules) || blockRules.some(rule => typeof rule !== 'string')) {
+            throw new TypeError('ACBlockRules 必须是字符串数组')
+          }
+          CONST.blockRuleList = blockRules // 将对象设置到CONST上
+          CONST.acpush_acremoveInit()
+        } catch (error) {
+          console.error('忽略损坏的 ACBlockRules', error)
+        }
       }
     })
     if (location.hostname === 'lingling225.github.io' && /^\/search-engine-cleaner\/pages\/custom(?:\/|\/index\.html)?$/.test(location.pathname)) {
@@ -539,6 +547,12 @@
         delete result[`${invalidPrefix}Less`]
         return result
       }
+      const validateSectionLess = async (section, data) => {
+        const prefix = section === 'common' ? 'commonStyle' : 'customStyle'
+        if (data?.[`${prefix}Enable`]) {
+          await less.render(String(data[`${prefix}Less`] || ''))
+        }
+      }
       const publishSync = async (data) => {
         await GM.setValue('SyncConfig', JSON.stringify({
           ...data,
@@ -569,6 +583,7 @@
             assertBridgeKey(key)
             if (bridgeSectionKeys.has(key)) {
               const trueKey = getBridgeSection(key)
+              await validateSectionLess(trueKey, dataObj)
               const config = parseStoredJSON(await GM.getValue('ACConfig', '{}'), {}, 'ACConfig')
               const storedSection = config[trueKey] && typeof config[trueKey] === 'object' ? config[trueKey] : {}
               config[trueKey] = {
@@ -588,6 +603,7 @@
         async change(key, dataObj) {
           return enqueueBridgeWrite(async () => {
             const trueKey = getBridgeSection(key)
+            await validateSectionLess(trueKey, dataObj)
             // 只广播当前分区，避免未保存的其他分区被持久化快照回滚。
             await publishSync({ [trueKey]: sanitizeSection(trueKey, dataObj) })
           })
@@ -867,7 +883,7 @@
         Stype_Normal: "h3>a",
         FaviconType: "cite",
         FaviconAddTo: "h3",
-        CounterType: ".results>div",
+        CounterType: ".results .res-title",
         BlockType: "h3 a",
         MultiPageType: ".result li",
         pager: {
@@ -1083,17 +1099,27 @@
           ...new BaseConfig()
         }
       };
-      try {
-        let res = await GM.getValue("ACConfig", "{}")
-        ACConfig = JSON.parse(res);
-
-        res = await GM.getValue("ACBlockRules", "[]")
-        this.blockRuleList = JSON.parse(res);
-        this.acpush_acremoveInit()
-      } catch (e) {
-        console.error('出bug了')
-        ACConfig = DefaultConfig
+      const parseStoredConfig = async () => {
+        try {
+          const parsed = JSON.parse(await GM.getValue("ACConfig", "{}"))
+          return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {}
+        } catch (error) {
+          console.error('忽略损坏的 ACConfig', error)
+          return {}
+        }
       }
+      const parseBlockRules = async () => {
+        try {
+          const parsed = JSON.parse(await GM.getValue("ACBlockRules", "[]"))
+          return Array.isArray(parsed) ? parsed.filter(rule => typeof rule === 'string') : []
+        } catch (error) {
+          console.error('忽略损坏的 ACBlockRules', error)
+          return []
+        }
+      }
+      ACConfig = await parseStoredConfig()
+      this.blockRuleList = await parseBlockRules()
+      this.acpush_acremoveInit()
       // 随便给一个值初始化，这个值，只是临时的值，如果需要写入，也是从另一端拉取，不是这个值来覆盖的
       this.curConfig = {
         ...DefaultConfig.common,
@@ -1191,6 +1217,9 @@
         isCounterChecking: false,
         afterBlockChangeChecked: true, // 数据刷新后，是否检查过了，用于减少reg判定
       }
+      this.styleLoadRevision = 0
+      this.styleCacheRefreshTimers = new Map()
+      this.loadAllStyleTimer = null
       // 数据先初始化
       this.curConfig = reactive({
         enableCSS: true,
@@ -1288,10 +1317,19 @@
         const renderCSSKeyName = '__AC.RenderCSS__' + GM_info.script.version + ':' + styleName
         const localData = localStorage.getItem(renderCSSKeyName)
         if (localData) {
-          setTimeout(() => {
-            console.mylog('*****有缓存了，但是在刷新了：' + styleName)
-            setLocalLessData(renderCSSKeyName, getLessDataFunc)
-          }, 2000)
+          if (!CONST.styleCacheRefreshTimers.has(renderCSSKeyName)) {
+            const refreshTimer = setTimeout(async () => {
+              try {
+                console.mylog('*****有缓存了，但是在刷新了：' + styleName)
+                await setLocalLessData(renderCSSKeyName, getLessDataFunc)
+              } catch (error) {
+                console.error('样式缓存刷新失败', styleName, error)
+              } finally {
+                CONST.styleCacheRefreshTimers.delete(renderCSSKeyName)
+              }
+            }, 2000)
+            CONST.styleCacheRefreshTimers.set(renderCSSKeyName, refreshTimer)
+          }
           return localData
         } else {
           console.mylog('*****没有缓存' + styleName)
@@ -1321,8 +1359,20 @@
       }
     }
 
+    async renderLessSafely(source, label, previous = '') {
+      try {
+        const { css = '' } = await less.render(source || '')
+        return css
+      } catch (error) {
+        console.error(`${label} Less 编译失败，保留上一次有效样式`, error)
+        return previous
+      }
+    }
+
     async loadSiteCSS() {
+      const revision = ++this.styleLoadRevision
       console.mylog('CSS加载开始' + +this.curConfig.adsStyleMode)
+      const nextCSSList = { ...this.adsCSSList }
       const styleSiteName = {
         baidu_xueshu: 'baidu',
         google_scholar: 'google',
@@ -1330,51 +1380,55 @@
       // 加载多列
       if (this.curConfig.adsStyleEnable) {
         if (+this.curConfig.adsStyleMode >= 1) {
-          this.adsCSSList.leftCommonStyle = await this.loadStyleByName_WithLessCache(styleSiteName + 'CommonStyle') // 单列效果
+          nextCSSList.leftCommonStyle = await this.loadStyleByName_WithLessCache(styleSiteName + 'CommonStyle') // 单列效果
         }
         if (+this.curConfig.adsStyleMode >= 2) {
-          this.adsCSSList.onePageStyle = await this.loadStyleByName_WithLessCache(styleSiteName + 'OnePageStyle') // 单列居中
+          nextCSSList.onePageStyle = await this.loadStyleByName_WithLessCache(styleSiteName + 'OnePageStyle') // 单列居中
         }
         if (+this.curConfig.adsStyleMode >= 3) {
-          this.adsCSSList.twoPageStyle = await this.loadStyleByName_WithLessCache(styleSiteName + 'TwoPageStyle') // 双列效果
+          nextCSSList.twoPageStyle = await this.loadStyleByName_WithLessCache(styleSiteName + 'TwoPageStyle') // 双列效果
         }
         if (+this.curConfig.adsStyleMode >= 4) {
-          this.adsCSSList.multiPageStyle = await this.getMultiPageStyle() // 多列效果
+          nextCSSList.multiPageStyle = await this.getMultiPageStyle() // 多列效果
         }
       }
       // 加载百度Lite
       if (this.curConfig.baiduLiteEnable) {
-        this.adsCSSList.baiduLiteStyle = await this.loadStyleByName_WithLessCache('baiduLiteStyle')
+        nextCSSList.baiduLiteStyle = await this.loadStyleByName_WithLessCache('baiduLiteStyle')
       }
       // 加载背景图优化
       if (this.curConfig.BgEnable && this.curConfig.BgFit) {
-        this.adsCSSList.bgAutoFitStyle = await this.loadStyleByName_WithLessCache('BgAutoFit')
+        nextCSSList.bgAutoFitStyle = await this.loadStyleByName_WithLessCache('BgAutoFit')
       }
       // 加载护眼样式
       if (this.curConfig.HuYanMode) {
-        this.adsCSSList.huyanStyle = await this.getHuyanStyle()
+        nextCSSList.huyanStyle = await this.getHuyanStyle()
       }
 
       if (this.curConfig.isDarkModeEnable) {
-        this.adsCSSList.darkModeStyle = await this.loadStyleByName_WithLessCache('HuaHua-ACDrakMode')
+        nextCSSList.darkModeStyle = await this.loadStyleByName_WithLessCache('HuaHua-ACDrakMode')
       }
       // 加载自定义样式
       if (this.curConfig.customStyleEnable) {
         console.mylog('触发custom更新')
-        const { css = '' } = await less.render(this.curConfig.customStyleLess);
-        this.adsCSSList.customStyle = css
+        nextCSSList.customStyle = await this.renderLessSafely(this.curConfig.customStyleLess, 'customStyle', this.adsCSSList.customStyle)
       }
       // 加载其他样式
       if (this.curConfig.commonStyleEnable) {
         console.mylog('触发common更新')
-        const { css = '' } = await less.render(this.curConfig.commonStyleLess);
-        this.adsCSSList.commonStyle = css
+        nextCSSList.commonStyle = await this.renderLessSafely(this.curConfig.commonStyleLess, 'commonStyle', this.adsCSSList.commonStyle)
       }
+      if (revision !== this.styleLoadRevision) return false
+      Object.assign(this.adsCSSList, nextCSSList)
       console.mylog('CSS加载结束')
       // 2秒后再加载
-      setTimeout(() => {
-        this.loadAllStyle()
+      clearTimeout(this.loadAllStyleTimer)
+      this.loadAllStyleTimer = setTimeout(() => {
+        if (revision === this.styleLoadRevision) this.loadAllStyle().catch(error => {
+          console.error('补充样式加载失败', error)
+        })
       }, 2000)
+      return true
     }
 
     getMultiPageStyle() {
@@ -1976,7 +2030,6 @@
       if (CONST.lock.isCounterChecking) return;
       CONST.lock.isCounterChecking = true;
 
-      const cssText = "font-style:normal;position:relative;z-index:1;margin-right:4px;display:inline-block;color:white;font-family:'微软雅黑';font-size:16px;text-align:center;width:22px;line-height:22px;border-radius:50%;";
       const batchSize = 20;
       let currentIndex = 0;
 
@@ -1989,7 +2042,6 @@
             cur.setAttribute('SortIndex', CONST.sortIndex);
             let ele = document.createElement('em');
             ele.className = 'AC-CounterT';
-            ele.style = cssText;
             ele.innerText = CONST.sortIndex;
             let child = cur.firstElementChild;
             if (child && child.nodeName === 'DIV') {
@@ -2181,7 +2233,7 @@
       if (CONST.curConfig.BgEnable) {
         const imageUrl = CONST.curConfig.BgUseUrl
         if (imageUrl) {
-          const bgCSS = `body:before{pointer-events: none;position: fixed;width: 100%;height: 100%;top: 0;left: 0;content: '';background-image: url('${imageUrl}');background-size: 100% auto;opacity: 0.6;}`
+          const bgCSS = `body{position:relative;z-index:0;min-height:100vh;}body::before{pointer-events:none;position:fixed;z-index:-1;inset:0;content:'';background-image:url('${imageUrl}');background-position:center top;background-size:cover;background-repeat:no-repeat;opacity:.6;}`
           CONST.cssAutoInsert.add("backGroundImage", bgCSS)
         }
         if (CONST.curConfig.BgFit) {
@@ -2226,7 +2278,7 @@
       }
 
       if (CONST.curConfig.isCounterEnable) {
-        CONST.cssAutoInsert.add("counterStyle", ".AC-CounterT{background:#FD9999}body  #sp-ac-container{position:fixed;top:3.9vw;right:8.8vw}")
+        CONST.cssAutoInsert.add("counterStyle", ".AC-CounterT{position:relative;z-index:1;display:inline-flex!important;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 auto;min-width:20px;height:20px;margin:0 6px 0 0!important;padding:0 5px!important;border-radius:10px;background:#FD9999;color:#fff;font:600 12px/20px Arial,sans-serif;text-align:center;vertical-align:middle;white-space:nowrap}body #sp-ac-container{position:fixed;top:3.9vw;right:8.8vw}")
       }
 
       // if(CONST.options.useItem.SiteTypeID === CONST.options.google.SiteTypeID && CONST.curConfig.useBaiduLogo) {
@@ -2779,6 +2831,16 @@
     }
   }
 
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const createBlockRuleMatcher = (rule) => {
+    const source = String(rule || '').trim()
+    if (!source) return null
+    if (/^(?:[a-z0-9-]+\.)+[a-z]{2,}$/i.test(source)) {
+      return new RegExp(`^(?:[^.]+\\.)*${escapeRegExp(source)}$`, 'i')
+    }
+    return new RegExp(source.replaceAll("*", ".*"), 'i')
+  }
+
   class PageBlockClass {
     constructor() {
       this.curSite = CONST.options.useItem
@@ -2929,7 +2991,7 @@
     _updateRegListRule() {
       this.regListRule = CONST.blockRuleList.filter(one => one).map(one => {
         try {
-          return new RegExp(one.replace("*", ".*"))
+          return createBlockRuleMatcher(one)
         } catch (e) {
           return one
         }
@@ -3166,24 +3228,33 @@
 
     MyApi.safeWaitFunc('html', () => {
       GM_addValueChangeListener('SyncConfig', (key, oldVal, newVal = '{}', remote) => {
-        const syncOptions = JSON.parse(newVal)
-        CONST.renewConfig(syncOptions)
-        if (syncOptions.refreshUrl) MyApi.refreshAfter(500)
+        try {
+          const syncOptions = JSON.parse(newVal)
+          if (!syncOptions || typeof syncOptions !== 'object' || Array.isArray(syncOptions)) throw new TypeError('SyncConfig 必须是对象')
+          CONST.renewConfig(syncOptions)
+          if (syncOptions.refreshUrl) MyApi.refreshAfter(500)
+        } catch (error) {
+          console.error('忽略损坏的 SyncConfig', error)
+        }
       })
       PageFunc.dataChangeFireCallback()
       watch(CONST.curConfig, async () => {
-        await CONST.loadSiteCSS()
-        PageFunc.dataChangeFireCallback()
+        try {
+          await CONST.loadSiteCSS()
+          PageFunc.dataChangeFireCallback()
+        } catch (error) {
+          console.error('配置变更后的样式加载失败', error)
+        }
       })
       watch(CONST.cssFavionList, () => {
-        const baseCSS = 'h3::before, h2::before {content: " ";display:inline-block} *[data-favicon-t]:before{width: 16px; height: 16px; margin-right: 4px; background-size: 100% 100%; vertical-align: text-top;}'
+        const baseCSS = '*[data-favicon-t]::before{content:"";display:inline-block;flex:0 0 auto;width:16px;height:16px;margin-inline-end:5px;background-size:contain;background-position:center;background-repeat:no-repeat;vertical-align:-3px;}'
         CONST.adsCSSList.faviconStyle = Object.entries(CONST.cssFavionList.list).reduce((preCSS, cur) => {
           const [, { tagName = '', url = '' }] = cur
           let nowCSS = ''
           if (url) {
             //如果地址不正确，那么丢弃
             const imgUrl = "https://favicon.yandex.net/favicon/v2/" + encodeURIComponent(url) + "?size=32"
-            nowCSS = tagName + `[data-favicon-t='${url}']:before{background-image: url('${imgUrl}');}`
+            nowCSS = tagName + `[data-favicon-t='${url}']::before{background-image:url('${imgUrl}');}`
           }
           return preCSS + nowCSS
         }, baseCSS)

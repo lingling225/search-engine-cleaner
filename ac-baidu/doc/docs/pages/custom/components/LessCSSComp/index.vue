@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, defineEmits, watch } from "vue";
+import { reactive, onBeforeUnmount, watch } from "vue";
 import less from 'less'
 import {ElMessage} from "element-plus";
 
@@ -66,6 +66,8 @@ const base = reactive({
   compileSuccess: true,
   loading: false,
 })
+let validationRevision = 0
+let validationTimer: number | undefined
 
 watch(state, () => emits('update_state', {
   [enableKey]: state.commonStyleEnable,
@@ -74,11 +76,20 @@ watch(state, () => emits('update_state', {
 }))
 
 watch(() => state.commonStyleLess, () => {
-  less.render(state.commonStyleLess).then(css => {
-    base.compileSuccess = true
-  }).catch(() => {
-    base.compileSuccess = false
-  })
+  const revision = ++validationRevision
+  if (validationTimer !== undefined) window.clearTimeout(validationTimer)
+  validationTimer = window.setTimeout(async () => {
+    try {
+      await less.render(state.commonStyleLess)
+      if (revision === validationRevision) base.compileSuccess = true
+    } catch {
+      if (revision === validationRevision) base.compileSuccess = false
+    }
+  }, 250)
+}, { immediate: true })
+
+onBeforeUnmount(() => {
+  if (validationTimer !== undefined) window.clearTimeout(validationTimer)
 })
 
 watch(

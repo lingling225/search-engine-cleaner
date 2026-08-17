@@ -90,17 +90,18 @@ body[bing] {
         background-color: rgba(#FFF, 0.6);
 
         .b_title{
-          margin: -12px -20px;
-          padding: 5px 20px;
-          background-color: rgba(#FFF, 0.4);
+          min-width: 0;
+          background-color: transparent;
+
+          h2 {
+            background-color: rgba(#FFF, 0.4);
+            overflow-wrap: anywhere;
+          }
           
           h2 a{
             display: inline-block;
+            max-width: 100%;
           }
-        }
-        
-        .b_caption, .mattr{
-          margin-top: 24px;
         }
       }
     }

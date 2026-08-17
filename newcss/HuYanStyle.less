@@ -4,7 +4,7 @@ body[baidu],
 #wrapper #head,
 #wrapper #s_tab,
 form.fm .s_ipt_wr.bg {
-  background-color: #ffffff;
+  background-color: transparent;
 }
 
 #wrapper #content_left .result-op,
@@ -15,7 +15,10 @@ form.fm .s_ipt_wr.bg {
 #wrapper #content_right {
   background-color: #aaaaaa;
   border: 1px double #a2d7d4;
-  border-radius: 0px;
+  border-radius: 8px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
 }
 
 #wrapper #content_left .result-op:hover,
@@ -29,34 +32,53 @@ form.fm .s_ipt_wr.bg {
 #wrapper #content_left .c-container h3[class~="c-title"],
 #wrapper #rs .tt {
   background-color: #bbbbbb;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
 }
 
 /***Bing-HuYanStyle****/
 .na_cnt .nws_itm,
 .nws_itmb,
-#b_content #b_results > li:not(#mfa_root),
-body #b_header {
+#b_content #b_results > li.b_algo,
+#b_content #b_results > li.b_ans {
   background-color: #aaaaaa;
   border: 1px double #a2d7d4;
-  border-radius: 0px;
+  border-radius: 5px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
 }
 
-#b_content #b_results li:hover {
+body[bing] #b_header {
+  background-color: #aaaaaa;
+  border-bottom: 1px solid #a2d7d4;
+}
+
+#b_content #b_results > li.b_algo:hover,
+#b_content #b_results > li.b_ans:hover {
   background-color: #cccccc !important;
 }
 
 #b_content #b_results li h2 {
   background-color: #bbbbbb;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
 }
 
 /***Google-HuYanStyle****/
 body[google] {
-  background-color: #fdfdfd;
+  background-color: transparent;
 }
 
 div[two-father] div[two-child] {
   background-color: #aaaaaa !important;
   border: 1px solid #9cd2cfaa;
+  border-radius: 10px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
 
   .IiOSLb .rsGxI.Ww4FFb,
   .Ww4FFb {
@@ -71,18 +93,24 @@ div[two-father] div[two-child] {
   div.r,
   h3 {
     background-color: #bbbbbb;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    line-height: 1.45;
   }
 }
 
 /***Duck-HuYanStyle****/
 body[duck] {
-  background-color: #fdfdfd;
+  background-color: transparent;
 }
 
 #links_wrapper #links .results_links_deep {
   background-color: #aaaaaa;
   border: 1px solid #9cd2cfaa;
-  border-radius: 0px;
+  border-radius: 5px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
 }
 
 #links_wrapper #links .results_links_deep:hover {
@@ -90,17 +118,49 @@ body[duck] {
   border: 1px double #9cd2cf;
 }
 
-#links_wrapper #links .results_links_deep h2 {
+#links_wrapper #links .results_links_deep h2,
+#react-layout li h2 {
   background-color: #bbbbbb;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
 }
 
 #react-layout li {
   background-color: #aaaaaa;
   border: 1px solid #9cd2cfaa;
-  border-radius: 0px;
+  border-radius: 5px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
 }
 
 #react-layout li:hover {
   background-color: #cccccc !important;
   border: 1px double #9cd2cf;
+}
+
+/***360-HuYanStyle****/
+body[haosou] {
+  background-color: transparent;
+}
+
+body[haosou] #container .result > li {
+  background-color: #aaaaaa;
+  border-color: #a2d7d4;
+  border-radius: 5px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+body[haosou] #container .result > li:hover {
+  background-color: #cccccc !important;
+}
+
+body[haosou] #container .res-title {
+  background-color: #bbbbbb;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
 }

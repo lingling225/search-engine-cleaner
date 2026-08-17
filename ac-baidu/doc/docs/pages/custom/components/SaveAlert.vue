@@ -11,6 +11,7 @@
 
 <script setup lang="ts">
 import {ElMessage} from "element-plus";
+import less from 'less'
 import {reactive, watch} from "vue";
 import { getScriptBridge } from '../bridge';
 
@@ -43,6 +44,15 @@ watch(props.saveData, () => {
 
 async function doSaveConfig() {
   if (base.saving || !base.hasChanged) return true
+  const stylePrefix = props.saveKey === 'op_common' ? 'commonStyle' : 'customStyle'
+  if (props.saveData[`${stylePrefix}Enable`]) {
+    try {
+      await less.render(String(props.saveData[`${stylePrefix}Less`] || ''))
+    } catch {
+      ElMessage({ message: '保存失败：请先修复自定义 Less 语法', type: 'error' })
+      return false
+    }
+  }
   base.saving = true
   try {
     await getScriptBridge().save(props.saveKey, props.saveData)

@@ -296,8 +296,15 @@ async function openSearchResult(item: SearchItem) {
     hiddenContainer = hiddenContainer.parentElement
   }
   if (hiddenContainer && hiddenContainer !== section) {
+    const previousDisplay = hiddenContainer.style.display
     hiddenContainer.dataset.searchReveal = 'true'
     hiddenContainer.style.display = 'block'
+    window.setTimeout(() => {
+      if (hiddenContainer?.dataset.searchReveal === 'true') {
+        hiddenContainer.style.display = previousDisplay
+        delete hiddenContainer.dataset.searchReveal
+      }
+    }, 2100)
   }
 
   window.setTimeout(() => {
