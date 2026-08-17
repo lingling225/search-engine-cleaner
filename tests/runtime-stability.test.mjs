@@ -14,6 +14,7 @@ const lessEditor = read('ac-baidu/doc/docs/pages/custom/components/LessCSSComp/i
 const saveAlert = read('ac-baidu/doc/docs/pages/custom/components/SaveAlert.vue')
 const eyeCareStyle = read('newcss/HuYanStyle.less')
 const baiduStyle = read('newcss/baiduCommonStyle.less')
+const googleTwoPageStyle = read('newcss/googleTwoPageStyle.less')
 
 test('configuration previews are debounced and invalid Less stays out of the runtime', () => {
   assert.match(bridge, /previewTimers\s*=\s*new Map/)
@@ -64,6 +65,7 @@ test('baidu title rows stay stable when favicon and counters toggle', () => {
   assert.match(userscript, /remove\("counterStyle"\)/)
   assert.match(userscript, /removeAttribute\('data-favicon-t'\)/)
   assert.match(baiduStyle, /h3\[class\*='title'\][^{]*\{[^}]*display:\s*flex\s*!important[^}]*width:\s*calc\(100% \+ 28px\)\s*!important/s)
+  assert.match(baiduStyle, /\[class\*='title-box_'\]\s*>\s*i\.c-icon\[class\*='front-icon_'\]\s*\{[^}]*display:\s*none\s*!important/s)
 })
 
 test('background and eye-care layers preserve card geometry', () => {
@@ -73,4 +75,9 @@ test('background and eye-care layers preserve card geometry', () => {
   assert.match(eyeCareStyle, /overflow-wrap:\s*anywhere/)
   assert.match(eyeCareStyle, /border-radius:\s*8px/)
   assert.match(eyeCareStyle, /border-radius:\s*5px/)
+})
+
+test('google two-column cards fill the same grid row without trailing margins', () => {
+  assert.match(googleTwoPageStyle, /#rso\[two-father\]\s*>\s*\.ULSxyf\s*>\s*\.MjjYud\s*\{[^}]*height:\s*100%/s)
+  assert.match(googleTwoPageStyle, /#rso\[two-father\][^{]*\.A6K0A,[^{]*#rso\[two-father\][^{]*\.A6K0A\s*\{[^}]*height:\s*100%[^}]*margin-bottom:\s*0/s)
 })

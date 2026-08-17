@@ -7,7 +7,7 @@
 // @license      GPL-3.0-only
 // @create     2015-11-25
 // @run-at     document-start
-// @version    1.0.2
+// @version    1.0.3
 // @connect    baidu.com
 // @connect    google.com
 // @connect    google.com.hk
@@ -39,9 +39,10 @@
 // @downloadURL https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/Search-Engine-Cleaner.user.js
 // @updateURL   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/Search-Engine-Cleaner.user.js
 // @copyright  2015-2026, AC; modifications 2026, lingling225
-// @lastmodified  2026-08-14
+// @lastmodified  2026-08-17
 // @feedback-url  https://github.com/lingling225/search-engine-cleaner/issues
 // @note    Source: https://github.com/langren1353/GM_script (GPL-3.0-only)
+// @note    1.0.3 修复百度、Google 和 360 搜索结果的宽度、对齐与多列布局问题。
 // @note    1.0.1 重构百度响应式布局，修复宽屏溢出、顶部错位和登录按钮被裁切。
 // @note    1.0.0 保留百度、Google、Bing、DuckDuckGo、360 搜索的完整配置与功能，清理无关内容。
 // @resource  baiduCommonStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduCommonStyle.less
@@ -885,7 +886,7 @@
         FaviconAddTo: "h3",
         CounterType: ".results .res-title",
         BlockType: "h3 a",
-        MultiPageType: ".result li",
+        MultiPageType: "#container #main .result",
         pager: {
           nextLink: "//div[@id='page']//a[text()='下一页>'] | id('snext')",
           pageElement: "//div[@id='container']/div[@id='main']/ul[@class='result']/li",
@@ -1690,6 +1691,8 @@
         MyApi.safeRemoveAd("#so_kw-ad")
         MyApi.safeRemoveAd("#m-spread-left")
         MyApi.safeRemoveAd("#m-spread-bottom")
+        MyApi.safeRemoveAd("#so_top")
+        MyApi.safeRemoveAd(".res-recommend-tag-cover")
         MyApi.safeRemove_xpath("id('righttop_box')//li[.//span[contains(text(), '广告')]]")
       }
 

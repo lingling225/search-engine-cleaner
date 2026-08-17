@@ -1,62 +1,78 @@
-#header {
-  #g-hd-nav{
-    display: flex;
-    justify-content: center;
-    float: unset;
-    margin-left: -150px;
-  }
+body[haosou] {
+  --ac-haosou-grid-width: min(1320px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
 }
-#tabs-wrap{
-  display: flex;
+
+body[haosou] #tabs-wrap {
+  width: 100% !important;
+  margin: 0;
+  padding-left: 0;
+  box-sizing: border-box;
+}
+
+body[haosou] #g-hd-tabs {
+  width: var(--ac-haosou-grid-width) !important;
+  max-width: calc(100vw - 2 * var(--ac-haosou-page-gutter));
+  margin: 0 auto !important;
+  box-sizing: border-box;
+}
+
+body[haosou] #container {
+  display: grid;
+  grid-template-columns: minmax(0, var(--ac-haosou-grid-width));
   justify-content: center;
-  margin-right: 420px;
+  width: 100%;
+  max-width: calc(var(--ac-haosou-grid-width) + 2 * var(--ac-haosou-page-gutter)) !important;
+  margin: 15px auto 0 !important;
+  padding-inline: var(--ac-haosou-page-gutter) !important;
+  box-sizing: border-box;
 }
 
-#container{
-  display: flex;
-  justify-content: center;
-  padding-left: unset;
-
-  #main {
-    width: 78vw;
-
-    .result{
-      display: grid;
-      grid-template-columns: repeat(2, 50%);
-      grid-template-areas: "xmain xmain";
-      grid-column-gap: 20px;
-
-      >li{
-        width: 100%;
-      }
-    }
-  }
-  #side{
-    display: none;
-  }
+body[haosou] #container #main {
+  float: none;
+  width: 100%;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-#warper {
-  .mod-relation{
-    padding-left: unset;
-    position: relative;
-
-    #rs{
-      width: 770px;
-      position: relative;
-      left: 50%;
-      transform: translateX(-68%);
-    }
-  }
-  #page{
-    display: flex;
-    justify-content: center;
-    margin-left: -200px;
-  }
+#container #main .result {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(18px, 1.5vw, 24px);
+  align-items: start;
+  width: 100%;
+  min-width: 0;
 }
 
-#footer{
-  display: flex;
-  justify-content: center;
-  margin-left: -200px;
+body[haosou] #container .result > li {
+  height: 100%;
+  margin-bottom: 0;
+}
+
+body[haosou] #container #side {
+  display: none !important;
+}
+
+body[haosou] #container > div[style*="clear"] {
+  display: none;
+}
+
+body[haosou] #warper .mod-relation,
+body[haosou] #warper .mod-relation #rs {
+  position: static;
+  left: auto;
+  transform: none;
+  width: 100%;
+  max-width: 100%;
+  padding-left: 0;
+  box-sizing: border-box;
+}
+
+body[haosou] #footer #page,
+body[haosou] #footer .footer {
+  width: var(--ac-haosou-grid-width) !important;
+  max-width: calc(100vw - 2 * var(--ac-haosou-page-gutter));
+  margin-right: auto !important;
+  margin-left: auto !important;
+  box-sizing: border-box;
 }

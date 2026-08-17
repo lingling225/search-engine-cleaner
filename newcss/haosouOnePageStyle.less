@@ -1,60 +1,82 @@
-#header {
-  #g-hd-nav{
-    display: flex;
-    justify-content: center;
-    float: unset;
-    margin-left: -150px;
-  }
+body[haosou] {
+  --ac-haosou-results-width: min(900px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
+  --ac-haosou-sidebar-width: min(368px, 24vw);
+  --ac-haosou-layout-gap: clamp(20px, 2vw, 32px);
 }
-#tabs-wrap{
-  display: flex;
+
+body[haosou] #tabs-wrap {
+  width: 100% !important;
+  margin: 0;
+  padding-left: 0;
+  box-sizing: border-box;
+}
+
+body[haosou] #g-hd-tabs {
+  width: var(--ac-haosou-results-width) !important;
+  max-width: calc(100vw - 2 * var(--ac-haosou-page-gutter));
+  margin: 0 auto !important;
+  box-sizing: border-box;
+}
+
+body[haosou] #container {
+  display: grid;
+  grid-template-columns: minmax(0, var(--ac-haosou-results-width));
   justify-content: center;
-  margin-right: 420px;
+  width: 100%;
+  max-width: calc(var(--ac-haosou-results-width) + 2 * var(--ac-haosou-page-gutter)) !important;
+  margin: 15px auto 0 !important;
+  padding-inline: var(--ac-haosou-page-gutter) !important;
+  box-sizing: border-box;
 }
 
-#container{
-  display: flex;
-  justify-content: center;
-  padding-left: unset;
-  
-  #main {
-    width: 650px;
-    
-    .result{
-
-      >li{
-        width: 770px;
-      }
-    }
-  }
-  #side{
-    left: 200px;
-    padding: 20px;
-    background-color: white;
-  }
+body[haosou].showRight #container {
+  grid-template-columns: minmax(0, var(--ac-haosou-results-width)) minmax(280px, var(--ac-haosou-sidebar-width));
+  gap: var(--ac-haosou-layout-gap);
+  max-width: calc(var(--ac-haosou-results-width) + var(--ac-haosou-sidebar-width) + var(--ac-haosou-layout-gap) + 2 * var(--ac-haosou-page-gutter)) !important;
 }
 
-#warper {
-  .mod-relation{
-    padding-left: unset;
-    position: relative;
-
-    #rs{
-      width: 770px;
-      position: relative;
-      left: 50%;
-      transform: translateX(-68%);
-    }
-  }
-  #page{
-    display: flex;
-    justify-content: center;
-    margin-left: -200px;
-  }
+body[haosou] #container #main {
+  grid-column: 1;
+  float: none;
+  width: 100%;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-#footer{
-  display: flex;
-  justify-content: center;
-  margin-left: -200px;
+body[haosou].showRight #container #side {
+  grid-column: 2;
+  display: block;
+  float: none;
+  position: static;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 20px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+body[haosou] #container > div[style*="clear"] {
+  display: none;
+}
+
+body[haosou] #warper .mod-relation,
+body[haosou] #warper .mod-relation #rs {
+  position: static;
+  left: auto;
+  transform: none;
+  width: 100%;
+  max-width: 100%;
+  padding-left: 0;
+  box-sizing: border-box;
+}
+
+body[haosou] #footer #page,
+body[haosou] #footer .footer {
+  width: var(--ac-haosou-results-width) !important;
+  max-width: calc(100vw - 2 * var(--ac-haosou-page-gutter));
+  margin-right: auto !important;
+  margin-left: auto !important;
+  box-sizing: border-box;
 }
