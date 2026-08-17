@@ -4,14 +4,15 @@ export default defineConfig({
   description: "百度、Google、Bing、DuckDuckGo 与 360 搜索增强脚本的配置中心",
   lang: "zh-CN",
   head: [
-    ["meta", { name: "keywords", content: "Search Engine Cleaner,油猴脚本,搜索增强,搜索结果优化" }]
+    ["meta", { name: "keywords", content: "Search Engine Cleaner,油猴脚本,搜索增强,搜索结果优化" }],
+    ["link", { rel: "icon", href: "/search-engine-cleaner/logo.svg", type: "image/svg+xml" }]
   ],
   base: "/search-engine-cleaner/",
   cleanUrls: true,
   lastUpdated: true,
   themeConfig: {
     lastUpdatedText: '更新',
-    logo: "/favicon.ico",
+    logo: "/logo.svg",
     siteTitle: "Search Engine Cleaner",
     outline: {
       level: 1,
