@@ -59,7 +59,25 @@ body #b_content {
 }
 
 body #b_header {
-  width: 72vw;
-  text-align: center;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  text-align: initial;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#b_header > #id_h {
+  position: absolute;
+  right: clamp(24px, 4vw, 72px);
+  top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+#b_header > #id_h #myuser {
+  flex: 0 0 auto;
+  margin: 0;
 }

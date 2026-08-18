@@ -7,7 +7,7 @@
 // @license      GPL-3.0-only
 // @create     2015-11-25
 // @run-at     document-start
-// @version    1.0.8
+// @version    1.0.9
 // @connect    baidu.com
 // @connect    google.com
 // @connect    google.com.hk
@@ -42,6 +42,7 @@
 // @lastmodified  2026-08-18
 // @feedback-url  https://github.com/lingling225/search-engine-cleaner/issues
 // @note    Source: https://github.com/langren1353/GM_script (GPL-3.0-only)
+// @note    1.0.9 修复 Bing 顶部右侧账号和自定义按钮被居中布局挤下。
 // @note    1.0.8 修复百度和 360 搜索开启 Favicon、编号后的标题重叠。
 // @note    1.0.7 统一百度、DuckDuckGo 和 360 搜索结果的单列到四列布局宽度。
 // @note    1.0.6 修复 DuckDuckGo 单列居中模式结果列表仍偏左。
