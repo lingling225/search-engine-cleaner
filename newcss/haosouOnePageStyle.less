@@ -28,6 +28,16 @@ body[haosou] #container {
   box-sizing: border-box;
 }
 
+body[haosou].res-center-exp #warper > #container,
+body[haosou].wide-version-result #warper > #container,
+body[haosou].so-w1330 #warper > #container {
+  width: var(--ac-haosou-shell-width) !important;
+  max-width: calc(100vw - 2 * var(--ac-haosou-page-gutter)) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-inline: 0 !important;
+}
+
 body[haosou].showRight #container {
   display: grid;
   grid-template-columns: minmax(0, var(--ac-haosou-results-width)) minmax(280px, var(--ac-haosou-sidebar-width));
