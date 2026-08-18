@@ -43,6 +43,7 @@ body[haosou] #header #head .ai-input-main {
 
 body[haosou] #container {
   display: block;
+  clear: both !important;
   float: none !important;
   position: relative !important;
   right: auto !important;
@@ -58,12 +59,24 @@ body[haosou] #container {
 body[haosou].res-center-exp #warper > #container,
 body[haosou].wide-version-result #warper > #container,
 body[haosou].so-w1330 #warper > #container {
+  clear: both !important;
   float: none !important;
   position: relative !important;
   right: auto !important;
   left: auto !important;
   margin-left: auto !important;
   margin-right: auto !important;
+  transform: none !important;
+  box-sizing: border-box;
+}
+
+body[haosou].wide-version-result.res-center-exp.so-w1330 #warper #container {
+  clear: both !important;
+  float: none !important;
+  position: relative !important;
+  right: auto !important;
+  left: auto !important;
+  margin: 15px auto 0 !important;
   transform: none !important;
   box-sizing: border-box;
 }
