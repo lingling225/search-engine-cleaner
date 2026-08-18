@@ -16,6 +16,8 @@ const layoutStyles = `${commonStyle}\n${onePageStyle}\n${twoPageStyle}`
 test('360 header and results use responsive shells without fixed visual offsets', () => {
   assert.match(commonStyle, /--ac-haosou-page-gutter:/)
   assert.match(commonStyle, /--ac-haosou-single-shell-width:/)
+  assert.match(commonStyle, /--ac-haosou-single-results-width:\s*min\(900px/)
+  assert.match(commonStyle, /grid-template-columns:\s*132px\s+minmax\(0,\s*var\(--ac-haosou-single-shell-width\)\)/)
   assert.match(commonStyle, /body\[haosou\] #container\s*\{[^}]*width:\s*var\(--ac-haosou-single-shell-width\)[^}]*padding:\s*0\s*!important/s)
   assert.match(commonStyle, /body\[haosou\] #container #main\s*\{[^}]*float:\s*none[^}]*width:\s*var\(--ac-haosou-single-results-width\)/s)
   assert.match(commonStyle, /#g-hd-nav\s*\{[^}]*transform:\s*none\s*!important[^}]*margin:\s*0 auto/s)
@@ -46,7 +48,9 @@ test('360 right sidebar follows the global showRight state', () => {
 
 test('360 multi-column layout targets the grid container and includes gaps', () => {
   assert.match(userscript, /MultiPageType:\s*"#container #main \.result"/)
-  assert.match(twoPageStyle, /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/)
+  assert.match(twoPageStyle, /--ac-search-layout-columns:\s*2/)
+  assert.match(twoPageStyle, /grid-template-columns:\s*repeat\(var\(--ac-search-layout-columns\),\s*minmax\(0,\s*1fr\)\)/)
+  assert.match(userscript, /body\[haosou\]\{--ac-search-layout-columns:\$\{columns\};--ac-haosou-grid-width:/)
   assert.match(twoPageStyle, /gap:\s*clamp\(/)
   assert.doesNotMatch(twoPageStyle, /repeat\(2,\s*50%\)/)
 })

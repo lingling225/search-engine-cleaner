@@ -15,6 +15,9 @@ form.fm {
 }
 
 body[baidu].pc-fresh-wrapper-con {
+  --ac-search-layout-columns: 2;
+  --ac-baidu-card-width: 100%;
+
   #wrapper_wrapper #container.sam_newgrid {
     width: 100%;
     margin-inline: 0;
@@ -41,7 +44,7 @@ body[baidu].pc-fresh-wrapper-con {
     box-sizing: border-box;
     float: none;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--ac-search-layout-columns), minmax(0, 1fr));
     gap: 0 20px;
   }
 
@@ -109,7 +112,7 @@ body[baidu].pc-fresh-wrapper-con {
 
 body[news] #wrapper #content_left > div:not([class]):not([id]) {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--ac-search-layout-columns, 2), minmax(0, 1fr));
   gap: 0 20px;
 }
 

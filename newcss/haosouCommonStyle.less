@@ -1,14 +1,14 @@
 body[haosou] {
   --ac-haosou-page-gutter: clamp(16px, 2.4vw, 40px);
-  --ac-haosou-header-width: min(1011px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
-  --ac-haosou-single-shell-width: min(747px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
-  --ac-haosou-single-results-width: min(608px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
+  --ac-haosou-header-width: min(1032px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
+  --ac-haosou-single-shell-width: min(900px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
+  --ac-haosou-single-results-width: min(900px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
   background-color: #fafafa;
 }
 
 body[haosou] #header #g-hd-nav {
   display: grid !important;
-  grid-template-columns: 132px minmax(0, 747px);
+  grid-template-columns: 132px minmax(0, var(--ac-haosou-single-shell-width));
   align-items: start;
   justify-content: start;
   float: none !important;
@@ -55,6 +55,8 @@ body[haosou] #container #main {
 body[haosou] #container .result {
   width: 100%;
   min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 body[haosou] #container .result > li {

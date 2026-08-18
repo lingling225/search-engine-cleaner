@@ -1,4 +1,5 @@
 body[haosou] {
+  --ac-search-layout-columns: 2;
   --ac-haosou-grid-width: min(1320px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
 }
 
@@ -37,7 +38,7 @@ body[haosou] #container #main {
 
 #container #main .result {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--ac-search-layout-columns), minmax(0, 1fr));
   gap: clamp(18px, 1.5vw, 24px);
   align-items: start;
   width: 100%;

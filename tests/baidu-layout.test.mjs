@@ -15,6 +15,7 @@ const twoPageStyle = read('newcss/baiduTwoPageStyle.less')
 test('Baidu header and navigation share a centered responsive shell', () => {
   assert.match(commonStyle, /--ac-baidu-search-width:/)
   assert.match(commonStyle, /--ac-baidu-search-width:\s*max\(220px,\s*min\(900px/)
+  assert.match(commonStyle, /--ac-baidu-card-width:/)
   assert.match(commonStyle, /calc\(100vw\s*-\s*600px\)/)
   assert.match(commonStyle, /body\[baidu\]\.pc-fresh-wrapper-con\s*\{[^}]*width:\s*100%\s*!important/s)
   assert.match(commonStyle, /grid-template-columns:/)
@@ -40,6 +41,9 @@ test('single and multi-column layouts use explicit grid tracks without horizonta
 
   assert.match(onePageStyle, /#content_left[^{]*\{[^}]*grid-column:\s*2/s)
   assert.match(twoPageStyle, /#content_left[^{]*\{[^}]*grid-column:\s*2/s)
+  assert.match(onePageStyle, /--ac-baidu-card-width:\s*100%/)
+  assert.match(twoPageStyle, /--ac-baidu-card-width:\s*100%/)
+  assert.match(twoPageStyle, /grid-template-columns:\s*repeat\(var\(--ac-search-layout-columns\),\s*minmax\(0,\s*1fr\)\)/)
   assert.match(onePageStyle, /tpl=['"]app\/search-tool['"][^{]*\{[^}]*grid-row:\s*1/s)
   assert.match(onePageStyle, /#content_left[^{]*\{[^}]*grid-row:\s*2/s)
   assert.match(onePageStyle, /tpl=['"]app\/rs['"][^{]*\{[^}]*grid-row:\s*3/s)
@@ -55,8 +59,9 @@ test('Baidu academic keeps a centered compatibility layout', () => {
 })
 
 test('three and four column modes account for their column gaps', () => {
-  assert.match(userscript, /repeat\(3,\s*minmax\(0,\s*1fr\)\)/)
-  assert.match(userscript, /repeat\(4,\s*minmax\(0,\s*1fr\)\)/)
+  assert.match(userscript, /const columns = \+this\.curConfig\.adsStyleMode === 4 \? 3 : 4/)
+  assert.match(userscript, /grid-template-columns:\s*repeat\(\$\{columns\},\s*minmax\(0,\s*1fr\)\)/)
+  assert.match(userscript, /body\[baidu\]\{--ac-search-layout-columns:\$\{columns\};--ac-baidu-multi-results-width:/)
   assert.doesNotMatch(userscript, /repeat\(3,\s*33\.3%\)/)
   assert.doesNotMatch(userscript, /repeat\(4,\s*25%\)/)
 })
@@ -79,7 +84,7 @@ test('Baidu encyclopedia cover cards stay inside the result shell', () => {
 test('Baidu AI summary cards keep their inner border within the result shell', () => {
   assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"]\]/)
   assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"][\s\S]*overflow:\s*hidden/)
-  assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"][\s\S]*\[class\*=['"]card-border_['"][\s\S]*\.cosc-card-content\s*\{[^}]*width:\s*100%\s*!important[^}]*max-width:\s*100%\s*!important[^}]*box-sizing:\s*border-box\s*!important/s)
+  assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"][\s\S]*\[class\*=['"]card-border_['"][\s\S]*\{[^}]*width:\s*100%\s*!important[^}]*max-width:\s*100%\s*!important[^}]*box-sizing:\s*border-box\s*!important/s)
   assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"][\s\S]*\[class\*=['"]content-container_['"]/)
   assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"][\s\S]*\[class\*=['"]content-folded_['"]/)
   assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"][\s\S]*\.cosd-fold-switch-mask_7l3O3/)

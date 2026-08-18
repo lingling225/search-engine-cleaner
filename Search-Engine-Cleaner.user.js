@@ -7,7 +7,7 @@
 // @license      GPL-3.0-only
 // @create     2015-11-25
 // @run-at     document-start
-// @version    1.0.6
+// @version    1.0.7
 // @connect    baidu.com
 // @connect    google.com
 // @connect    google.com.hk
@@ -42,6 +42,7 @@
 // @lastmodified  2026-08-18
 // @feedback-url  https://github.com/lingling225/search-engine-cleaner/issues
 // @note    Source: https://github.com/langren1353/GM_script (GPL-3.0-only)
+// @note    1.0.7 统一百度、DuckDuckGo 和 360 搜索结果的单列到四列布局宽度。
 // @note    1.0.6 修复 DuckDuckGo 单列居中模式结果列表仍偏左。
 // @note    1.0.5 修复百度 AI 总结卡片内层边框溢出。
 // @note    1.0.4 修复百度百科知识卡片内容区溢出与错位。
@@ -1436,10 +1437,18 @@
     }
 
     getMultiPageStyle() {
-      return this.options.useItem.MultiPageType +
-        (+this.curConfig.adsStyleMode === 4 ?
-          "{grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-areas:'xmain xmain xmain';}" :
-          "{grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-areas:'xmain xmain xmain xmain';}")
+      const columns = +this.curConfig.adsStyleMode === 4 ? 3 : 4
+      const modeVars = {
+        baidu: `body[baidu]{--ac-search-layout-columns:${columns};--ac-baidu-multi-results-width:min(${columns === 3 ? 1500 : 1760}px,calc(100vw - var(--ac-baidu-page-gutter) - var(--ac-baidu-page-gutter)));}`,
+        baidu_xueshu: `body[baidu_xueshu]{--ac-search-layout-columns:${columns};--ac-baidu-multi-results-width:min(${columns === 3 ? 1500 : 1760}px,calc(100vw - var(--ac-baidu-page-gutter) - var(--ac-baidu-page-gutter)));}`,
+        duck: `body[duck]{--ac-search-layout-columns:${columns};--ac-duck-wide-results-width:min(${columns === 3 ? 1440 : 1760}px,calc(100vw - var(--ac-duck-page-gutter) * 2));}`,
+        haosou: `body[haosou]{--ac-search-layout-columns:${columns};--ac-haosou-grid-width:min(${columns === 3 ? 1440 : 1760}px,calc(100vw - 2 * var(--ac-haosou-page-gutter)));}`,
+        google: `body[google]{--ac-search-layout-columns:${columns};}`,
+        google_scholar: `body[google_scholar]{--ac-search-layout-columns:${columns};}`,
+      }[this.options.siteName] || `body{--ac-search-layout-columns:${columns};}`
+
+      return modeVars + this.options.useItem.MultiPageType +
+        `{grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-areas:'${Array(columns).fill('xmain').join(' ')}';}`
     }
 
     async getHuyanStyle() {
@@ -2102,6 +2111,7 @@
       }
 
       console.mylog('即将插入CSS1')
+      if (document.body) document.body.setAttribute('ac-layout-mode', String(+CONST.curConfig.adsStyleMode || 0))
       if (CONST.curConfig.adsStyleEnable) {
         console.mylog('即将插入CSS2')
 
