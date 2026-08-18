@@ -154,7 +154,27 @@ body #b_header {
 }
 
 #b_header .b_scopebar {
-  margin: unset;
+  width: 100% !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+  box-sizing: border-box;
+}
+
+#b_header #sb_form {
+  display: block;
+  width: var(--ac-bing-header-width);
+  max-width: calc(100vw - 2 * var(--ac-bing-page-gutter));
+  margin-right: auto;
+  margin-left: auto;
+  box-sizing: border-box;
+}
+
+#b_header .b_scopebar > ul {
+  width: var(--ac-bing-header-width);
+  max-width: calc(100vw - 2 * var(--ac-bing-page-gutter));
+  margin-right: auto;
+  margin-left: auto;
+  box-sizing: border-box;
 }
 
 /*search engine jump*/
@@ -249,4 +269,6 @@ body {
 
 body {
   --bminwidth: 600px !important;
+  --ac-bing-page-gutter: clamp(16px, 3vw, 72px);
+  --ac-bing-header-width: min(1000px, max(680px, calc(100vw - 640px)), calc(100vw - 2 * var(--ac-bing-page-gutter)));
 }
