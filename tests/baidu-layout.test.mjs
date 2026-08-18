@@ -69,6 +69,13 @@ test('Baidu settings button stays in the native account row', () => {
   assert.doesNotMatch(userscript, /body\[baidu\] #u #myuser\s*\{[^}]*top:\s*52px/s)
 })
 
+test('Baidu encyclopedia cover cards stay inside the result shell', () => {
+  assert.match(commonStyle, /\[tpl=['"]sg_kg_entity_san['"]\]/)
+  assert.match(commonStyle, /\.sc-cover-card\s*\{[^}]*width:\s*100%\s*!important[^}]*max-width:\s*100%\s*!important[^}]*box-sizing:\s*border-box\s*!important/s)
+  assert.match(commonStyle, /\[tpl=['"]sg_kg_entity_san['"][\s\S]*overflow:\s*hidden/)
+  assert.match(commonStyle, /\[tpl=['"]sg_kg_entity_san['"][\s\S]*\.cos-col\s*\{[^}]*min-width:\s*0/s)
+})
+
 test('Less cache is invalidated by userscript version', () => {
   assert.match(userscript, /__AC\.RenderCSS__['"]\s*\+\s*GM_info\.script\.version\s*\+\s*['"]:/)
 })

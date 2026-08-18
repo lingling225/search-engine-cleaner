@@ -598,6 +598,30 @@ body .wrapper_new #head.fix-head .s_form {
   margin-left: 150px;
 }
 
+// 百度百科知识卡片的内容区自带等宽封面布局；外层卡片 padding 会让原生宽度溢出。
+body[baidu].pc-fresh-wrapper-con #wrapper #content_left > .c-container[tpl='sg_kg_entity_san'] {
+  overflow: hidden;
+
+  .sc-cover-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .cos-row,
+  .cos-col {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .cos-image,
+  .cos-image-body {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
 body.showRight {
 
   // 只能采用这种方案来对其进行隐藏，否则会导致百度页面加载非常缓慢
