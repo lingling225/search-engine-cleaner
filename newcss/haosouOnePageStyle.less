@@ -1,5 +1,6 @@
 body[haosou] {
   --ac-haosou-results-width: min(900px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
+  --ac-haosou-shell-width: var(--ac-haosou-results-width);
   --ac-haosou-sidebar-width: min(368px, 24vw);
   --ac-haosou-layout-gap: clamp(20px, 2vw, 32px);
 }
@@ -20,8 +21,8 @@ body[haosou] #g-hd-tabs {
 
 body[haosou] #container {
   display: block;
-  width: var(--ac-haosou-results-width) !important;
-  max-width: none !important;
+  width: var(--ac-haosou-shell-width) !important;
+  max-width: calc(100vw - 2 * var(--ac-haosou-page-gutter)) !important;
   margin: 15px auto 0 !important;
   padding-inline: 0 !important;
   box-sizing: border-box;
@@ -31,7 +32,10 @@ body[haosou].showRight #container {
   display: grid;
   grid-template-columns: minmax(0, var(--ac-haosou-results-width)) minmax(280px, var(--ac-haosou-sidebar-width));
   gap: var(--ac-haosou-layout-gap);
-  width: min(1300px, calc(100vw - 2 * var(--ac-haosou-page-gutter))) !important;
+  width: min(
+    calc(var(--ac-haosou-results-width) + var(--ac-haosou-layout-gap) + var(--ac-haosou-sidebar-width)),
+    calc(100vw - 2 * var(--ac-haosou-page-gutter))
+  ) !important;
 }
 
 body[haosou] #container #main {

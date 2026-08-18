@@ -1,9 +1,17 @@
 body[haosou] {
   --ac-haosou-page-gutter: clamp(16px, 2.4vw, 40px);
   --ac-haosou-header-width: min(1032px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
+  --ac-haosou-shell-width: min(900px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
   --ac-haosou-single-shell-width: min(900px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
   --ac-haosou-single-results-width: min(900px, calc(100vw - 2 * var(--ac-haosou-page-gutter)));
   background-color: #fafafa;
+}
+
+body[haosou] #warper {
+  width: 100% !important;
+  min-width: 0 !important;
+  margin-inline: 0 !important;
+  box-sizing: border-box;
 }
 
 body[haosou] #header #g-hd-nav {
@@ -35,20 +43,29 @@ body[haosou] #header #head .ai-input-main {
 
 body[haosou] #container {
   display: block;
-  width: var(--ac-haosou-single-shell-width) !important;
-  max-width: none !important;
+  float: none !important;
+  position: relative !important;
+  right: auto !important;
+  left: auto !important;
+  width: var(--ac-haosou-shell-width) !important;
+  max-width: calc(100vw - 2 * var(--ac-haosou-page-gutter)) !important;
   margin: 15px auto 0 !important;
-  padding: 0 !important;
+  padding-inline: 0 !important;
+  transform: none !important;
   box-sizing: border-box;
 }
 
 body[haosou] #container #main {
   float: none;
-  width: var(--ac-haosou-single-results-width) !important;
+  position: relative;
+  right: auto !important;
+  left: auto !important;
+  width: 100% !important;
   max-width: 100%;
   min-width: 0;
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
   box-sizing: border-box;
 }
 
