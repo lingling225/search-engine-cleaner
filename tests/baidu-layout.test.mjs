@@ -76,6 +76,16 @@ test('Baidu encyclopedia cover cards stay inside the result shell', () => {
   assert.match(commonStyle, /\[tpl=['"]sg_kg_entity_san['"][\s\S]*\.cos-col\s*\{[^}]*min-width:\s*0/s)
 })
 
+test('Baidu AI summary cards keep their inner border within the result shell', () => {
+  assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"]\]/)
+  assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"][\s\S]*overflow:\s*hidden/)
+  assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"][\s\S]*\[class\*=['"]card-border_['"][\s\S]*\.cosc-card-content\s*\{[^}]*width:\s*100%\s*!important[^}]*max-width:\s*100%\s*!important[^}]*box-sizing:\s*border-box\s*!important/s)
+  assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"][\s\S]*\[class\*=['"]content-container_['"]/)
+  assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"][\s\S]*\[class\*=['"]content-folded_['"]/)
+  assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"][\s\S]*\.cosd-fold-switch-mask_7l3O3/)
+  assert.match(commonStyle, /\[tpl=['"]new_baikan_index['"][\s\S]*max-width:\s*100%\s*!important/)
+})
+
 test('Less cache is invalidated by userscript version', () => {
   assert.match(userscript, /__AC\.RenderCSS__['"]\s*\+\s*GM_info\.script\.version\s*\+\s*['"]:/)
 })

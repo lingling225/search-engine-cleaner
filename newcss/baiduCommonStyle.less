@@ -622,6 +622,31 @@ body[baidu].pc-fresh-wrapper-con #wrapper #content_left > .c-container[tpl='sg_k
   }
 }
 
+// 百度 AI 总结卡片内层边框按原生结果宽度渲染，叠加外层 padding 后会向右溢出。
+body[baidu].pc-fresh-wrapper-con #wrapper #content_left > .c-container[tpl='new_baikan_index'] {
+  overflow: hidden;
+
+  [class*='card-border_'],
+  .cosc-card,
+  .cosc-card-content-border,
+  .cosc-card-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  [class*='content-container_'],
+  [class*='content-folded_'],
+  [class*='cosd-fold-switch_'],
+  .cosd-fold-switch-mask_7l3O3 {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
+
 body.showRight {
 
   // 只能采用这种方案来对其进行隐藏，否则会导致百度页面加载非常缓慢
