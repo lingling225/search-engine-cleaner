@@ -1,21 +1,45 @@
 /*Store: DuckDuckGoCommonStyle*/
+:root {
+  --ac-duck-page-gutter: clamp(16px, 4vw, 56px);
+  --ac-duck-results-width: min(760px, calc(100vw - var(--ac-duck-page-gutter) * 2));
+  --ac-duck-wide-results-width: min(1180px, calc(100vw - var(--ac-duck-page-gutter) * 2));
+  --ac-duck-column-gap: clamp(18px, 2.4vw, 32px);
+}
+
 body {
   background-color: #fAfAfA;
+  overflow-x: hidden;
+}
+
+#react-layout {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 #react-layout .react-results--main {
-  max-width: 95%;
+  max-width: var(--ac-duck-results-width);
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 #react-layout li {
-  width: 95%;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   overflow: hidden;
   margin-top: 0px;
   margin-bottom: 25px;
   border-radius: 5px;
   box-sizing: border-box;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  transition: all 0.25s cubic-bezier(.23, 1, .32, 1) 0s;
+  transition: border-color 0.25s cubic-bezier(.23, 1, .32, 1) 0s,
+    box-shadow 0.25s cubic-bezier(.23, 1, .32, 1) 0s;
+}
+
+#react-layout li article {
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .dark-bg #react-layout li article {
@@ -41,10 +65,12 @@ body {
 #react-layout li article h2 a {
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 640px;
+  max-width: 100%;
+  min-width: 0;
   color: #006bff;
   font-size: smaller;
   display: inline-flex;
+  position: relative;
 }
 
 #react-layout li article .result__body {
