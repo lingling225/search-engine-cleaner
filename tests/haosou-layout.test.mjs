@@ -15,9 +15,14 @@ const layoutStyles = `${commonStyle}\n${onePageStyle}\n${twoPageStyle}`
 
 test('360 header and results use responsive shells without fixed visual offsets', () => {
   assert.match(commonStyle, /--ac-haosou-page-gutter:/)
+  assert.match(commonStyle, /--ac-haosou-single-shell-width:/)
+  assert.match(commonStyle, /body\[haosou\] #container\s*\{[^}]*width:\s*var\(--ac-haosou-single-shell-width\)[^}]*padding:\s*0\s*!important/s)
+  assert.match(commonStyle, /body\[haosou\] #container #main\s*\{[^}]*float:\s*none[^}]*width:\s*var\(--ac-haosou-single-results-width\)/s)
   assert.match(commonStyle, /#g-hd-nav\s*\{[^}]*transform:\s*none\s*!important[^}]*margin:\s*0 auto/s)
   assert.match(onePageStyle, /--ac-haosou-results-width:/)
-  assert.match(onePageStyle, /#container\s*\{[^}]*display:\s*grid[^}]*justify-content:\s*center/s)
+  assert.match(onePageStyle, /#container\s*\{[^}]*display:\s*block[^}]*width:\s*var\(--ac-haosou-results-width\)[^}]*max-width:\s*none\s*!important/s)
+  assert.match(onePageStyle, /#container\s*\{[^}]*padding-inline:\s*0\s*!important/s)
+  assert.match(onePageStyle, /#container #main\s*\{[^}]*width:\s*100%\s*!important/s)
 
   assert.doesNotMatch(layoutStyles, /margin-left:\s*-(?:150|200)px/)
   assert.doesNotMatch(layoutStyles, /margin-right:\s*420px/)

@@ -19,26 +19,25 @@ body[haosou] #g-hd-tabs {
 }
 
 body[haosou] #container {
-  display: grid;
-  grid-template-columns: minmax(0, var(--ac-haosou-results-width));
-  justify-content: center;
-  width: 100%;
-  max-width: calc(var(--ac-haosou-results-width) + 2 * var(--ac-haosou-page-gutter)) !important;
+  display: block;
+  width: var(--ac-haosou-results-width) !important;
+  max-width: none !important;
   margin: 15px auto 0 !important;
-  padding-inline: var(--ac-haosou-page-gutter) !important;
+  padding-inline: 0 !important;
   box-sizing: border-box;
 }
 
 body[haosou].showRight #container {
+  display: grid;
   grid-template-columns: minmax(0, var(--ac-haosou-results-width)) minmax(280px, var(--ac-haosou-sidebar-width));
   gap: var(--ac-haosou-layout-gap);
-  max-width: calc(var(--ac-haosou-results-width) + var(--ac-haosou-sidebar-width) + var(--ac-haosou-layout-gap) + 2 * var(--ac-haosou-page-gutter)) !important;
+  width: min(1300px, calc(100vw - 2 * var(--ac-haosou-page-gutter))) !important;
 }
 
 body[haosou] #container #main {
   grid-column: 1;
   float: none;
-  width: 100%;
+  width: 100% !important;
   min-width: 0;
   margin: 0 !important;
   padding: 0 !important;
