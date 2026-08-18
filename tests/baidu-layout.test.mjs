@@ -44,6 +44,8 @@ test('single and multi-column layouts use explicit grid tracks without horizonta
   assert.match(onePageStyle, /--ac-baidu-card-width:\s*100%/)
   assert.match(twoPageStyle, /--ac-baidu-card-width:\s*100%/)
   assert.match(twoPageStyle, /grid-template-columns:\s*repeat\(var\(--ac-search-layout-columns\),\s*minmax\(0,\s*1fr\)\)/)
+  assert.match(twoPageStyle, /> \.result h3\.t,[\s\S]*> \.c-container h3\[class\*='title'\][^{]*\{[^}]*width:\s*100%\s*!important[^}]*margin:\s*0 0 10px/s)
+  assert.match(twoPageStyle, /\[class\*='summary'\],[\s\S]*\[class\*='source'\][^{]*\{[^}]*max-width:\s*100%[^}]*overflow-wrap:\s*anywhere/s)
   assert.match(onePageStyle, /tpl=['"]app\/search-tool['"][^{]*\{[^}]*grid-row:\s*1/s)
   assert.match(onePageStyle, /#content_left[^{]*\{[^}]*grid-row:\s*2/s)
   assert.match(onePageStyle, /tpl=['"]app\/rs['"][^{]*\{[^}]*grid-row:\s*3/s)

@@ -82,17 +82,31 @@ body[haosou] #container .result > li:hover {
 body[haosou] #container .res-title {
   display: flex !important;
   align-items: flex-start;
+  gap: 6px;
   width: 100%;
   max-width: 100%;
   min-width: 0;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
   overflow-wrap: anywhere;
   line-height: 1.45;
 }
 
+body[haosou] #container .res-title[data-favicon-t]::before {
+  margin-top: 3px;
+  margin-inline-end: 0;
+}
+
+body[haosou] #container .res-title > .AC-CounterT {
+  margin-top: 1px !important;
+}
+
 body[haosou] #container .res-title > a {
+  flex: 1 1 auto;
   max-width: 100%;
   min-width: 0;
   overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 body[haosou]:not(.showRight) #side {

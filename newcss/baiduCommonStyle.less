@@ -266,7 +266,9 @@ form.fm {
 }
 
 #wrapper #content_left>.result[tpl='soft'] .op-soft-title,
+#wrapper #content_left>.result h3.t,
 #wrapper #content_left>.result h3[class*='title'],
+#wrapper #content_left>.c-container h3.t,
 #wrapper #content_left>.c-container h3[class*='title'] {
   background-color: #f8f8f8;
   margin: 0px -8px 10px -20px;
@@ -275,20 +277,38 @@ form.fm {
   border-top-right-radius: 8px;
 }
 
+#wrapper #content_left>.result h3.t,
 #wrapper #content_left>.result h3[class*='title'],
+#wrapper #content_left>.c-container h3.t,
 #wrapper #content_left>.c-container h3[class*='title'] {
   display: flex !important;
-  align-items: center;
+  align-items: flex-start;
+  gap: 6px;
   flex: 0 0 calc(100% + 28px);
   width: calc(100% + 28px) !important;
   max-width: calc(100% + 28px);
   min-width: 0;
   box-sizing: border-box;
+  line-height: 1.45;
+  white-space: normal;
 
-  > a {
+  &[data-favicon-t]::before {
+    margin-top: 3px;
+    margin-inline-end: 0;
+  }
+
+  > .AC-CounterT {
+    margin-top: 1px !important;
+  }
+
+  > a,
+  > [class*='title-box_'],
+  > div {
     flex: 1 1 auto;
     min-width: 0;
+    max-width: 100%;
     overflow-wrap: anywhere;
+    white-space: normal;
   }
 }
 
@@ -296,8 +316,11 @@ form.fm {
   display: none !important;
 }
 
-.title-box_4YBsj {
+#wrapper #content_left [class*='title-box_'] {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 #wrapper #content_left {
@@ -597,7 +620,9 @@ body .wrapper_new #head.fix-head .s_form {
 }
 
 .source_1rJIg{
-  margin-left: 150px;
+  max-width: 100%;
+  margin-left: 0;
+  overflow-wrap: anywhere;
 }
 
 // 百度百科知识卡片的内容区自带等宽封面布局；外层卡片 padding 会让原生宽度溢出。

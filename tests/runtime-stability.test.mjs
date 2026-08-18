@@ -64,7 +64,11 @@ test('baidu title rows stay stable when favicon and counters toggle', () => {
   assert.match(userscript, /remove\("faviconStyle"\)/)
   assert.match(userscript, /remove\("counterStyle"\)/)
   assert.match(userscript, /removeAttribute\('data-favicon-t'\)/)
+  assert.match(baiduStyle, /h3\.t,[\s\S]*h3\[class\*='title'\][^{]*\{[^}]*display:\s*flex\s*!important/s)
+  assert.match(baiduStyle, /h3\.t,[\s\S]*h3\[class\*='title'\][^{]*\{[^}]*gap:\s*6px/s)
   assert.match(baiduStyle, /h3\[class\*='title'\][^{]*\{[^}]*display:\s*flex\s*!important[^}]*width:\s*calc\(100% \+ 28px\)\s*!important/s)
+  assert.match(baiduStyle, /\[data-favicon-t\]::before\s*\{[^}]*margin-top:\s*3px/s)
+  assert.match(baiduStyle, /> \.AC-CounterT\s*\{[^}]*margin-top:\s*1px\s*!important/s)
   assert.match(baiduStyle, /\[class\*='title-box_'\]\s*>\s*i\.c-icon\[class\*='front-icon_'\]\s*\{[^}]*display:\s*none\s*!important/s)
 })
 

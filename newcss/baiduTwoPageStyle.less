@@ -127,6 +127,32 @@ body[news] #wrapper #content_left > div:not([class]):not([id]) {
     margin-inline: 0;
   }
 
+  > .result h3.t,
+  > .result h3[class*='title'],
+  > .c-container h3.t,
+  > .c-container h3[class*='title'] {
+    flex: 0 1 auto;
+    width: 100% !important;
+    max-width: 100%;
+    margin: 0 0 10px;
+    padding: 8px 12px 5px;
+    box-sizing: border-box;
+  }
+
+  .c-span9,
+  .c-span10,
+  .c-span12,
+  .c-span18,
+  .c-span24,
+  [class*='summary'],
+  [class*='content'],
+  [class*='source'] {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+  }
+
   > *:not([class*='result']):not([class*='c-group-wrapper']) {
     grid-column: 1 / -1;
   }
