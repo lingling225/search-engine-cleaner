@@ -58,11 +58,52 @@
   box-sizing: border-box;
 }
 
+#web_content_wrapper #react-layout > div:has(.react-results--main) {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns:
+    minmax(var(--ac-duck-page-gutter), 1fr)
+    minmax(0, var(--ac-duck-results-width))
+    minmax(var(--ac-duck-page-gutter), 1fr);
+  width: 100%;
+  margin-left: 0 !important;
+  box-sizing: border-box;
+}
+
+#web_content_wrapper #react-layout :is(div, section):has(.react-results--main) {
+  min-width: 0;
+  margin-left: 0 !important;
+  box-sizing: border-box;
+}
+
+#web_content_wrapper #react-layout div:has(.react-results--main) {
+  width: 100%;
+  max-width: 100%;
+}
+
+#web_content_wrapper #react-layout div:has(> section:has(> .react-results--main)),
+#web_content_wrapper #react-layout div:has(> section:has(.react-results--main)) {
+  justify-content: center;
+}
+
+#web_content_wrapper #react-layout > div:has(.react-results--main) > div:has(.react-results--main) {
+  grid-column: 2;
+  max-width: var(--ac-duck-results-width);
+}
+
+#web_content_wrapper #react-layout section:has(> .react-results--main) {
+  width: 100%;
+  max-width: var(--ac-duck-results-width) !important;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
 #react-layout.react-results--main,
 #react-layout .react-results--main {
   float: unset;
   width: 100%;
-  grid-column: 2;
+  max-width: var(--ac-duck-results-width);
+  margin-inline: auto;
 }
 
 #web_content_wrapper #react-layout > .search-filters-wrap,

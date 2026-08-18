@@ -7,7 +7,7 @@
 // @license      GPL-3.0-only
 // @create     2015-11-25
 // @run-at     document-start
-// @version    1.0.5
+// @version    1.0.6
 // @connect    baidu.com
 // @connect    google.com
 // @connect    google.com.hk
@@ -42,6 +42,7 @@
 // @lastmodified  2026-08-18
 // @feedback-url  https://github.com/lingling225/search-engine-cleaner/issues
 // @note    Source: https://github.com/langren1353/GM_script (GPL-3.0-only)
+// @note    1.0.6 修复 DuckDuckGo 单列居中模式结果列表仍偏左。
 // @note    1.0.5 修复百度 AI 总结卡片内层边框溢出。
 // @note    1.0.4 修复百度百科知识卡片内容区溢出与错位。
 // @note    1.0.3 修复百度、Google 和 360 搜索结果的宽度、对齐与多列布局问题。

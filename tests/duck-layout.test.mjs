@@ -18,6 +18,11 @@ test('DuckDuckGo uses responsive centered shells without fixed offsets', () => {
   assert.match(commonStyle, /--ac-duck-wide-results-width:/)
   assert.match(onePageStyle, /#web_content_wrapper #react-layout\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:/s)
   assert.match(twoPageStyle, /#web_content_wrapper #react-layout\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:/s)
+  assert.match(onePageStyle, /#web_content_wrapper #react-layout > div:has\(\.react-results--main\)\s*\{[^}]*grid-column:\s*1\s*\/\s*-1[^}]*margin-left:\s*0\s*!important/s)
+  assert.match(onePageStyle, /#web_content_wrapper #react-layout :is\(div,\s*section\):has\(\.react-results--main\)\s*\{[^}]*min-width:\s*0[^}]*margin-left:\s*0\s*!important/s)
+  assert.match(onePageStyle, /section:has\(>\s*\.react-results--main\)\s*\{[^}]*margin-inline:\s*auto/s)
+  assert.match(twoPageStyle, /#web_content_wrapper #react-layout > div:has\(\.react-results--main\)\s*\{[^}]*grid-column:\s*1\s*\/\s*-1[^}]*margin-left:\s*0\s*!important/s)
+  assert.match(twoPageStyle, /#web_content_wrapper #react-layout :is\(div,\s*section\):has\(\.react-results--main\)\s*\{[^}]*min-width:\s*0[^}]*margin-left:\s*0\s*!important/s)
 
   assert.doesNotMatch(layoutStyles, /margin-left:\s*-150px/)
   assert.doesNotMatch(layoutStyles, /width:\s*500px/)
