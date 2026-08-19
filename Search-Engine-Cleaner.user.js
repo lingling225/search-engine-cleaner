@@ -7,7 +7,7 @@
 // @license      GPL-3.0-only
 // @create     2015-11-25
 // @run-at     document-start
-// @version    1.0.13
+// @version    1.0.14
 // @connect    baidu.com
 // @connect    google.com
 // @connect    google.com.hk
@@ -42,7 +42,7 @@
 // @lastmodified  2026-08-18
 // @feedback-url  https://github.com/lingling225/search-engine-cleaner/issues
 // @note    Source: https://github.com/langren1353/GM_script (GPL-3.0-only)
-// @note    1.0.13 修复 Google 三列、四列同一行结果卡片高度不一致。
+// @note    1.0.14 使用弹性布局统一 Google 三列、四列同行卡片高度。
 // @note    1.0.12 修复百度三列、四列网格轨道塌陷导致的卡片重叠。
 // @note    1.0.10 调整 Bing 搜索框和导航栏居中宽度，避免顶部控件拥挤。
 // @note    1.0.9 修复 Bing 顶部右侧账号和自定义按钮被居中布局挤下。
