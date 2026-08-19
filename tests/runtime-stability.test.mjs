@@ -85,6 +85,6 @@ test('background and eye-care layers preserve card geometry', () => {
 test('google two-column cards fill the same grid row without trailing margins', () => {
   assert.match(googleTwoPageStyle, /grid-template-columns:\s*repeat\(var\(--ac-search-layout-columns, 2\),\s*minmax\(0,\s*1fr\)\)/)
   assert.match(googleTwoPageStyle, /body\[google\] #rso > \.MjjYud[\s\S]*?min-width:\s*0[\s\S]*?max-width:\s*100%/)
-  assert.match(googleTwoPageStyle, /#rso\[two-father\]\s*>\s*\.ULSxyf\s*>\s*\.MjjYud\s*\{[^}]*height:\s*100%/s)
-  assert.match(googleTwoPageStyle, /#rso\[two-father\][^{]*\.A6K0A,[^{]*#rso\[two-father\][^{]*\.A6K0A\s*\{[^}]*height:\s*100%[^}]*margin-bottom:\s*0/s)
+  assert.match(googleTwoPageStyle, /#rso\s*>\s*\[two-father\]\s*>\s*\.MjjYud,[\s\S]*?height:\s*100%/)
+  assert.match(googleTwoPageStyle, /#rso\s*>\s*\[two-father\][^{]*\.A6K0A\s*>\s*\.Ww4FFb[\s\S]*?height:\s*100%[\s\S]*?margin-bottom:\s*0/)
 })
