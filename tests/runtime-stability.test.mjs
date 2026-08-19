@@ -89,4 +89,6 @@ test('google two-column cards fill the same grid row without trailing margins', 
   assert.match(googleTwoPageStyle, /#rso\s*>\s*\[two-father\][^{]*\.A6K0A\s*>\s*\.Ww4FFb[\s\S]*?height:\s*100%[\s\S]*?margin-bottom:\s*0/)
   assert.match(googleTwoPageStyle, /#rso\s*>\s*\[two-father\]\s*>\s*\.MjjYud\s*>\s*\.A6K0A[\s\S]*?flex:\s*1 1 auto/)
   assert.match(googleTwoPageStyle, /\.MjjYud:not\(:has\(> \.A6K0A\)\):not\(:has\(> \.Ww4FFb\)\)[\s\S]*?display:\s*none\s*!important/)
+  assert.match(googleTwoPageStyle, /#hdtb #hdtb-msb-vis\s*\{[^}]*width:\s*100%[^}]*margin-left:\s*0/s)
+  assert.match(googleTwoPageStyle, /body\[google\] #hdtb \.rQTE8b\s*\{[^}]*justify-content:\s*center/s)
 })
