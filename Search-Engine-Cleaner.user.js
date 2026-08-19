@@ -7,7 +7,7 @@
 // @license      GPL-3.0-only
 // @create     2015-11-25
 // @run-at     document-start
-// @version    1.0.10
+// @version    1.0.12
 // @connect    baidu.com
 // @connect    google.com
 // @connect    google.com.hk
@@ -42,6 +42,7 @@
 // @lastmodified  2026-08-18
 // @feedback-url  https://github.com/lingling225/search-engine-cleaner/issues
 // @note    Source: https://github.com/langren1353/GM_script (GPL-3.0-only)
+// @note    1.0.12 修复百度三列、四列网格轨道塌陷导致的卡片重叠。
 // @note    1.0.10 调整 Bing 搜索框和导航栏居中宽度，避免顶部控件拥挤。
 // @note    1.0.9 修复 Bing 顶部右侧账号和自定义按钮被居中布局挤下。
 // @note    1.0.8 修复百度和 360 搜索开启 Favicon、编号后的标题重叠。
@@ -1442,7 +1443,7 @@
     getMultiPageStyle() {
       const columns = +this.curConfig.adsStyleMode === 4 ? 3 : 4
       const modeVars = {
-        baidu: `body[baidu]{--ac-search-layout-columns:${columns};--ac-baidu-multi-results-width:min(${columns === 3 ? 1500 : 1760}px,calc(100vw - var(--ac-baidu-page-gutter) - var(--ac-baidu-page-gutter)));}`,
+        baidu: `body[baidu].pc-fresh-wrapper-con{--ac-search-layout-columns:${columns} !important;--ac-baidu-multi-results-width:min(${columns === 3 ? 1500 : 1760}px,calc(100vw - var(--ac-baidu-page-gutter) - var(--ac-baidu-page-gutter))) !important;}`,
         baidu_xueshu: `body[baidu_xueshu]{--ac-search-layout-columns:${columns};--ac-baidu-multi-results-width:min(${columns === 3 ? 1500 : 1760}px,calc(100vw - var(--ac-baidu-page-gutter) - var(--ac-baidu-page-gutter)));}`,
         duck: `body[duck]{--ac-search-layout-columns:${columns};--ac-duck-wide-results-width:min(${columns === 3 ? 1440 : 1760}px,calc(100vw - var(--ac-duck-page-gutter) * 2));}`,
         haosou: `body[haosou]{--ac-search-layout-columns:${columns};--ac-haosou-grid-width:min(${columns === 3 ? 1440 : 1760}px,calc(100vw - 2 * var(--ac-haosou-page-gutter)));}`,

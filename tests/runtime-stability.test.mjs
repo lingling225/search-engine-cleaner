@@ -66,7 +66,8 @@ test('baidu title rows stay stable when favicon and counters toggle', () => {
   assert.match(userscript, /removeAttribute\('data-favicon-t'\)/)
   assert.match(baiduStyle, /h3\.t,[\s\S]*h3\[class\*='title'\][^{]*\{[^}]*display:\s*flex\s*!important/s)
   assert.match(baiduStyle, /h3\.t,[\s\S]*h3\[class\*='title'\][^{]*\{[^}]*gap:\s*6px/s)
-  assert.match(baiduStyle, /h3\[class\*='title'\][^{]*\{[^}]*display:\s*flex\s*!important[^}]*width:\s*calc\(100% \+ 28px\)\s*!important/s)
+  assert.match(baiduStyle, /h3\[class\*='title'\][^{]*\{[^}]*width:\s*100%\s*!important/s)
+  assert.match(baiduStyle, /h3\[class\*='title'\][^{]*\{[^}]*margin:\s*0\s*0\s*10px/s)
   assert.match(baiduStyle, /\[data-favicon-t\]::before\s*\{[^}]*margin-top:\s*3px/s)
   assert.match(baiduStyle, /> \.AC-CounterT\s*\{[^}]*margin-top:\s*1px\s*!important/s)
   assert.match(baiduStyle, /\[class\*='title-box_'\]\s*>\s*i\.c-icon\[class\*='front-icon_'\]\s*\{[^}]*display:\s*none\s*!important/s)
@@ -82,6 +83,8 @@ test('background and eye-care layers preserve card geometry', () => {
 })
 
 test('google two-column cards fill the same grid row without trailing margins', () => {
+  assert.match(googleTwoPageStyle, /grid-template-columns:\s*repeat\(var\(--ac-search-layout-columns, 2\),\s*minmax\(0,\s*1fr\)\)/)
+  assert.match(googleTwoPageStyle, /body\[google\] #rso > \.MjjYud[\s\S]*?min-width:\s*0[\s\S]*?max-width:\s*100%/)
   assert.match(googleTwoPageStyle, /#rso\[two-father\]\s*>\s*\.ULSxyf\s*>\s*\.MjjYud\s*\{[^}]*height:\s*100%/s)
   assert.match(googleTwoPageStyle, /#rso\[two-father\][^{]*\.A6K0A,[^{]*#rso\[two-father\][^{]*\.A6K0A\s*\{[^}]*height:\s*100%[^}]*margin-bottom:\s*0/s)
 })

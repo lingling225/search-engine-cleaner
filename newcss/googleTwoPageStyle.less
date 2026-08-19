@@ -74,13 +74,15 @@ margin-left: unset !important;
 
 div[two-father], #kp-wp-tab-overview {
 display: grid;
-grid-template-columns: repeat(2, 50%);
+grid-template-columns: repeat(var(--ac-search-layout-columns, 2), minmax(0, 1fr));
 grid-template-areas: "xmain xmain";
 grid-gap: 20px !important;
 margin-bottom: 20px;
 justify-items: stretch;
 align-items: stretch;
 width: 100%;
+min-width: 0;
+box-sizing: border-box;
 
 div[two-father]{
 min-width: unset;
@@ -89,6 +91,27 @@ display: unset;
 div[two-child] {
   height: unset;
 }
+}
+
+/* Keep every Google result card inside its assigned track at every column count. */
+body[google] #rso,
+body[google] #rso > div,
+body[google] div[two-father],
+body[google] #kp-wp-tab-overview {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+body[google] #rso > .MjjYud,
+body[google] #rso > .ULSxyf > .MjjYud,
+body[google] div[two-child],
+body[google] .A6K0A {
+  width: 100% !important;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
 }
 }
 
