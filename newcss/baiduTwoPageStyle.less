@@ -131,6 +131,8 @@ body[baidu][ac-layout-mode='5'].pc-fresh-wrapper-con {
   #wrapper_wrapper #container.sam_newgrid > #content_left {
     grid-template-columns: repeat(var(--ac-search-layout-columns), minmax(0, 1fr)) !important;
     gap: 0 20px;
+    grid-auto-rows: max-content;
+    align-items: start;
     grid-auto-flow: row;
 
     > .result,
@@ -140,6 +142,9 @@ body[baidu][ac-layout-mode='5'].pc-fresh-wrapper-con {
       width: 100% !important;
       min-width: 0;
       max-width: 100%;
+      height: auto;
+      box-sizing: border-box;
+      overflow: hidden;
     }
 
     > .result-op,
@@ -150,6 +155,34 @@ body[baidu][ac-layout-mode='5'].pc-fresh-wrapper-con {
       max-width: 100%;
       min-width: 0;
       box-sizing: border-box;
+    }
+
+    // 百度原生模块经常给内部内容保留固定宽度，三/四列时会把相邻卡片挤偏。
+    > .result,
+    > .result-op,
+    > .c-container {
+      > *,
+      .c-container,
+      [class*='content'],
+      [class*='summary'],
+      [class*='source'],
+      [class*='title'],
+      .c-span9,
+      .c-span10,
+      .c-span12,
+      .c-span18,
+      .c-span24 {
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      img,
+      video,
+      iframe {
+        max-width: 100%;
+        height: auto;
+      }
     }
   }
 }
