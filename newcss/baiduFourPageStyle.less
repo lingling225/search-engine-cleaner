@@ -1,0 +1,64 @@
+/** Baidu four-column layout (mode 5) **/
+body[baidu][ac-layout-mode='5'].pc-fresh-wrapper-con {
+  --ac-search-layout-columns: 4;
+  --ac-baidu-card-width: 100%;
+  --ac-baidu-multi-results-width: min(1760px, calc(100vw - 2 * var(--ac-baidu-page-gutter)));
+  #wrapper_wrapper #container.sam_newgrid {
+    width: 100%;
+    margin-inline: 0;
+    padding-inline: 0 !important;
+    display: grid;
+    grid-template-columns: minmax(var(--ac-baidu-page-gutter), 1fr) minmax(0, var(--ac-baidu-multi-results-width)) minmax(var(--ac-baidu-page-gutter), 1fr);
+    box-sizing: border-box;
+  }
+  #wrapper_wrapper #container.sam_newgrid > #content_left {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100% !important;
+    min-width: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+    float: none;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0 20px;
+    align-items: start;
+    grid-auto-flow: row;
+  }
+  #wrapper_wrapper #container.sam_newgrid > #content_left > * {
+    min-width: 0;
+    max-width: 100%;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  #wrapper_wrapper #container.sam_newgrid > #content_left > .result-op,
+  #wrapper_wrapper #container.sam_newgrid > #content_left > .c-group-wrapper,
+  #wrapper_wrapper #container.sam_newgrid > #content_left > .c-container:not([tpl='www_index']):not([tpl='www_normal']) {
+    grid-column: 1 / -1;
+  }
+  #wrapper_wrapper #container.sam_newgrid > .head_nums_cont_outer,
+  #wrapper_wrapper #container.sam_newgrid > .hint_common_restop,
+  #wrapper_wrapper #container.sam_newgrid > .result-molecule.new-pmd[tpl='app/search-tool'] {
+    grid-column: 2;
+    width: 100%;
+    min-width: 0;
+  }
+  #wrapper_wrapper #container.sam_newgrid > .result-molecule.new-pmd[tpl='app/page'],
+  #wrapper_wrapper #container.sam_newgrid > .result-molecule.new-pmd[tpl='app/footer'],
+  #wrapper_wrapper #container.sam_newgrid > .result-molecule.new-pmd[tpl='app/rs'] {
+    grid-column: 2;
+    width: 100% !important;
+    min-width: 0;
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+  }
+  #wrapper_wrapper #container #rs,
+  #wrapper #page,
+  .AC.sp-separator {
+    grid-column: 1 / -1;
+    width: 100% !important;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+}

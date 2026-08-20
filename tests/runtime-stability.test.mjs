@@ -74,7 +74,7 @@ test('baidu title rows stay stable when favicon and counters toggle', () => {
 })
 
 test('background and eye-care layers preserve card geometry', () => {
-  assert.match(userscript, /body::before\{[^}]*z-index:\s*-1/s)
+  assert.match(userscript, /\$\{siteScope\}::before\{[^}]*z-index:\s*-1/s)
   assert.match(userscript, /background-repeat:\s*no-repeat/)
   assert.doesNotMatch(eyeCareStyle, /border-radius:\s*0(?:px)?/)
   assert.match(eyeCareStyle, /overflow-wrap:\s*anywhere/)

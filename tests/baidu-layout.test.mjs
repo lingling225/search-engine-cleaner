@@ -67,13 +67,12 @@ test('Baidu academic keeps a centered compatibility layout', () => {
 })
 
 test('three and four column modes account for their column gaps', () => {
-  assert.match(userscript, /const columns = \+this\.curConfig\.adsStyleMode === 4 \? 3 : 4/)
+  assert.match(userscript, /const columns = mode === 4 \? 3 : 4/)
   assert.match(userscript, /grid-template-columns:\s*repeat\(\$\{columns\},\s*minmax\(0,\s*1fr\)\)/)
-  assert.match(userscript, /body\[baidu\]\.pc-fresh-wrapper-con\{--ac-search-layout-columns:\$\{columns\} !important;--ac-baidu-multi-results-width:/)
-  assert.match(twoPageStyle, /body\[baidu\]\[ac-layout-mode=['"]4['"]\]\.pc-fresh-wrapper-con/)
-  assert.match(twoPageStyle, /body\[baidu\]\[ac-layout-mode=['"]4['"]\]\.pc-fresh-wrapper-con\s*\{[^}]*--ac-search-layout-columns:\s*3/s)
-  assert.match(twoPageStyle, /body\[baidu\]\[ac-layout-mode=['"]5['"]\]\.pc-fresh-wrapper-con/)
-  assert.match(twoPageStyle, /body\[baidu\]\[ac-layout-mode=['"]5['"]\]\.pc-fresh-wrapper-con\s*\{[^}]*--ac-search-layout-columns:\s*4/s)
+  assert.match(userscript, /body\[baidu\]\[ac-layout-mode='\$\{mode\}'\]\.pc-fresh-wrapper-con\{--ac-search-layout-columns:\$\{columns\} !important;--ac-baidu-multi-results-width:/)
+  assert.match(read('newcss/baiduThreePageStyle.less'), /body\[baidu\]\[ac-layout-mode='4'\][\s\S]*repeat\(3,\s*minmax\(0,\s*1fr\)\)/)
+  assert.match(read('newcss/baiduFourPageStyle.less'), /body\[baidu\]\[ac-layout-mode='5'\][\s\S]*repeat\(4,\s*minmax\(0,\s*1fr\)\)/)
+  assert.match(twoPageStyle, /grid-column:\s*1\s*\/\s*-1/)
   assert.match(twoPageStyle, /> \.result-op,[\s\S]*> \.c-group-wrapper,[\s\S]*> \.c-container:not\(\[tpl=['"]www_index['"]\]\):not\(\[tpl=['"]www_normal['"]\]\)[^{]*\{[^}]*grid-column:\s*1\s*\/\s*-1/s)
   assert.doesNotMatch(userscript, /repeat\(3,\s*33\.3%\)/)
   assert.doesNotMatch(userscript, /repeat\(4,\s*25%\)/)

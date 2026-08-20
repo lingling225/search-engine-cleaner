@@ -7,8 +7,10 @@
 }
 
 #b_content #b_results {
-  width: 73vw;
-  grid-template-columns: repeat(2, 50%);
+  width: min(1000px, calc(100vw - 64px));
+  max-width: 100%;
+  grid-template-columns: repeat(var(--ac-search-layout-columns, 2), minmax(0, 1fr));
+  gap: 20px;
   grid-template-areas: "xmain xmain";
   display: grid;
 
@@ -24,8 +26,9 @@
 }
 
 #b_content #b_results > li.b_algo {
-  width: 98%;
-  margin-left: 1%;
+  width: 100%;
+  min-width: 0;
+  margin-left: 0;
 }
 
 #b_content #b_results > li.b_ans:not(.b_algo) {
@@ -35,7 +38,8 @@
 }
 
 #b_content #b_pole {
-  max-width: 72vw;
+  width: min(1000px, calc(100vw - 64px));
+  max-width: 100%;
   margin: 0 auto;
 }
 
