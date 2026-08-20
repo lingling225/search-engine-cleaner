@@ -39,6 +39,7 @@ test('layout selection is explicit and mutually exclusive for every engine/mode'
   }
   assert.match(source, /baidu_xueshu:\s*'baidu'/)
   assert.match(source, /google_scholar:\s*'google'/)
+  assert.match(source, /const canonicalSite = \{ baidu_xueshu: 'baidu', google_scholar: 'google' \}\[activeSite\]/)
 })
 
 test('layout cache is replaced instead of inheriting a previous mode', () => {
