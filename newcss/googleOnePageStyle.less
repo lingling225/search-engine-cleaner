@@ -1,4 +1,20 @@
 /**Store GoogleOnePageStyle**/
+body[google][ac-layout-mode='2'] {
+  #main #rcnt { display: block; max-width: none; }
+  #main #cnt,
+  #cnt #center_col,
+  #cnt #foot {
+    width: min(820px, calc(100vw - 48px)) !important;
+    max-width: 100%;
+    min-width: 0;
+    margin-inline: auto !important;
+    grid-column: auto !important;
+    box-sizing: border-box;
+  }
+  #cnt #center_col { margin-left: 0 !important; }
+  #rso { width: 100%; max-width: 100%; min-width: 0; margin-inline: auto; }
+}
+
 div[two-father] {
   position: relative;
   float: unset;
@@ -86,7 +102,9 @@ g-section-with-header {
 }
 
 .AC.sp-separator {
-  width: 800px;
+  width: min(820px, calc(100vw - 48px));
+  max-width: 100%;
+  min-width: 0;
   margin-left: auto;
   margin-right: auto;
 }

@@ -116,6 +116,9 @@ body[google] .A6K0A {
 }
 
 /* Keep native and script-marked result cards level within the same grid row. */
+#rso[two-father] > .MjjYud,
+#rso[two-father] > .ULSxyf,
+#rso[two-father] > .ULSxyf > .MjjYud,
 #rso > [two-father] > .MjjYud,
 #rso > [two-father] > .ULSxyf,
 #rso > [two-father] > .ULSxyf > .MjjYud {
@@ -126,11 +129,17 @@ body[google] .A6K0A {
 }
 
 /* Google leaves script-only result wrappers in the grid; they must not consume tracks. */
+#rso[two-father] > .MjjYud:not(:has(> .A6K0A)):not(:has(> .Ww4FFb)),
+#rso[two-father] > .ULSxyf > .MjjYud:not(:has(> .A6K0A)):not(:has(> .Ww4FFb)),
 #rso > [two-father] > .MjjYud:not(:has(> .A6K0A)):not(:has(> .Ww4FFb)),
 #rso > [two-father] > .ULSxyf > .MjjYud:not(:has(> .A6K0A)):not(:has(> .Ww4FFb)) {
   display: none !important;
 }
 
+#rso[two-father] > .MjjYud > .A6K0A,
+#rso[two-father] > .ULSxyf > .MjjYud > .A6K0A,
+#rso[two-father] > .MjjYud > .A6K0A > .Ww4FFb,
+#rso[two-father] > .ULSxyf > .MjjYud > .A6K0A > .Ww4FFb,
 #rso > [two-father] > .MjjYud > .A6K0A,
 #rso > [two-father] > .ULSxyf > .MjjYud > .A6K0A,
 #rso > [two-father] > .MjjYud > .A6K0A > .Ww4FFb,
@@ -141,6 +150,8 @@ body[google] .A6K0A {
   box-sizing: border-box;
 }
 
+#rso[two-father] > .MjjYud > .A6K0A,
+#rso[two-father] > .ULSxyf > .MjjYud > .A6K0A,
 #rso > [two-father] > .MjjYud > .A6K0A,
 #rso > [two-father] > .ULSxyf > .MjjYud > .A6K0A {
   flex: 1 1 auto;

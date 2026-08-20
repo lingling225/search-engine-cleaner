@@ -7,7 +7,7 @@
 // @license      GPL-3.0-only
 // @create     2015-11-25
 // @run-at     document-start
-// @version    1.0.17
+// @version    1.0.18
 // @connect    baidu.com
 // @connect    google.com
 // @connect    google.com.hk
@@ -39,9 +39,10 @@
 // @downloadURL https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/Search-Engine-Cleaner.user.js
 // @updateURL   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/Search-Engine-Cleaner.user.js
 // @copyright  2015-2026, AC; modifications 2026, lingling225
-// @lastmodified  2026-08-18
+// @lastmodified  2026-08-19
 // @feedback-url  https://github.com/lingling225/search-engine-cleaner/issues
 // @note    Source: https://github.com/langren1353/GM_script (GPL-3.0-only)
+// @note    1.0.18 隔离五个搜索引擎的六种布局，修复自动分页重复结果容器。
 // @note    1.0.17 解除 Google 分类导航外层固定宽度和偏移，自适应结果区域居中。
 // @note    1.0.12 修复百度三列、四列网格轨道塌陷导致的卡片重叠。
 // @note    1.0.10 调整 Bing 搜索框和导航栏居中宽度，避免顶部控件拥挤。
@@ -57,18 +58,28 @@
 // @resource  baiduCommonStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduCommonStyle.less
 // @resource  baiduOnePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduOnePageStyle.less
 // @resource  baiduTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduTwoPageStyle.less
+// @resource  baiduThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduThreePageStyle.less
+// @resource  baiduFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduFourPageStyle.less
 // @resource  googleCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleCommonStyle.less
 // @resource  googleOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleOnePageStyle.less
 // @resource  googleTwoPageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleTwoPageStyle.less
+// @resource  googleThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleThreePageStyle.less
+// @resource  googleFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleFourPageStyle.less
 // @resource  bingCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingCommonStyle.less
 // @resource  bingOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingOnePageStyle.less
 // @resource  bingTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingTwoPageStyle.less
+// @resource  bingThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingThreePageStyle.less
+// @resource  bingFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingFourPageStyle.less
 // @resource  duckCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckCommonStyle.less
 // @resource  duckOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckOnePageStyle.less
 // @resource  duckTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckTwoPageStyle.less
+// @resource  duckThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckThreePageStyle.less
+// @resource  duckFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckFourPageStyle.less
 // @resource  haosouCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouCommonStyle.less
 // @resource  haosouOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouOnePageStyle.less
-// @resource  haosouTwoPageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouTwoPageStyle.less
+// @resource  haosouTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouTwoPageStyle.less
+// @resource  haosouThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouThreePageStyle.less
+// @resource  haosouFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouFourPageStyle.less
 // @resource  HuYanStyle         https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuYanStyle.less
 // @resource  BgAutoFit          https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/BgAutoFit.less
 // @resource  HuaHua-ACDrakMode  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuaHua-ACDrakMode.less
@@ -114,6 +125,27 @@
   })
 
   const { reactive, watch } = Vue;
+
+  // Layout resources are deliberately selected, never accumulated. Keeping this
+  // map as a pure function makes mode changes auditable and prevents stale CSS
+  // from a previous engine or column count from being re-used.
+  const getLayoutStylePlan = (siteName, mode) => {
+    const site = {
+      baidu_xueshu: 'baidu',
+      google_scholar: 'google',
+    }[siteName] || siteName
+    const normalizedMode = Math.max(0, Math.min(5, Number(mode) || 0))
+    if (normalizedMode === 0 || !['baidu', 'google', 'bing', 'duck', 'haosou'].includes(site)) return []
+    const suffix = {
+      1: ['Common'],
+      2: ['Common', 'OnePage'],
+      3: ['Common', 'TwoPage'],
+      4: ['Common', 'ThreePage'],
+      5: ['Common', 'FourPage'],
+    }[normalizedMode]
+    return suffix.map(name => site + name + 'Style')
+  }
+
   const MyApi = (() => {
     /**
      * @param cssText CSS的内容，如果是less的话，需要编译后的
@@ -876,11 +908,17 @@
         FaviconAddTo: "h3",
         CounterType: "#rso .vt6azd h3:not(table h3),._yE>div[class~=_kk] h3",
         BlockType: ".vt6azd h3", // 修复block翻页的问题
-        MultiPageType: ".srg, #rso, div[two-father], #rso>div:not(.vt6azd), #kp-wp-tab-overview",
+        MultiPageType: ".srg, div[two-father], #rso>div:not(.vt6azd), #kp-wp-tab-overview",
         pager: {
           nextLink: "id('pnnext')|id('navbar navcnt nav')//td[span]/following-sibling::td[1]/a|id('nn')/parent::a",
-          pageElement: "id('rso')|id('center_col')/style[contains(.,'relative')][id('rso')]",
-          HT_insert: ["id('botstuff')", 1], // 1 = beforebegin; 2 = beforeend
+          // Only move result children. Copying the fetched #rso shell creates
+          // duplicate IDs and a second grid root after automatic pagination.
+          pageElement: (doc) => {
+            const root = doc?.querySelector?.('#rso')
+            if (!root) return []
+            return [...root.children].filter(node => !node.matches('style, script, nav, #topstuff, #botstuff'))
+          },
+          HT_insert: ["css;#rso", 2], // append into the sole existing result stream
           replaceE: '//div[@id="navcnt"] | //div[@id="rcnt"]//div[@role="navigation"]'
         }
       }
@@ -1202,11 +1240,7 @@
       this.adsCSSList = {
         baiduLiteStyle: '',
 
-        leftCommonStyle: '',
-        onePageStyle: '',
-        twoPageStyle: '',
-        multiPageStyle: '',
-        expandPageStyle: '',
+        layoutStyle: '',
 
         customStyle: '', // 自定义样式表
         commonStyle: '', // 全局样式表
@@ -1382,25 +1416,18 @@
     async loadSiteCSS() {
       const revision = ++this.styleLoadRevision
       console.mylog('CSS加载开始' + +this.curConfig.adsStyleMode)
-      const nextCSSList = { ...this.adsCSSList }
-      const styleSiteName = {
-        baidu_xueshu: 'baidu',
-        google_scholar: 'google',
-      }[this.options.siteName] || this.options.siteName
-      // 加载多列
-      if (this.curConfig.adsStyleEnable) {
-        if (+this.curConfig.adsStyleMode >= 1) {
-          nextCSSList.leftCommonStyle = await this.loadStyleByName_WithLessCache(styleSiteName + 'CommonStyle') // 单列效果
+      const nextCSSList = { ...this.adsCSSList, layoutStyle: '' }
+      const layoutPlan = this.curConfig.adsStyleEnable
+        ? getLayoutStylePlan(this.options.siteName, this.curConfig.adsStyleMode)
+        : []
+      if (layoutPlan.length) {
+        const layoutParts = []
+        for (const styleName of layoutPlan) {
+          layoutParts.push(await this.loadStyleByName_WithLessCache(styleName))
         }
-        if (+this.curConfig.adsStyleMode >= 2) {
-          nextCSSList.onePageStyle = await this.loadStyleByName_WithLessCache(styleSiteName + 'OnePageStyle') // 单列居中
-        }
-        if (+this.curConfig.adsStyleMode >= 3) {
-          nextCSSList.twoPageStyle = await this.loadStyleByName_WithLessCache(styleSiteName + 'TwoPageStyle') // 双列效果
-        }
-        if (+this.curConfig.adsStyleMode >= 4) {
-          nextCSSList.multiPageStyle = await this.getMultiPageStyle() // 多列效果
-        }
+        const mode = Number(this.curConfig.adsStyleMode)
+        if (mode === 4 || mode === 5) layoutParts.push(this.getMultiPageStyle(mode))
+        nextCSSList.layoutStyle = layoutParts.filter(Boolean).join('\n')
       }
       // 加载百度Lite
       if (this.curConfig.baiduLiteEnable) {
@@ -1442,17 +1469,28 @@
     }
 
     getMultiPageStyle() {
-      const columns = +this.curConfig.adsStyleMode === 4 ? 3 : 4
+      const mode = Number(arguments[0] || this.curConfig.adsStyleMode)
+      const columns = mode === 4 ? 3 : 4
+      const siteName = this.options.siteName
+      const site = {
+        baidu_xueshu: 'baidu',
+        google_scholar: 'google',
+      }[siteName] || siteName
+      const scope = `body[${site}][ac-layout-mode='${mode}']`
       const modeVars = {
-        baidu: `body[baidu].pc-fresh-wrapper-con{--ac-search-layout-columns:${columns} !important;--ac-baidu-multi-results-width:min(${columns === 3 ? 1500 : 1760}px,calc(100vw - var(--ac-baidu-page-gutter) - var(--ac-baidu-page-gutter))) !important;}`,
-        baidu_xueshu: `body[baidu_xueshu]{--ac-search-layout-columns:${columns};--ac-baidu-multi-results-width:min(${columns === 3 ? 1500 : 1760}px,calc(100vw - var(--ac-baidu-page-gutter) - var(--ac-baidu-page-gutter)));}`,
-        duck: `body[duck]{--ac-search-layout-columns:${columns};--ac-duck-wide-results-width:min(${columns === 3 ? 1440 : 1760}px,calc(100vw - var(--ac-duck-page-gutter) * 2));}`,
-        haosou: `body[haosou]{--ac-search-layout-columns:${columns};--ac-haosou-grid-width:min(${columns === 3 ? 1440 : 1760}px,calc(100vw - 2 * var(--ac-haosou-page-gutter)));}`,
-        google: `body[google]{--ac-search-layout-columns:${columns};}`,
-        google_scholar: `body[google_scholar]{--ac-search-layout-columns:${columns};}`,
-      }[this.options.siteName] || `body{--ac-search-layout-columns:${columns};}`
+        baidu: `body[baidu][ac-layout-mode='${mode}'].pc-fresh-wrapper-con{--ac-search-layout-columns:${columns} !important;--ac-baidu-multi-results-width:min(${columns === 3 ? 1500 : 1760}px,calc(100vw - var(--ac-baidu-page-gutter) - var(--ac-baidu-page-gutter))) !important;}`,
+        duck: `${scope}{--ac-search-layout-columns:${columns};--ac-duck-wide-results-width:min(${columns === 3 ? 1440 : 1760}px,calc(100vw - var(--ac-duck-page-gutter) * 2));}`,
+        haosou: `${scope}{--ac-search-layout-columns:${columns};--ac-haosou-grid-width:min(${columns === 3 ? 1440 : 1760}px,calc(100vw - 2 * var(--ac-haosou-page-gutter)));}`,
+        google: `${scope}{--ac-search-layout-columns:${columns};}`,
+      }[site] || `${scope}{--ac-search-layout-columns:${columns};}`
 
-      return modeVars + this.options.useItem.MultiPageType +
+      const target = this.options.useItem.MultiPageType
+        .split(',')
+        .map(selector => selector.trim())
+        .filter(Boolean)
+        .map(selector => `${scope} ${selector}`)
+        .join(',')
+      return modeVars + target +
         `{grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-areas:'${Array(columns).fill('xmain').join(' ')}';}`
     }
 
@@ -1492,13 +1530,6 @@
     }
 
     async loadAllStyle() {
-      const styleSiteName = {
-        baidu_xueshu: 'baidu',
-        google_scholar: 'google',
-      }[this.options.siteName] || this.options.siteName
-      if (!this.adsCSSList.leftCommonStyle) this.adsCSSList.leftCommonStyle = await this.loadStyleByName_WithLessCache(styleSiteName + 'CommonStyle') // 单列效果
-      if (!this.adsCSSList.onePageStyle) this.adsCSSList.onePageStyle = await this.loadStyleByName_WithLessCache(styleSiteName + 'OnePageStyle') // 单列居中
-      if (!this.adsCSSList.twoPageStyle) this.adsCSSList.twoPageStyle = await this.loadStyleByName_WithLessCache(styleSiteName + 'TwoPageStyle') // 双列效果
       if (!this.adsCSSList.baiduLiteStyle) this.adsCSSList.baiduLiteStyle = await this.loadStyleByName_WithLessCache('baiduLiteStyle')
       if (!this.adsCSSList.bgAutoFitStyle) this.adsCSSList.bgAutoFitStyle = await this.loadStyleByName_WithLessCache('BgAutoFit')
       if (!this.adsCSSList.darkModeStyle) this.adsCSSList.darkModeStyle = await this.loadStyleByName_WithLessCache('HuaHua-ACDrakMode')
@@ -2109,6 +2140,13 @@
       CONST.cssAutoInsert.pause()
       CONST.cssAutoInsert.clear()
 
+      const activeSite = CONST.options.siteName
+      const siteScope = `body[${activeSite}]`
+      if (document.body) {
+        document.body.setAttribute(activeSite, '1')
+        document.body.setAttribute('ac-layout-mode', String(+CONST.curConfig.adsStyleMode || 0))
+      }
+
       if (!CONST.curConfig.enableCSS) {
         MyApi.safeGetNodeFunc('#myuser', node => node.remove())
         CONST.cssAutoInsert.resume()
@@ -2116,33 +2154,15 @@
       }
 
       console.mylog('即将插入CSS1')
-      if (document.body) document.body.setAttribute('ac-layout-mode', String(+CONST.curConfig.adsStyleMode || 0))
       if (CONST.curConfig.adsStyleEnable) {
-        console.mylog('即将插入CSS2')
-
-        if (+CONST.curConfig.adsStyleMode === 1) {
-          console.mylog('靠左优化模式')
-          CONST.cssAutoInsert.add("expandPageStyle", CONST.adsCSSList.expandPageStyle)
-          CONST.cssAutoInsert.add("leftCommonStyle", CONST.adsCSSList.leftCommonStyle)
-        } else if (+CONST.curConfig.adsStyleMode === 2) {
-          console.mylog('单列居中')
-          CONST.cssAutoInsert.add("expandPageStyle", CONST.adsCSSList.expandPageStyle)
-          CONST.cssAutoInsert.add("leftCommonStyle", CONST.adsCSSList.leftCommonStyle)
-          CONST.cssAutoInsert.add("onePageStyle", CONST.adsCSSList.onePageStyle)
-        } else if (+CONST.curConfig.adsStyleMode === 3) {
-          console.mylog('双列居中')
-          CONST.cssAutoInsert.add("leftCommonStyle", CONST.adsCSSList.leftCommonStyle)
-          CONST.cssAutoInsert.add("twoPageStyle", CONST.adsCSSList.twoPageStyle)
-        } else if (+CONST.curConfig.adsStyleMode === 4 || +CONST.curConfig.adsStyleMode === 5) {
-          console.mylog('N列居中')
-          CONST.cssAutoInsert.add("leftCommonStyle", CONST.adsCSSList.leftCommonStyle)
-          CONST.cssAutoInsert.add("twoPageStyle", CONST.adsCSSList.twoPageStyle)
-          CONST.cssAutoInsert.add("multiPageStyle", CONST.adsCSSList.multiPageStyle)
-        }
+        console.mylog('插入当前布局样式', getLayoutStylePlan(CONST.options.siteName, CONST.curConfig.adsStyleMode))
+        CONST.cssAutoInsert.add("layoutStyle", CONST.adsCSSList.layoutStyle)
       }
 
-      CONST.cssAutoInsert.add("styleLogo", ".minidiv #logo img{width: 100px;height: unset;margin-top: 0.3rem;} body.purecss-mode:before{display: none;}")
-      CONST.cssAutoInsert.add("specialBAIDU", ".opr-recommends-merge-imgtext{display:none!important;}.res_top_banner{display:none!important;}.headBlock, body>div.result-op{display:none;}")
+      CONST.cssAutoInsert.add("styleLogo", `${siteScope} .minidiv #logo img{width: 100px;height: unset;margin-top: 0.3rem;} ${siteScope}.purecss-mode:before{display: none;}`)
+      if (activeSite === 'baidu') {
+        CONST.cssAutoInsert.add("specialBAIDU", `${siteScope} .opr-recommends-merge-imgtext,${siteScope} .res_top_banner,${siteScope} .headBlock,${siteScope}>div.result-op{display:none!important;}`)
+      }
       CONST.cssAutoInsert.add("animationStyle", `
         @keyframes ani_leftToright {
           0% { opacity: 0; }
@@ -2249,12 +2269,17 @@
         CONST.cssAutoInsert.add("huYanStyle", CONST.adsCSSList.huyanStyle)
       }
       if (CONST.curConfig.adsStyleEnable) {
-        CONST.cssAutoInsert.add("adsBlockStyle", "#bottomads{display:none;} #content_left>div:not([id])>div[cmatchid], #content_left>div[id*='300']:not([class*='result']),#content_right td>div:not([id]),#content_right>br{position:absolute;top:-6666px;}")
+        const adsBlockCSS = activeSite === 'baidu'
+          ? `${siteScope} #bottomads,${siteScope} #content_left>div:not([id])>div[cmatchid],${siteScope} #content_left>div[id*='300']:not([class*='result']),${siteScope} #content_right td>div:not([id]),${siteScope} #content_right>br{position:absolute;top:-6666px;}`
+          : activeSite === 'google'
+            ? `${siteScope} #bottomads,${siteScope} #content_right>div{position:absolute;top:-6666px;}`
+            : ''
+        if (adsBlockCSS) CONST.cssAutoInsert.add("adsBlockStyle", adsBlockCSS)
       }
       if (CONST.curConfig.BgEnable) {
         const imageUrl = CONST.curConfig.BgUseUrl
         if (imageUrl) {
-          const bgCSS = `body{position:relative;z-index:0;min-height:100vh;}body::before{pointer-events:none;position:fixed;z-index:-1;inset:0;content:'';background-image:url('${imageUrl}');background-position:center top;background-size:cover;background-repeat:no-repeat;opacity:.6;}`
+          const bgCSS = `${siteScope}{position:relative;z-index:0;min-height:100vh;}${siteScope}::before{pointer-events:none;position:fixed;z-index:-1;inset:0;content:'';background-image:url('${imageUrl}');background-position:center top;background-size:cover;background-repeat:no-repeat;opacity:.6;}`
           CONST.cssAutoInsert.add("backGroundImage", bgCSS)
         }
         if (CONST.curConfig.BgFit) {
@@ -2280,10 +2305,15 @@
           `.ac_sp_bottom{background-image:url('${sepImgs.bottom}')}` +
           `.ac_sp_next_gray{background-image:url('${sepImgs.next_gray}')}` +
           `.ac_sp_pre_gray{background-image:url('${sepImgs.pre_gray}')}`
-        CONST.cssAutoInsert.add("preloadAutoPage", cssText)
+        const scopedPagerCSS = cssText
+          .replace(/\.sp-separator/g, `${siteScope} .sp-separator`)
+          .replace(/\.ac-entry-ani/g, `${siteScope} .ac-entry-ani`)
+          .replace(/#ac-pager-loader/g, `${siteScope} #ac-pager-loader`)
+          .replace(/\.ac-ready/g, `${siteScope}.ac-ready`)
+        CONST.cssAutoInsert.add("preloadAutoPage", scopedPagerCSS)
       }
       if (CONST.curConfig.isBlockEnable) {
-        CONST.cssAutoInsert.add("customBlockStyle", "button.ghhider.ghhb[ac-user-alter='1']::before{content:'取消 - ';}#sp-ac-container .ac-block-item{color:#AAA;margin-left:48px;}#sp-ac-container .ac-block-itemdel{float:right;margin-left:0;padding:0 20px;cursor:pointer;}#sp-ac-container .ac-block-itemdel:hover{color:red;}#sp-ac-container .ac-block-high{color:#000;}.ac-blockList li:hover{background-color:#a3caff;color:white !important;cursor:pointer;} *[ac-needhide] *{display:none} *:not([ac-needhide]) .blockShow{display: none;} *[ac-needhide] .blockShow{display:unset;cursor:pointer;} *[ac-needhide] .blockShow:hover{border:1px solid #DDD}button.ghhider{color:#555;background-color:#fcfcfc;font-family:sans-serif;margin:auto 2px;border:1px solid #ccc;border-radius:4px;padding:2px 3px}button.ghhider{font-size:12px}button.ghhider:hover{color:#006aff;background:#fff} body[haosou] button.ghhider{vertical-align: super;} body[google] button.ghhider{vertical-align: top;}") // 公共自定义样式
+        CONST.cssAutoInsert.add("customBlockStyle", `${siteScope} button.ghhider.ghhb[ac-user-alter='1']::before{content:'取消 - ';}${siteScope} #sp-ac-container .ac-block-item{color:#AAA;margin-left:48px;}${siteScope} #sp-ac-container .ac-block-itemdel{float:right;margin-left:0;padding:0 20px;cursor:pointer;}${siteScope} #sp-ac-container .ac-block-itemdel:hover{color:red;}${siteScope} #sp-ac-container .ac-block-high{color:#000;}${siteScope} .ac-blockList li:hover{background-color:#a3caff;color:white !important;cursor:pointer;}${siteScope} *[ac-needhide] *{display:none}${siteScope} *:not([ac-needhide]) .blockShow{display: none;}${siteScope} *[ac-needhide] .blockShow{display:unset;cursor:pointer;}${siteScope} *[ac-needhide] .blockShow:hover{border:1px solid #DDD}${siteScope} button.ghhider{color:#555;background-color:#fcfcfc;font-family:sans-serif;margin:auto 2px;border:1px solid #ccc;border-radius:4px;padding:2px 3px}${siteScope} button.ghhider{font-size:12px}${siteScope} button.ghhider:hover{color:#006aff;background:#fff;}`) // 公共自定义样式
       }
 
       if ((CONST.curConfig.isBlockEnable || CONST.curConfig.isFaviconEnable) && CONST.options.siteName === 'haosou') {
@@ -2297,11 +2327,11 @@
       }
 
       if (CONST.curConfig.isALineDisable) {
-        CONST.cssAutoInsert.add("alinkEnable", "a,a em{text-decoration:none !important}")
+        CONST.cssAutoInsert.add("alinkEnable", `${siteScope} a,${siteScope} a em{text-decoration:none !important}`)
       }
 
       if (CONST.curConfig.isCounterEnable) {
-        CONST.cssAutoInsert.add("counterStyle", ".AC-CounterT{position:relative;z-index:1;display:inline-flex!important;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 auto;min-width:20px;height:20px;margin:0 6px 0 0!important;padding:0 5px!important;border-radius:10px;background:#FD9999;color:#fff;font:600 12px/20px Arial,sans-serif;text-align:center;vertical-align:middle;white-space:nowrap}body[baidu] h3>.AC-CounterT,body[baidu_xueshu] h3>.AC-CounterT{order:-1}body #sp-ac-container{position:fixed;top:3.9vw;right:8.8vw}")
+        CONST.cssAutoInsert.add("counterStyle", `${siteScope} .AC-CounterT{position:relative;z-index:1;display:inline-flex!important;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 auto;min-width:20px;height:20px;margin:0 6px 0 0!important;padding:0 5px!important;border-radius:10px;background:#FD9999;color:#fff;font:600 12px/20px Arial,sans-serif;text-align:center;vertical-align:middle;white-space:nowrap}${siteScope} h3>.AC-CounterT{order:-1}${siteScope} #sp-ac-container{position:fixed;top:3.9vw;right:8.8vw}`)
       } else {
         CONST.cssAutoInsert.remove("counterStyle")
       }
@@ -2404,6 +2434,25 @@
           })
           return doc
         },
+        normalizeInsertedPageElements: function (pageElems, pageNum) {
+          const usedIds = new Set([...document.querySelectorAll('[id]')].map(node => node.id).filter(Boolean))
+          const isGoogle = CONST.options.siteName === 'google' || CONST.options.siteName === 'google_scholar'
+          return [...pageElems].filter(node => node?.nodeType === 1).map(node => {
+            const stripDuplicateIds = (element) => {
+              const id = element.getAttribute('id')
+              if (id && (id === 'rso' || id === 'center_col' || usedIds.has(id))) {
+                element.removeAttribute('id')
+              } else if (id) {
+                usedIds.add(id)
+              }
+              element.querySelectorAll('[id]').forEach(stripDuplicateIds)
+            }
+            stripDuplicateIds(node)
+            node.dataset.acPage = String(pageNum)
+            if (isGoogle) node.classList.add('ac-google-page-results')
+            return node
+          })
+        },
         loadMorePage: async function () {
           const pager = CONST.options.useItem.pager
           if (!pager) return false
@@ -2465,7 +2514,8 @@
                     if (!newBody) throw new Error('翻页响应无法解析')
 
                     const [Rule_insertTo = '', Rule_insertMode = 1] = pager.HT_insert || []
-                    const pageElems = MyApi.getAllElements(pager.pageElement, newBody, newBody)
+                    const rawPageElems = MyApi.getAllElements(pager.pageElement, newBody, newBody)
+                    const pageElems = ShowPager.normalizeInsertedPageElements(rawPageElems, CONST.options.useItem.pageNum + 1)
 
                     let toElement;
 
@@ -2583,7 +2633,7 @@
               console.mylog('开始进行翻页')
               CONST.lock.pageLoadingLocked = true;
               if (CONST.options.useItem.SiteTypeID === CONST.options.duck.SiteTypeID) {
-                const needManualLoad = !CONST.curConfig.optimizeDuck || +CONST.curConfig.adsStyleMode >= 3
+        const needManualLoad = !CONST.curConfig.optimizeDuck || Number(CONST.curConfig.adsStyleMode) > 2
                 const node = needManualLoad ? document.querySelector("#links .result--more a, #more-results, [data-testid='more-results']") : null
                 try {
                   node?.click()
@@ -3214,16 +3264,18 @@
       }
     }, 300, 10000000)
     /***All***/
-    CONST.addIntervalTrigger('all', 'body', () => {
-      PageFunc.RedirectHandle()
-      if (CONST.curConfig.isFaviconEnable && typeof (CONST.options.useItem.FaviconType) !== 'undefined') { // 显示favicon图标
+      CONST.addIntervalTrigger('all', 'body', () => {
+        PageFunc.RedirectHandle()
+        const activeSite = CONST.options.siteName
+        const siteScope = `body[${activeSite}]`
+        if (CONST.curConfig.isFaviconEnable && typeof (CONST.options.useItem.FaviconType) !== 'undefined') { // 显示favicon图标
         // 延迟2秒加载，减少可能出现的问题
         PageFunc.addFavicon(document.querySelectorAll(CONST.options.useItem.FaviconType)); // 添加Favicon显示
       } else {
         document.querySelectorAll(CONST.options.useItem.FaviconType || '').forEach((one) => {
           one.removeAttribute("ac_faviconstatus");
         })
-        document.querySelectorAll('[data-favicon-t]').forEach((one) => {
+          document.querySelectorAll(`${siteScope} [data-favicon-t]`).forEach((one) => {
           one.removeAttribute('data-favicon-t')
         })
         if (CONST.cssFavionList.list.length) CONST.cssFavionList.list.splice(0)
@@ -3231,14 +3283,14 @@
       if (CONST.curConfig.isCounterEnable) {
         PageFunc.addCounter(document.querySelectorAll(CONST.options.useItem.CounterType)); // 显示计数器
       } else {
-        document.querySelectorAll(".AC-CounterT").forEach(one => {
+        document.querySelectorAll(`${siteScope} .AC-CounterT`).forEach(one => {
           one.parentElement?.removeAttribute('SortIndex');
           one.remove()
         })
       }
 
       // 双列模式下，自动禁用右侧栏
-      if (!CONST.curConfig.isRightDisplayEnable || CONST.curConfig.adsStyleMode >= 3) {
+      if (!CONST.curConfig.isRightDisplayEnable || Number(CONST.curConfig.adsStyleMode) > 2) {
         document.body.classList.remove("showRight")
       } else {
         if (!document.body.classList.contains('showRight')) {
@@ -3276,14 +3328,16 @@
         }
       })
       watch(CONST.cssFavionList, () => {
-        const baseCSS = '*[data-favicon-t]::before{content:"";display:inline-block;flex:0 0 auto;width:16px;height:16px;margin-inline-end:5px;background-size:contain;background-position:center;background-repeat:no-repeat;vertical-align:-3px;}'
+        const activeSite = CONST.options.siteName
+        const siteScope = `body[${activeSite}]`
+        const baseCSS = `${siteScope} *[data-favicon-t]::before{content:"";display:inline-block;flex:0 0 auto;width:16px;height:16px;margin-inline-end:5px;background-size:contain;background-position:center;background-repeat:no-repeat;vertical-align:-3px;}`
         CONST.adsCSSList.faviconStyle = Object.entries(CONST.cssFavionList.list).reduce((preCSS, cur) => {
           const [, { tagName = '', url = '' }] = cur
           let nowCSS = ''
           if (url) {
             //如果地址不正确，那么丢弃
             const imgUrl = "https://favicon.yandex.net/favicon/v2/" + encodeURIComponent(url) + "?size=32"
-            nowCSS = tagName + `[data-favicon-t='${url}']::before{background-image:url('${imgUrl}');}`
+            nowCSS = `${siteScope} ${tagName}[data-favicon-t='${url}']::before{background-image:url('${imgUrl}');}`
           }
           return preCSS + nowCSS
         }, baseCSS)

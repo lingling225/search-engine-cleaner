@@ -1,0 +1,24 @@
+/** Bing three-column layout (mode 4) **/
+body[bing][ac-layout-mode='4'] {
+  #b_content { display: flex; align-items: center; flex-direction: column; margin-left: 0; padding-left: 0; }
+  #b_content #b_results {
+    width: min(1440px, calc(100vw - 64px));
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    box-sizing: border-box;
+  }
+  #b_content #b_results > li.b_algo {
+    width: 100% !important;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  #b_content #b_results > li.b_ans:not(.b_algo),
+  #b_content #b_results > li.b_pag,
+  #b_content #b_results > #b_msg { grid-column: 1 / -1; width: 100%; min-width: 0; }
+  #b_content #b_pole { width: min(1440px, calc(100vw - 64px)); max-width: 100%; margin-inline: auto; }
+  .sp-separator.AC { grid-column: 1 / -1; width: 100%; min-width: 0; box-sizing: border-box; }
+}

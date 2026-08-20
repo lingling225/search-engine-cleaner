@@ -43,6 +43,9 @@ test('DuckDuckGo cards and columns cannot exceed their result tracks', () => {
 })
 
 test('DuckDuckGo three and four column modes widen the result shell', () => {
-  assert.match(userscript, /body\[duck\]\{--ac-search-layout-columns:\$\{columns\};--ac-duck-wide-results-width:/)
+  assert.match(userscript, /const scope = `body\[\$\{site\}\]\[ac-layout-mode='\$\{mode\}'\]`/)
+  assert.match(userscript, /--ac-search-layout-columns:\$\{columns\};--ac-duck-wide-results-width:/)
   assert.match(userscript, /columns === 3 \? 1440 : 1760/)
+  assert.match(read('newcss/duckThreePageStyle.less'), /body\[duck\]\[ac-layout-mode='4'\][\s\S]*repeat\(3,\s*minmax\(0,\s*1fr\)\)/)
+  assert.match(read('newcss/duckFourPageStyle.less'), /body\[duck\]\[ac-layout-mode='5'\][\s\S]*repeat\(4,\s*minmax\(0,\s*1fr\)\)/)
 })

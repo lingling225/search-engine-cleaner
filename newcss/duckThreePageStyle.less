@@ -1,0 +1,20 @@
+/** DuckDuckGo three-column layout (mode 4) **/
+body[duck][ac-layout-mode='4'] {
+  --ac-search-layout-columns: 3;
+  --ac-duck-wide-results-width: min(1440px, calc(100vw - 2 * var(--ac-duck-page-gutter)));
+  .site-wrapper #web_content_wrapper .cw,
+  #web_content_wrapper #react-layout {
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    display: grid;
+    grid-template-columns: minmax(var(--ac-duck-page-gutter), 1fr) minmax(0, var(--ac-duck-wide-results-width)) minmax(var(--ac-duck-page-gutter), 1fr);
+    box-sizing: border-box;
+  }
+  #web_content_wrapper #react-layout > div:has(.react-results--main) { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; width: 100%; min-width: 0; }
+  #web_content_wrapper #react-layout section:has(> .react-results--main),
+  #web_content_wrapper #react-layout .react-results--main { grid-column: 2; width: 100%; max-width: var(--ac-duck-wide-results-width); min-width: 0; margin-inline: auto; box-sizing: border-box; }
+  #react-layout .react-results--main { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--ac-duck-column-gap); }
+  #react-layout .react-results--main li { width: 100%; min-width: 0; margin: 0; box-sizing: border-box; }
+  .sp-separator.AC { grid-column: 1 / -1; width: 100%; min-width: 0; box-sizing: border-box; }
+}

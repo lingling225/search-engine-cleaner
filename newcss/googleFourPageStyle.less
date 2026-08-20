@@ -1,0 +1,57 @@
+/** Google four-column layout (mode 5) **/
+body[google][ac-layout-mode='5'] {
+  --ac-search-layout-columns: 4;
+  #main #rcnt { max-width: none; }
+  #main #cnt,
+  #cnt #center_col,
+  #cnt #foot,
+  .HdCKGe {
+    width: min(1760px, calc(100vw - 64px));
+    max-width: 100%;
+    margin-inline: auto;
+    box-sizing: border-box;
+  }
+  #main #cnt, #cnt #center_col { min-width: 0; }
+  #rso,
+  #rso[two-father],
+  #rso > [two-father],
+  #kp-wp-tab-overview {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  #rso[two-father],
+  #rso > [two-father],
+  #kp-wp-tab-overview {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    align-items: stretch;
+  }
+  #rso[two-father] > .MjjYud,
+  #rso[two-father] > .ULSxyf,
+  #rso[two-father] > .ULSxyf > .MjjYud,
+  #rso[two-father] > div[two-child],
+  #rso[two-father] > .A6K0A,
+  #rso > [two-father] > .MjjYud,
+  #rso > [two-father] > .ULSxyf,
+  #rso > [two-father] > .ULSxyf > .MjjYud,
+  #rso > [two-father] > div[two-child],
+  #rso > [two-father] > .A6K0A {
+    width: 100% !important;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  #rso[two-father] > .MjjYud:not(:has(> .A6K0A)):not(:has(> .Ww4FFb)),
+  #rso[two-father] > .ULSxyf:not(:has(.A6K0A)):not(:has(.Ww4FFb)),
+  #rso > [two-father] > .MjjYud:not(:has(> .A6K0A)):not(:has(> .Ww4FFb)),
+  #rso > [two-father] > .ULSxyf:not(:has(.A6K0A)):not(:has(.Ww4FFb)) { display: none !important; }
+  #rso[two-father] > :has(#kp-wp-tab-overview),
+  #rso[two-father] > :has(#eKIzJc.SePcAf),
+  #rso > [two-father] > :has(#kp-wp-tab-overview),
+  #rso > [two-father] > :has(#eKIzJc.SePcAf) { grid-column: 1 / -1; }
+  .sp-separator.AC { grid-column: 1 / -1; width: 100%; min-width: 0; box-sizing: border-box; }
+  #hdtb #hdtb-msb-vis { width: 100%; margin-left: 0; }
+}
