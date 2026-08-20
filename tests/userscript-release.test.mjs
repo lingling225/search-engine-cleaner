@@ -78,12 +78,14 @@ test('configuration bridge is only injected into the published console entry poi
 
 test('every userscript resource is owned by this repository and exists locally', () => {
   const resources = metadataValues('resource')
+  const version = metadataValues('version')[0]
   assert.ok(resources.length > 0)
 
   for (const resource of resources) {
-    const match = resource.match(/^\S+\s+(https:\/\/raw\.githubusercontent\.com\/lingling225\/search-engine-cleaner\/main\/newcss\/([^/?#]+))$/)
+    const match = resource.match(/^\S+\s+(https:\/\/raw\.githubusercontent\.com\/lingling225\/search-engine-cleaner\/main\/newcss\/([^/?#]+)\?v=([^&#]+))$/)
     assert.ok(match, `unexpected resource target: ${resource}`)
     assert.equal(existsSync(join(repositoryRoot, 'newcss', basename(match[2]))), true, `${match[2]} is missing`)
+    assert.equal(match[3], version, `${match[2]} cache version should match the userscript version`)
   }
 })
 
