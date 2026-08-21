@@ -1,7 +1,11 @@
 /** Google three-column layout (mode 4) **/
 body[google][ac-layout-mode='4'] {
   --ac-search-layout-columns: 3;
-  #main #rcnt { max-width: none; }
+  #main #rcnt {
+    display: block;
+    width: 100%;
+    max-width: none;
+  }
   #main #cnt,
   #cnt #center_col,
   #cnt #foot,
@@ -12,6 +16,7 @@ body[google][ac-layout-mode='4'] {
     box-sizing: border-box;
   }
   #main #cnt, #cnt #center_col { min-width: 0; }
+  #cnt #center_col { grid-column: 1 / -1; }
   #rso,
   #rso[two-father],
   #rso > [two-father],

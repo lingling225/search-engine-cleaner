@@ -11,7 +11,7 @@
   },
   "scripts": {
     "type-check": "vue-tsc --noEmit",
-    "check:styles": "lessc --lint ../../newcss/baiduCommonStyle.less && lessc --lint ../../newcss/baiduOnePageStyle.less && lessc --lint ../../newcss/baiduTwoPageStyle.less",
+    "check:styles": "node scripts/check-less.mjs",
     "docs:dev": "vitepress dev docs --mode development",
     "docs:build": "vitepress build docs --mode production"
   },
