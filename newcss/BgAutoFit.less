@@ -1,57 +1,54 @@
 /**Store Bg AutoFit**/
+
 /*****Baidu-AutoFit*****/
 body[baidu] {
   #wrapper {
     .result-molecule.new-pmd[tpl="app/head-tab"] {
-      width: 100% !important;
-
       #s_tab {
         background-color: transparent;
-        padding-top: 66px;
-        
-        a:before{
+
+        a:before {
           color: inherit;
         }
       }
     }
-    
+
     #content_left {
-      .result, .result-op {
+      .result,
+      .result-op {
         background-color: rgba(#FFF, 0.6);
-        
-        h3{
+
+        h3 {
           background-color: rgba(#f8f8f8, 0.4);
         }
       }
     }
 
-    #content_right{
-      padding: 20px 15px 15px !important;
-      border-radius: 5px;
+    #content_right {
       background-color: #FFFFFF66;
-      box-sizing: border-box;
       box-shadow: 0 0 20px 2px rgba(0, 0, 0, .1);
       -webkit-box-shadow: 0 0 20px 2px rgba(0, 0, 0, .1);
       -moz-box-shadow: 0 0 20px 2px rgba(0, 0, 0, .1);
     }
 
     // 侧边栏
-    .new-pmd #rs_new{
+    .new-pmd #rs_new {
       background-color: rgba(#FFF, 0.6);
     }
-    
+
     // 底部
-    .result-molecule.new-pmd{
-      &[tpl="app/page"]{
+    .result-molecule.new-pmd {
+      &[tpl="app/page"] {
         #page {
           background-color: transparent;
-          a{ // 翻页按钮
+
+          a { // 翻页按钮
             background-color: rgba(#FFF, 0.6);
           }
         }
       }
-      
-      #foot{ // 底部说明
+
+      #foot { // 底部说明
         background-color: rgba(#FFF, 0.6);
       }
     }
@@ -60,68 +57,118 @@ body[baidu] {
 
 /*****Google-AutoFit*****/
 body[google] {
-  .sfbg{
+  .sfbg {
     background-color: rgba(#FFF, 0.6);
-    padding-bottom: 11px;
   }
-  #top_nav .yg51vc{
+
+  #top_nav .yg51vc {
     background-color: transparent;
   }
-  #rs, #rso .g{
+
+  #rs,
+  #rso .g {
     background-color: transparent;
   }
+
   // 侧边栏背景色
-  .dG2XIf{
+  .dG2XIf {
     background-color: rgba(#FFF, 0.6);
   }
+
   // 元素，背景色透明
   div[two-father] div[two-child] {
     background-color: rgba(#FFF, 0.6);
   }
 }
+
 /*****Bing-AutoFit*****/
 body[bing] {
   #b_content {
     background: transparent !important;
-    
-    #b_results{
-      > li:not(#mfa_root){
+
+    #b_results {
+      > li:not(#mfa_root) {
         z-index: 1;
         background-color: rgba(#FFF, 0.6);
 
-        .b_title{
-          min-width: 0;
+        .b_title {
           background-color: transparent;
 
           h2 {
             background-color: rgba(#FFF, 0.4);
-            overflow-wrap: anywhere;
-          }
-          
-          h2 a{
-            display: inline-block;
-            max-width: 100%;
           }
         }
       }
     }
   }
 }
+
 /*****Duck-AutoFit*****/
+
 /*****COMMON*****/
-.sp-separator.AC{
+body[baidu] .sp-separator.AC {
   background-color: rgba(#FFF, 0.9) !important;
 }
-.button.ghhider{
+
+body[google] .sp-separator.AC {
+  background-color: rgba(#FFF, 0.9) !important;
+}
+
+body[bing] .sp-separator.AC {
+  background-color: rgba(#FFF, 0.9) !important;
+}
+
+body[duck] .sp-separator.AC {
+  background-color: rgba(#FFF, 0.9) !important;
+}
+
+body[haosou] .sp-separator.AC {
+  background-color: rgba(#FFF, 0.9) !important;
+}
+
+body[baidu] .button.ghhider,
+body[baidu] button.ghhider {
   background-color: rgba(#FFF, 0.6);
 }
 
-body[bing], body[google] {
+body[google] .button.ghhider,
+body[google] button.ghhider {
+  background-color: rgba(#FFF, 0.6);
+}
+
+body[bing] .button.ghhider,
+body[bing] button.ghhider {
+  background-color: rgba(#FFF, 0.6);
+}
+
+body[duck] .button.ghhider,
+body[duck] button.ghhider {
+  background-color: rgba(#FFF, 0.6);
+}
+
+body[haosou] .button.ghhider,
+body[haosou] button.ghhider {
+  background-color: rgba(#FFF, 0.6);
+}
+
+body[bing] {
   #myuser .myuserconfig {
     color: #6c6c6c;
     background: #a8abb622;
-    
-    &:hover{
+
+    &:hover {
+      color: #6c6c6c;
+      background: #a8abb622 !important;
+    }
+  }
+}
+
+body[google] {
+  #myuser .myuserconfig {
+    color: #6c6c6c;
+    background: #a8abb622;
+
+    &:hover {
       color: #6c6c6c;
       background: #a8abb622 !important;
     }

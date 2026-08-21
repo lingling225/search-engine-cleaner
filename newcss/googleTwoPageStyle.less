@@ -41,7 +41,8 @@ div[two-child] {
 }
 
 #main #rcnt {
-  display: grid;
+  display: block;
+  width: 100%;
   max-width: unset;
 }
 .f6F9Be{
@@ -92,6 +93,7 @@ div[two-child] {
   height: unset;
 }
 }
+}
 
 /* Keep every Google result card inside its assigned track at every column count. */
 body[google] #rso,
@@ -112,7 +114,6 @@ body[google] .A6K0A {
   max-width: 100%;
   box-sizing: border-box;
   overflow-wrap: anywhere;
-}
 }
 
 /* Keep native and script-marked result cards level within the same grid row. */
@@ -176,7 +177,11 @@ div[two-father] > :has(#kp-wp-tab-overview) {
 margin-bottom: 10px;
 }
 
-.AC.sp-separator {
+body[google][ac-layout-mode='3'] .AC.sp-separator {
+grid-column: 1 / -1;
+width: 100%;
+min-width: 0;
+box-sizing: border-box;
 margin-top: 10px;
 margin-left: auto;
 margin-right: auto;

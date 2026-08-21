@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { basename, dirname, join } from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
@@ -19,6 +19,15 @@ const includePatterns = metadataValues('include').map((pattern) => {
   return globToRegExp(pattern)
 })
 const isIncluded = (url) => includePatterns.some((pattern) => pattern.test(url))
+const engines = ['baidu', 'google', 'bing', 'duck', 'haosou']
+const layoutResourceSuffixes = ['CommonStyle', 'OnePageStyle', 'TwoPageStyle', 'ThreePageStyle', 'FourPageStyle']
+const expectedResourceNames = [
+  ...engines.flatMap(engine => layoutResourceSuffixes.map(suffix => `${engine}${suffix}`)),
+  'HuYanStyle',
+  'BgAutoFit',
+  'HuaHua-ACDrakMode',
+  'baiduLiteStyle',
+]
 
 test('release metadata points to the maintained repository', () => {
   assert.deepEqual(metadataValues('name'), ['Search Engine Cleaner - 搜索增强'])
@@ -79,14 +88,29 @@ test('configuration bridge is only injected into the published console entry poi
 test('every userscript resource is owned by this repository and exists locally', () => {
   const resources = metadataValues('resource')
   const version = metadataValues('version')[0]
-  assert.ok(resources.length > 0)
+  const parsedResources = []
 
   for (const resource of resources) {
-    const match = resource.match(/^\S+\s+(https:\/\/raw\.githubusercontent\.com\/lingling225\/search-engine-cleaner\/main\/newcss\/([^/?#]+)\?v=([^&#]+))$/)
+    const match = resource.match(/^(\S+)\s+(https:\/\/raw\.githubusercontent\.com\/lingling225\/search-engine-cleaner\/main\/newcss\/([^/?#]+)\?v=([^&#]+))$/)
     assert.ok(match, `unexpected resource target: ${resource}`)
-    assert.equal(existsSync(join(repositoryRoot, 'newcss', basename(match[2]))), true, `${match[2]} is missing`)
-    assert.equal(match[3], version, `${match[2]} cache version should match the userscript version`)
+    const [, name, url, fileName, cacheVersion] = match
+    assert.equal(fileName, `${name}.less`, `${name} should map to its same-named Less file`)
+    assert.equal(existsSync(join(repositoryRoot, 'newcss', basename(fileName))), true, `${fileName} is missing`)
+    assert.equal(cacheVersion, version, `${fileName} cache version should match the userscript version`)
+    parsedResources.push({ name, url, fileName })
   }
+
+  const names = parsedResources.map(({ name }) => name)
+  const urls = parsedResources.map(({ url }) => url)
+  assert.equal(resources.length, 29, 'the complete resource contract should contain 29 Less files')
+  assert.equal(new Set(names).size, names.length, 'resource names must be unique')
+  assert.equal(new Set(urls).size, urls.length, 'resource URLs must be unique')
+  assert.deepEqual([...names].sort(), [...expectedResourceNames].sort(), 'metadata resource names should be complete')
+
+  const localLessFiles = readdirSync(join(repositoryRoot, 'newcss'))
+    .filter(fileName => fileName.endsWith('.less'))
+    .sort()
+  assert.deepEqual(localLessFiles, expectedResourceNames.map(name => `${name}.less`).sort(), 'every shipped Less file should be declared once')
 })
 
 test('original project is attribution only and not a runtime dependency', () => {

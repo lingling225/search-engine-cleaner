@@ -1,11 +1,14 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 
 const repositoryRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 const read = (path) => readFileSync(join(repositoryRoot, path), 'utf8')
+const require = createRequire(import.meta.url)
+const less = require(join(repositoryRoot, 'ac-baidu', 'doc', 'node_modules', 'less'))
 
 const userscript = read('Search-Engine-Cleaner.user.js')
 const bridge = read('ac-baidu/doc/docs/pages/custom/bridge.ts')
@@ -15,6 +18,48 @@ const saveAlert = read('ac-baidu/doc/docs/pages/custom/components/SaveAlert.vue'
 const eyeCareStyle = read('newcss/HuYanStyle.less')
 const baiduStyle = read('newcss/baiduCommonStyle.less')
 const googleTwoPageStyle = read('newcss/googleTwoPageStyle.less')
+const engines = ['baidu', 'google', 'bing', 'duck', 'haosou']
+const settingStylePaths = [
+  'newcss/HuYanStyle.less',
+  'newcss/BgAutoFit.less',
+  'newcss/HuaHua-ACDrakMode.less',
+]
+const geometryProperty = /^(?:display|position|(?:min-|max-)?(?:width|height)|margin(?:-.+)?|padding(?:-.+)?|gap|row-gap|column-gap|grid(?:-.+)?|flex(?:-.+)?|float|clear|top|right|bottom|left|inset(?:-.+)?|transform|overflow(?:-.+)?|box-sizing|line-height|font(?:-size)?|white-space|word-break|overflow-wrap|border|border-(?:width|radius|top|right|bottom|left)(?:-.+)?)$/
+const compiledStyleCache = new Map()
+
+const splitSelectorList = (selectorList) => {
+  const selectors = []
+  let start = 0
+  let depth = 0
+  let quote = ''
+
+  for (let index = 0; index < selectorList.length; index++) {
+    const char = selectorList[index]
+    if (quote) {
+      if (char === quote && selectorList[index - 1] !== '\\') quote = ''
+      continue
+    }
+    if (char === '"' || char === "'") quote = char
+    else if (char === '(' || char === '[') depth++
+    else if (char === ')' || char === ']') depth--
+    else if (char === ',' && depth === 0) {
+      selectors.push(selectorList.slice(start, index).trim())
+      start = index + 1
+    }
+  }
+  selectors.push(selectorList.slice(start).trim())
+  return selectors.filter(Boolean)
+}
+
+const compileStyleRules = async (path) => {
+  if (!compiledStyleCache.has(path)) {
+    compiledStyleCache.set(path, less.render(read(path), { filename: join(repositoryRoot, path) }).then(({ css }) =>
+      [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+        .map((match) => ({ selector: match[1].trim(), declarations: match[2].trim() }))
+        .filter(({ declarations }) => declarations.includes(':'))))
+  }
+  return compiledStyleCache.get(path)
+}
 
 test('configuration previews are debounced and invalid Less stays out of the runtime', () => {
   assert.match(bridge, /previewTimers\s*=\s*new Map/)
@@ -73,13 +118,44 @@ test('baidu title rows stay stable when favicon and counters toggle', () => {
   assert.match(baiduStyle, /\[class\*='title-box_'\]\s*>\s*i\.c-icon\[class\*='front-icon_'\]\s*\{[^}]*display:\s*none\s*!important/s)
 })
 
-test('background and eye-care layers preserve card geometry', () => {
-  assert.match(userscript, /\$\{siteScope\}::before\{[^}]*z-index:\s*-1/s)
+test('background image CSS is scoped without changing the page flow', () => {
+  assert.match(userscript, /const bgCSS = `\$\{siteScope\}\{background-image:/)
   assert.match(userscript, /background-repeat:\s*no-repeat/)
-  assert.doesNotMatch(eyeCareStyle, /border-radius:\s*0(?:px)?/)
-  assert.match(eyeCareStyle, /overflow-wrap:\s*anywhere/)
-  assert.match(eyeCareStyle, /border-radius:\s*8px/)
-  assert.match(eyeCareStyle, /border-radius:\s*5px/)
+  assert.doesNotMatch(userscript, /const bgCSS = `[^`]*(?:position:relative|min-height:100vh|z-index:-1)/)
+  assert.doesNotMatch(eyeCareStyle, /^\s*(?:border(?:-radius|-width)?|line-height|min-width|overflow-wrap)\s*:/m)
+})
+
+test('eye-care, background-fit, and dark-mode styles are engine scoped', async () => {
+  for (const path of settingStylePaths) {
+    const rules = await compileStyleRules(path)
+    const seenEngines = new Set()
+
+    for (const { selector } of rules) {
+      for (const oneSelector of splitSelectorList(selector)) {
+        const scopes = [...oneSelector.matchAll(/body\[(baidu|google|bing|duck|haosou)\]/g)].map(match => match[1])
+        assert.equal(scopes.length, 1, `${path} has an unscoped or cross-engine selector: ${oneSelector}`)
+        seenEngines.add(scopes[0])
+      }
+    }
+
+    assert.deepEqual([...seenEngines].sort(), [...engines].sort(), `${path} should explicitly cover all engines`)
+  }
+})
+
+test('visual setting styles cannot change result-card geometry', async () => {
+  for (const path of settingStylePaths) {
+    const rules = await compileStyleRules(path)
+    const offenders = []
+
+    for (const { selector, declarations } of rules) {
+      for (const declaration of declarations.split(';')) {
+        const property = declaration.match(/^\s*([\w-]+)\s*:/)?.[1]?.toLowerCase()
+        if (property && geometryProperty.test(property)) offenders.push(`${selector} -> ${property}`)
+      }
+    }
+
+    assert.deepEqual(offenders, [], `${path} contains layout geometry:\n${offenders.join('\n')}`)
+  }
 })
 
 test('google two-column cards fill the same grid row without trailing margins', () => {

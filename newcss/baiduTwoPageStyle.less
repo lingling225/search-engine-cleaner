@@ -302,8 +302,11 @@ body[baidu] .result-molecule.new-pmd:has(#s_tab) {
   }
 }
 
-.AC.sp-separator {
-  width: auto;
+body[baidu][ac-layout-mode='3'] .AC.sp-separator {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 #sej-container {
