@@ -22,3 +22,33 @@ body[bing][ac-layout-mode='4'] {
   #b_content #b_pole { width: min(1440px, calc(100vw - 64px)); max-width: 100%; margin-inline: auto; }
   .sp-separator.AC { grid-column: 1 / -1; width: 100%; min-width: 0; box-sizing: border-box; }
 }
+
+/* Bing mode 4 fallback for the current result shell. */
+body[bing][ac-layout-mode='4'] #b_content #b_results {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: var(--ac-layout-gap) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[bing][ac-layout-mode='4'] #b_content #b_results > li {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[bing][ac-layout-mode='4'] #b_content #b_results > .sp-separator.AC,
+body[bing][ac-layout-mode='4'] #b_content #b_results > .AC.sp-separator {
+  grid-column: 1 / -1 !important;
+}
+
+@media (max-width: 900px) {
+  body[bing][ac-layout-mode='4'] #b_content #b_results {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}

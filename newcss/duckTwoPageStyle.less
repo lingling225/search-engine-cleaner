@@ -172,3 +172,33 @@ body[duck][ac-layout-mode='3'] .sp-separator.AC {
   justify-content: center;
   padding-left: unset;
 }
+
+/* DuckDuckGo mode 3 fallback for the current result shell. */
+body[duck][ac-layout-mode='3'] #react-layout .react-results--main {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: var(--ac-layout-gap) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[duck][ac-layout-mode='3'] #react-layout .react-results--main > li {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[duck][ac-layout-mode='3'] #react-layout .react-results--main > .sp-separator.AC,
+body[duck][ac-layout-mode='3'] #react-layout .react-results--main > .AC.sp-separator {
+  grid-column: 1 / -1 !important;
+}
+
+@media (max-width: 900px) {
+  body[duck][ac-layout-mode='3'] #react-layout .react-results--main {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}

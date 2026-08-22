@@ -155,3 +155,53 @@ body[haosou] #container .res-title > a {
 body[haosou]:not(.showRight) #side {
   display: none !important;
 }
+
+/* Haosou-only layout safety rules. */
+body[haosou][ac-layout-mode] {
+  --ac-layout-gap: clamp(16px, 1.6vw, 24px);
+  --ac-layout-page-gutter: clamp(16px, 3vw, 56px);
+  --ac-layout-columns: 1;
+  --ac-layout-shell-width: min(900px, calc(100vw - 2 * var(--ac-layout-page-gutter)));
+}
+
+body[haosou][ac-layout-mode] #container #main .result > li {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+body[haosou][ac-layout-mode] .res-title[data-favicon-t] {
+  display: flex !important;
+  align-items: flex-start !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-wrap: anywhere !important;
+}
+
+body[haosou][ac-layout-mode] .res-title[data-favicon-t] > a {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-wrap: anywhere !important;
+  white-space: normal !important;
+}
+
+body[haosou][ac-layout-mode] [data-favicon-t]::before {
+  flex: 0 0 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin: 2px 0 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[haosou][ac-layout-mode] .AC-CounterT {
+  flex: 0 0 auto !important;
+  min-width: 20px !important;
+  max-width: 6ch !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+}

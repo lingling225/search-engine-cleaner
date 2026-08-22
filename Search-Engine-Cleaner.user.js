@@ -7,7 +7,7 @@
 // @license      GPL-3.0-only
 // @create     2015-11-25
 // @run-at     document-start
-// @version    1.0.22
+// @version    1.0.23
 // @connect    baidu.com
 // @connect    google.com
 // @connect    google.com.hk
@@ -39,10 +39,10 @@
 // @downloadURL https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/Search-Engine-Cleaner.user.js
 // @updateURL   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/Search-Engine-Cleaner.user.js
 // @copyright  2015-2026, AC; modifications 2026, lingling225
-// @lastmodified  2026-08-20
+// @lastmodified  2026-08-21
 // @feedback-url  https://github.com/lingling225/search-engine-cleaner/issues
 // @note    Source: https://github.com/langren1353/GM_script (GPL-3.0-only)
-// @note    1.0.22 修复 Google 外层原生网格限制，确保三列、四列结果壳按目标宽度居中。
+// @note    1.0.23 隔离五个引擎的布局几何，修复多列重叠、模式串用和样式缓存旧值。
 // @note    1.0.19 强制刷新布局资源缓存，修复 Google 结果根节点动态网格命中范围。
 // @note    1.0.18 隔离五个搜索引擎的六种布局，修复自动分页重复结果容器。
 // @note    1.0.17 解除 Google 分类导航外层固定宽度和偏移，自适应结果区域居中。
@@ -57,35 +57,35 @@
 // @note    1.0.3 修复百度、Google 和 360 搜索结果的宽度、对齐与多列布局问题。
 // @note    1.0.1 重构百度响应式布局，修复宽屏溢出、顶部错位和登录按钮被裁切。
 // @note    1.0.0 保留百度、Google、Bing、DuckDuckGo、360 搜索的完整配置与功能，清理无关内容。
-// @resource  baiduCommonStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduCommonStyle.less?v=1.0.22
-// @resource  baiduOnePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduOnePageStyle.less?v=1.0.22
-// @resource  baiduTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduTwoPageStyle.less?v=1.0.22
-// @resource  baiduThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduThreePageStyle.less?v=1.0.22
-// @resource  baiduFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduFourPageStyle.less?v=1.0.22
-// @resource  googleCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleCommonStyle.less?v=1.0.22
-// @resource  googleOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleOnePageStyle.less?v=1.0.22
-// @resource  googleTwoPageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleTwoPageStyle.less?v=1.0.22
-// @resource  googleThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleThreePageStyle.less?v=1.0.22
-// @resource  googleFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleFourPageStyle.less?v=1.0.22
-// @resource  bingCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingCommonStyle.less?v=1.0.22
-// @resource  bingOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingOnePageStyle.less?v=1.0.22
-// @resource  bingTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingTwoPageStyle.less?v=1.0.22
-// @resource  bingThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingThreePageStyle.less?v=1.0.22
-// @resource  bingFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingFourPageStyle.less?v=1.0.22
-// @resource  duckCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckCommonStyle.less?v=1.0.22
-// @resource  duckOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckOnePageStyle.less?v=1.0.22
-// @resource  duckTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckTwoPageStyle.less?v=1.0.22
-// @resource  duckThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckThreePageStyle.less?v=1.0.22
-// @resource  duckFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckFourPageStyle.less?v=1.0.22
-// @resource  haosouCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouCommonStyle.less?v=1.0.22
-// @resource  haosouOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouOnePageStyle.less?v=1.0.22
-// @resource  haosouTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouTwoPageStyle.less?v=1.0.22
-// @resource  haosouThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouThreePageStyle.less?v=1.0.22
-// @resource  haosouFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouFourPageStyle.less?v=1.0.22
-// @resource  HuYanStyle         https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuYanStyle.less?v=1.0.22
-// @resource  BgAutoFit          https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/BgAutoFit.less?v=1.0.22
-// @resource  HuaHua-ACDrakMode  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuaHua-ACDrakMode.less?v=1.0.22
-// @resource  baiduLiteStyle     https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduLiteStyle.less?v=1.0.22
+// @resource  baiduCommonStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduCommonStyle.less?v=1.0.23
+// @resource  baiduOnePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduOnePageStyle.less?v=1.0.23
+// @resource  baiduTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduTwoPageStyle.less?v=1.0.23
+// @resource  baiduThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduThreePageStyle.less?v=1.0.23
+// @resource  baiduFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduFourPageStyle.less?v=1.0.23
+// @resource  googleCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleCommonStyle.less?v=1.0.23
+// @resource  googleOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleOnePageStyle.less?v=1.0.23
+// @resource  googleTwoPageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleTwoPageStyle.less?v=1.0.23
+// @resource  googleThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleThreePageStyle.less?v=1.0.23
+// @resource  googleFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleFourPageStyle.less?v=1.0.23
+// @resource  bingCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingCommonStyle.less?v=1.0.23
+// @resource  bingOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingOnePageStyle.less?v=1.0.23
+// @resource  bingTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingTwoPageStyle.less?v=1.0.23
+// @resource  bingThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingThreePageStyle.less?v=1.0.23
+// @resource  bingFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingFourPageStyle.less?v=1.0.23
+// @resource  duckCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckCommonStyle.less?v=1.0.23
+// @resource  duckOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckOnePageStyle.less?v=1.0.23
+// @resource  duckTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckTwoPageStyle.less?v=1.0.23
+// @resource  duckThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckThreePageStyle.less?v=1.0.23
+// @resource  duckFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckFourPageStyle.less?v=1.0.23
+// @resource  haosouCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouCommonStyle.less?v=1.0.23
+// @resource  haosouOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouOnePageStyle.less?v=1.0.23
+// @resource  haosouTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouTwoPageStyle.less?v=1.0.23
+// @resource  haosouThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouThreePageStyle.less?v=1.0.23
+// @resource  haosouFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouFourPageStyle.less?v=1.0.23
+// @resource  HuYanStyle         https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuYanStyle.less?v=1.0.23
+// @resource  BgAutoFit          https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/BgAutoFit.less?v=1.0.23
+// @resource  HuaHua-ACDrakMode  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuaHua-ACDrakMode.less?v=1.0.23
+// @resource  baiduLiteStyle     https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduLiteStyle.less?v=1.0.23
 // @require   https://registry.npmmirror.com/less_browser_fix/4.2.2/files/dist/less.min.js
 // @require   https://registry.npmmirror.com/vue/3.5.26/files/dist/vue.runtime.global.prod.js
 // @noframes
@@ -127,6 +127,14 @@
   })
 
   const { reactive, watch } = Vue;
+
+  const normalizeLayoutMode = (mode) => {
+    const numericMode = Number(mode)
+    if (Number.isNaN(numericMode)) return 0
+    if (numericMode === Number.POSITIVE_INFINITY) return 5
+    if (numericMode === Number.NEGATIVE_INFINITY) return 0
+    return Math.max(0, Math.min(5, Math.trunc(numericMode)))
+  }
 
   // Layout resources are deliberately selected, never accumulated. Keeping this
   // map as a pure function makes mode changes auditable and prevents stale CSS
@@ -910,7 +918,9 @@
         FaviconAddTo: "h3",
         CounterType: "#rso .vt6azd h3:not(table h3),._yE>div[class~=_kk] h3",
         BlockType: ".vt6azd h3", // 修复block翻页的问题
-        MultiPageType: ".srg, div[two-father], #kp-wp-tab-overview",
+        // Google keeps one authoritative result stream. Nested modules are
+        // cards inside #rso, never independent layout roots.
+        MultiPageType: "#rso",
         pager: {
           nextLink: "id('pnnext')|id('navbar navcnt nav')//td[span]/following-sibling::td[1]/a|id('nn')/parent::a",
           // Only move result children. Copying the fetched #rso shell creates
@@ -1427,7 +1437,7 @@
         for (const styleName of layoutPlan) {
           layoutParts.push(await this.loadStyleByName_WithLessCache(styleName))
         }
-        const mode = Number(this.curConfig.adsStyleMode)
+        const mode = normalizeLayoutMode(this.curConfig.adsStyleMode)
         if (mode === 4 || mode === 5) layoutParts.push(this.getMultiPageStyle(mode))
         nextCSSList.layoutStyle = layoutParts.filter(Boolean).join('\n')
       }
@@ -1471,7 +1481,7 @@
     }
 
     getMultiPageStyle() {
-      const mode = Number(arguments[0] || this.curConfig.adsStyleMode)
+      const mode = normalizeLayoutMode(arguments[0] || this.curConfig.adsStyleMode)
       const columns = mode === 4 ? 3 : 4
       const siteName = this.options.siteName
       const site = {
@@ -1486,7 +1496,14 @@
         google: `${scope}{--ac-search-layout-columns:${columns};}`,
       }[site] || `${scope}{--ac-search-layout-columns:${columns};}`
 
-      const target = this.options.useItem.MultiPageType
+      const targetSelector = {
+        baidu: '#container #content_left',
+        google: '#rso',
+        bing: '#b_content #b_results',
+        duck: '#react-layout .react-results--main',
+        haosou: '#container #main .result',
+      }[site] || this.options.useItem.MultiPageType
+      const target = targetSelector
         .split(',')
         .map(selector => selector.trim())
         .filter(Boolean)
@@ -2142,11 +2159,12 @@
 
       const activeSite = CONST.options.siteName
       const siteScope = `body[${activeSite}]`
+      const normalizedMode = normalizeLayoutMode(CONST.curConfig.adsStyleMode)
       if (document.body) {
         document.body.setAttribute(activeSite, '1')
         const canonicalSite = { baidu_xueshu: 'baidu', google_scholar: 'google' }[activeSite]
         if (canonicalSite) document.body.setAttribute(canonicalSite, '1')
-        document.body.setAttribute('ac-layout-mode', String(+CONST.curConfig.adsStyleMode || 0))
+        document.body.setAttribute('ac-layout-mode', String(normalizedMode))
       }
 
       if (!CONST.curConfig.enableCSS) {
@@ -2159,6 +2177,8 @@
       if (CONST.curConfig.adsStyleEnable) {
         console.mylog('插入当前布局样式', getLayoutStylePlan(CONST.options.siteName, CONST.curConfig.adsStyleMode))
         CONST.cssAutoInsert.add("layoutStyle", CONST.adsCSSList.layoutStyle)
+      } else {
+        CONST.cssAutoInsert.remove("layoutStyle")
       }
 
       CONST.cssAutoInsert.add("styleLogo", `${siteScope} .minidiv #logo img{width: 100px;height: unset;margin-top: 0.3rem;} ${siteScope}.purecss-mode:before{display: none;}`)
@@ -2459,13 +2479,17 @@
         },
         prepareInsertedPageLayout: function (pageElems, target) {
           const isGoogle = CONST.options.siteName === 'google' || CONST.options.siteName === 'google_scholar'
-          const mode = Number(CONST.curConfig.adsStyleMode)
+          const mode = normalizeLayoutMode(CONST.curConfig.adsStyleMode)
           if (!isGoogle || mode < 3 || !target) return
 
+          target.setAttribute('data-ac-layout-root', '1')
           target.setAttribute('two-father', '1')
           pageElems.forEach((node) => {
             node.querySelectorAll(':scope > .A6K0A, :scope > .MjjYud > .A6K0A')
-              .forEach((card) => card.setAttribute('two-child', '1'))
+              .forEach((card) => {
+                card.setAttribute('data-ac-layout-card', '1')
+                card.setAttribute('two-child', '1')
+              })
           })
         },
         processInsertedPageFeatures: function () {
@@ -3161,85 +3185,39 @@
     /***Google双列修复***/
     CONST.addIntervalTrigger('google', 'now', (counter) => {
       function findAndMarkP2Line() {
-
+        const mode = normalizeLayoutMode(CONST.curConfig.adsStyleMode)
         const primaryRoot = document.querySelector('#rso') || document.querySelector('[data-micp-id="rso"]')
-        if (primaryRoot && !document.getElementById('rso')) primaryRoot.id = 'rso'
-        if (primaryRoot && Number(CONST.curConfig.adsStyleMode) >= 3) {
-          primaryRoot.setAttribute('two-father', '1')
-          primaryRoot.querySelectorAll(':scope > .MjjYud > .A6K0A, :scope > .ULSxyf > .MjjYud > .A6K0A')
-            .forEach((card) => card.setAttribute('two-child', '1'))
-        }
+        if (!primaryRoot) return []
+        if (!document.getElementById('rso')) primaryRoot.id = 'rso'
 
-        function markFatherChild(child, father) {
-          const child_checkedAttr = child.getAttribute('two-checked') || 0
-          const father_checkedAttr = father.getAttribute('two-checked') || 0
+        // Remove markers left by older script versions. A marker on a nested
+        // Google module turns that module into a second grid root.
+        primaryRoot.removeAttribute('two-father')
+        primaryRoot.removeAttribute('two-checked')
+        primaryRoot.querySelectorAll('[two-father], [two-child], [two-checked]').forEach((node) => {
+          node.removeAttribute('two-father')
+          node.removeAttribute('two-child')
+          node.removeAttribute('two-checked')
+          node.removeAttribute('data-ac-layout-card')
+        })
+        primaryRoot.removeAttribute('data-ac-layout-root')
+        primaryRoot.removeAttribute('two-father')
+        if (mode < 3) return []
 
-          const trueChild = child.querySelector('.A6K0A')
-          if(trueChild) {
-            trueChild.setAttribute('two-child', 1)
-            trueChild.setAttribute('two-checked', +child_checkedAttr + 1)
-            father.setAttribute('two-father', 1)
-            father.setAttribute('two-checked', +father_checkedAttr + 1)
-            return father
-          } else {
-            return null
-          }
-        }
-
-        // 检查的事preNode 和 curNode
-        // 但是需要先判断curNode和fatherNode有没有
-        function getTrueFatherChild(preNode, curNode, fatherNode) {
-          const minItemHeight = 60
-          const father_curPossible = curNode.offsetHeight > minItemHeight && fatherNode.offsetHeight / curNode.offsetHeight > 1.5
-          const father_anotherPossible = [...fatherNode.children].some(one => {
-            return one !== curNode && one.offsetHeight > minItemHeight && fatherNode.offsetHeight / one.offsetHeight > 5;
+        primaryRoot.setAttribute('data-ac-layout-root', '1')
+        primaryRoot.setAttribute('two-father', '1')
+        primaryRoot.querySelectorAll(':scope > .MjjYud > .A6K0A, :scope > .ULSxyf > .MjjYud > .A6K0A')
+          .forEach((card) => {
+            card.setAttribute('data-ac-layout-card', '1')
+            // Keep the existing card theme selectors working, but only on
+            // direct result cards, never on nested modules.
+            card.setAttribute('two-child', '1')
           })
-          const fatherNotMain = fatherNode.id === "cnt";
-
-          // 先检查当前父节点是否符合要求
-          if (!fatherNotMain && father_curPossible && father_anotherPossible) {
-            return markFatherChild(curNode, fatherNode)
-          } else {
-            const now_curPossible = preNode.offsetHeight > minItemHeight && curNode.offsetHeight / preNode.offsetHeight > 1.5
-            const now_anotherPossible = [...curNode.children].some(one => {
-              return one !== preNode && one.offsetHeight > minItemHeight && curNode.offsetHeight / one.offsetHeight > 5;
-            })
-            // 父节点不行的话，那么检查子节点是否符合要求
-            if (now_curPossible && now_anotherPossible) {
-              return markFatherChild(preNode, curNode)
-            }
-            return null
-          }
-        }
-
-        // 标记自身
-        function MarkMine(curItem) {
-          let maxHeight = 9, curHeight = 1
-          let preNode = curItem
-          while (curHeight < maxHeight) {
-            const fatherNode = curItem.parentNode
-            let attrV = curItem.getAttribute('two-checked') || 0
-            if (!curItem.hasAttribute('two-checked') || +attrV < 8) {
-              const node = getTrueFatherChild(preNode, curItem, fatherNode)
-              if (node) {
-                return node
-              }
-            }
-            curItem.setAttribute('two-checked', +attrV + 1)
-            preNode = curItem
-            curItem = fatherNode
-            curHeight++
-          }
-          return null
-        }
-
-        const gList = document.querySelectorAll(".g:not([two-checked*='8']), .cUnQKe:not([two-checked*='8']), .Ww4FFb:not([two-checked*='8'])")
-
-        return [...gList].filter(one => MarkMine(one))
+        return []
       }
 
       const valid = location.href.search(/(&|\?)(q|kw)=/) >= 0 ||
-        document.querySelector(".g, div[two-father]")
+        document.querySelector(".g, #rso, [data-micp-id='rso']")
 
       if (counter % 4 === 0) {
         if (CONST.curConfig.useBaiduLogo) {
@@ -3348,7 +3326,7 @@
       }
 
       // 双列模式下，自动禁用右侧栏
-      if (!CONST.curConfig.isRightDisplayEnable || Number(CONST.curConfig.adsStyleMode) > 2) {
+      if (!CONST.curConfig.isRightDisplayEnable || normalizeLayoutMode(CONST.curConfig.adsStyleMode) > 2) {
         document.body.classList.remove("showRight")
       } else {
         if (!document.body.classList.contains('showRight')) {
@@ -3403,6 +3381,11 @@
       })
     }, 20, true)
     MyApi.safeWaitFunc('body', () => {
+      const activeSite = CONST.options.siteName
+      document.body.setAttribute(activeSite, '1')
+      const canonicalSite = { baidu_xueshu: 'baidu', google_scholar: 'google' }[activeSite]
+      if (canonicalSite) document.body.setAttribute(canonicalSite, '1')
+      document.body.setAttribute('ac-layout-mode', String(normalizeLayoutMode(CONST.curConfig.adsStyleMode)))
       const insertName = CONST.curConfig.enableCSS ? CONST.options.siteName : (CONST.options.siteName + '_nocss')
       if (!document.body.hasAttribute(insertName)) {
         document.body.setAttribute(insertName, '1')
@@ -3412,6 +3395,9 @@
           document.body.classList.add('ac-ready')
         }, 400)
       }
+      // The initial callback can run while only <html> exists. Re-run once
+      // after body creation so scoped layout rules are applied deterministically.
+      PageFunc.dataChangeFireCallback()
       PageFunc.InsertSettingMenu()
       if (CONST.curConfig.isAutopage) {
         setTimeout(() => {

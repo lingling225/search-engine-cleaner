@@ -62,3 +62,33 @@ body[baidu][ac-layout-mode='5'].pc-fresh-wrapper-con {
     box-sizing: border-box;
   }
 }
+
+/* Baidu mode 5 fallback for current and legacy result shells. */
+body[baidu][ac-layout-mode='5'] #wrapper_wrapper #container #content_left {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--ac-layout-gap) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[baidu][ac-layout-mode='5'] #wrapper_wrapper #container #content_left > * {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  grid-column: auto !important;
+  box-sizing: border-box !important;
+}
+
+body[baidu][ac-layout-mode='5'] #wrapper_wrapper #container #content_left > .AC.sp-separator,
+body[baidu][ac-layout-mode='5'] #wrapper_wrapper #container #content_left > .sp-separator.AC {
+  grid-column: 1 / -1 !important;
+}
+
+@media (max-width: 900px) {
+  body[baidu][ac-layout-mode='5'] #wrapper_wrapper #container #content_left {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}

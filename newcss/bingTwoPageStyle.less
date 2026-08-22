@@ -92,3 +92,33 @@ body #b_header {
   flex: 0 0 auto;
   margin: 0;
 }
+
+/* Bing mode 3 fallback for the current result shell. */
+body[bing][ac-layout-mode='3'] #b_content #b_results {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: var(--ac-layout-gap) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[bing][ac-layout-mode='3'] #b_content #b_results > li {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[bing][ac-layout-mode='3'] #b_content #b_results > .sp-separator.AC,
+body[bing][ac-layout-mode='3'] #b_content #b_results > .AC.sp-separator {
+  grid-column: 1 / -1 !important;
+}
+
+@media (max-width: 900px) {
+  body[bing][ac-layout-mode='3'] #b_content #b_results {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}

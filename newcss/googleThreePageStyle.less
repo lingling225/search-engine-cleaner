@@ -60,3 +60,33 @@ body[google][ac-layout-mode='4'] {
   .sp-separator.AC { grid-column: 1 / -1; width: 100%; min-width: 0; box-sizing: border-box; }
   #hdtb #hdtb-msb-vis { width: 100%; margin-left: 0; }
 }
+
+/* Google mode 4 uses #rso as the only grid root. */
+body[google][ac-layout-mode='4'] #rso {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: var(--ac-layout-gap) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[google][ac-layout-mode='4'] #rso > * {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  grid-column: auto !important;
+  box-sizing: border-box !important;
+}
+
+body[google][ac-layout-mode='4'] #rso > .AC.sp-separator,
+body[google][ac-layout-mode='4'] #rso > .sp-separator.AC {
+  grid-column: 1 / -1 !important;
+}
+
+@media (max-width: 900px) {
+  body[google][ac-layout-mode='4'] #rso {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}

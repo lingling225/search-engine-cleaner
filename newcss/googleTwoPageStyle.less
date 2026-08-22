@@ -229,3 +229,33 @@ body[google] #hdtb .rQTE8b {
 body[google] .rZj61{
   margin-left: 40%;
 }
+
+/* Google mode 3 uses #rso as the only grid root. */
+body[google][ac-layout-mode='3'] #rso {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: var(--ac-layout-gap) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[google][ac-layout-mode='3'] #rso > * {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  grid-column: auto !important;
+  box-sizing: border-box !important;
+}
+
+body[google][ac-layout-mode='3'] #rso > .AC.sp-separator,
+body[google][ac-layout-mode='3'] #rso > .sp-separator.AC {
+  grid-column: 1 / -1 !important;
+}
+
+@media (max-width: 900px) {
+  body[google][ac-layout-mode='3'] #rso {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}

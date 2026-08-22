@@ -25,3 +25,33 @@ body[haosou][ac-layout-mode='4'] {
   #container #side { display: none !important; }
   .sp-separator.AC { grid-column: 1 / -1; width: 100%; min-width: 0; box-sizing: border-box; }
 }
+
+/* Haosou mode 4 fallback for the current result shell. */
+body[haosou][ac-layout-mode='4'] #container #main .result {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: var(--ac-layout-gap) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[haosou][ac-layout-mode='4'] #container #main .result > li {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[haosou][ac-layout-mode='4'] #container #main .result > .sp-separator.AC,
+body[haosou][ac-layout-mode='4'] #container #main .result > .AC.sp-separator {
+  grid-column: 1 / -1 !important;
+}
+
+@media (max-width: 900px) {
+  body[haosou][ac-layout-mode='4'] #container #main .result {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
