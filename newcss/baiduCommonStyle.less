@@ -314,7 +314,43 @@ form.fm {
   width: 100%;
   min-width: 0;
   max-width: 100%;
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 4px;
+  line-height: 1.45;
   overflow-wrap: anywhere;
+}
+
+body[baidu].pc-fresh-wrapper-con #wrapper #content_left [class*='title-box_'] > i.c-icon[class*='front-icon_'],
+body[baidu].pc-fresh-wrapper-con #wrapper #content_left [class*='title-box_'] > i.c-icon[class*='prefix-icon_'],
+body[baidu].pc-fresh-wrapper-con #wrapper #content_left .prefix-icon_pJvKe,
+body[baidu].pc-fresh-wrapper-con #wrapper #content_left .front-icon_7wpfB {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0 4px 0 0 !important;
+  padding: 0 !important;
+  line-height: 1.45 !important;
+  vertical-align: top;
+}
+
+body[baidu].pc-fresh-wrapper-con #wrapper #content_left [class*='title-box_'] > a,
+body[baidu].pc-fresh-wrapper-con #container.sam_newgrid .c-container .t[class*='doc-title'] > a,
+body[baidu].pc-fresh-wrapper-con #container.sam_newgrid .c-container .t[class*='doc-title'] > [class*='title-box_'] {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+body[baidu].pc-fresh-wrapper-con #wrapper #content_left .source_1rJIg {
+  display: block;
+  line-height: 1.45;
 }
 
 #wrapper #content_left {
