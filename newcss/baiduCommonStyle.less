@@ -33,6 +33,9 @@ body[baidu].pc-fresh-wrapper-con {
   --ac-baidu-logo-width: 101px;
   --ac-baidu-header-gap: 20px;
   --ac-baidu-card-width: min(670px, calc(100vw - var(--ac-baidu-page-gutter) - var(--ac-baidu-page-gutter)));
+  --ac-baidu-card-padding-left: 20px;
+  --ac-baidu-card-padding-right: 8px;
+  --ac-baidu-title-background: rgba(248, 248, 248, .96);
 
   #head {
     min-width: 0;
@@ -225,7 +228,7 @@ form.fm {
 #wrapper #content_left>.c-container {
   width: var(--ac-baidu-card-width);
   max-width: 100%;
-  padding: 0 8px 15px 20px;
+  padding: 0 var(--ac-baidu-card-padding-right) 15px var(--ac-baidu-card-padding-left);
   margin-top: 0;
   margin-left: 0;
   margin-bottom: 30px;
@@ -270,25 +273,27 @@ form.fm {
 #wrapper #content_left>.result h3[class*='title'],
 #wrapper #content_left>.c-container h3.t,
 #wrapper #content_left>.c-container h3[class*='title'] {
-  background-color: #f8f8f8;
-  margin: 0 0 10px;
-  padding: 8px 12px 5px;
+  background-color: var(--ac-baidu-title-background);
+  margin: 0 calc(-1 * var(--ac-baidu-card-padding-right)) 12px calc(-1 * var(--ac-baidu-card-padding-left));
+  padding: 8px 12px 7px var(--ac-baidu-card-padding-left);
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   display: flex !important;
   align-items: flex-start;
+  flex-wrap: nowrap;
   gap: 6px;
   flex: 0 1 auto;
-  width: 100% !important;
-  max-width: 100%;
+  width: auto !important;
+  max-width: none;
   min-width: 0;
   box-sizing: border-box;
   line-height: 1.45;
   white-space: normal;
+  overflow: hidden;
 
   &[data-favicon-t]::before {
-    margin-top: 3px;
-    margin-inline-end: 0;
+    align-self: flex-start;
+    margin: 3px 0 0 !important;
   }
 
   > .AC-CounterT {
@@ -298,11 +303,13 @@ form.fm {
   > a,
   > [class*='title-box_'],
   > div {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     min-width: 0;
     max-width: 100%;
-    overflow-wrap: anywhere;
-    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow-wrap: normal;
+    white-space: nowrap;
   }
 }
 
@@ -311,21 +318,21 @@ form.fm {
 }
 
 #wrapper #content_left [class*='title-box_'] {
-  width: 100%;
+  width: auto;
   min-width: 0;
   max-width: 100%;
   display: flex;
   align-items: flex-start;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 4px;
   line-height: 1.45;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-body[baidu].pc-fresh-wrapper-con #wrapper #content_left [class*='title-box_'] > i.c-icon[class*='front-icon_'],
 body[baidu].pc-fresh-wrapper-con #wrapper #content_left [class*='title-box_'] > i.c-icon[class*='prefix-icon_'],
-body[baidu].pc-fresh-wrapper-con #wrapper #content_left .prefix-icon_pJvKe,
-body[baidu].pc-fresh-wrapper-con #wrapper #content_left .front-icon_7wpfB {
+body[baidu].pc-fresh-wrapper-con #wrapper #content_left .prefix-icon_pJvKe {
   display: inline-flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -338,14 +345,26 @@ body[baidu].pc-fresh-wrapper-con #wrapper #content_left .front-icon_7wpfB {
   vertical-align: top;
 }
 
+body[baidu].pc-fresh-wrapper-con #wrapper #content_left .front-icon_7wpfB {
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0 4px 0 0 !important;
+  padding: 0 !important;
+  line-height: 1.45 !important;
+  vertical-align: top;
+}
+
 body[baidu].pc-fresh-wrapper-con #wrapper #content_left [class*='title-box_'] > a,
 body[baidu].pc-fresh-wrapper-con #container.sam_newgrid .c-container .t[class*='doc-title'] > a,
 body[baidu].pc-fresh-wrapper-con #container.sam_newgrid .c-container .t[class*='doc-title'] > [class*='title-box_'] {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   max-width: 100%;
-  overflow-wrap: anywhere;
-  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  overflow-wrap: normal;
+  white-space: nowrap;
 }
 
 body[baidu].pc-fresh-wrapper-con #wrapper #content_left .source_1rJIg {
@@ -627,22 +646,16 @@ body[baidu] .AC.sp-separator {
 }
 
 .prefix-icon_pJvKe{
-  padding-top: 1%;
-  margin-top: 0 !important;
-  margin-bottom: 11px;
-  margin-left: -20px;
-  background-color: #f8f8f8;
-  padding-left: 20px;
+  padding: 0 !important;
+  margin: 0 4px 0 0 !important;
+  background-color: transparent;
 }
 
 .front-icon_7wpfB{
   z-index: 1;
-  padding-top: 1.5%;
-  padding-bottom: 10px;
-  margin-left: -20px;
-  padding-right: 6px;
-  background-color: #f8f8f8;
-  padding-left: 20px;
+  padding: 0 !important;
+  margin: 0 4px 0 0 !important;
+  background-color: transparent;
 }
 
 .video-poster_3md57{
@@ -830,28 +843,32 @@ body[baidu][ac-layout-mode] h3.t[data-favicon-t],
 body[baidu][ac-layout-mode] h3[class*='title'][data-favicon-t] {
   display: flex !important;
   align-items: flex-start !important;
-  flex-wrap: wrap !important;
-  gap: 4px !important;
-  width: 100% !important;
+  flex-wrap: nowrap !important;
+  gap: 6px !important;
+  width: auto !important;
   min-width: 0 !important;
-  max-width: 100% !important;
+  max-width: none !important;
   box-sizing: border-box !important;
-  overflow-wrap: anywhere !important;
+  overflow: hidden !important;
 }
 
-body[baidu][ac-layout-mode] h3[data-favicon-t] > a {
+body[baidu][ac-layout-mode] h3[data-favicon-t] > a,
+body[baidu][ac-layout-mode] h3[data-favicon-t] > [class*='title-box_'],
+body[baidu][ac-layout-mode] h3[data-favicon-t] > div {
   flex: 1 1 0 !important;
   min-width: 0 !important;
   max-width: 100% !important;
-  overflow-wrap: anywhere !important;
-  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  overflow-wrap: normal !important;
+  white-space: nowrap !important;
 }
 
 body[baidu][ac-layout-mode] [data-favicon-t]::before {
   flex: 0 0 16px !important;
   width: 16px !important;
   height: 16px !important;
-  margin: 2px 0 0 !important;
+  margin: 3px 0 0 !important;
   box-sizing: border-box !important;
 }
 
