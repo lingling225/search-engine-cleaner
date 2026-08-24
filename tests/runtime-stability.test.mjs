@@ -133,6 +133,8 @@ test('original mode restores visual opacity without changing layout geometry', (
     assert.match(originalModeStyle, new RegExp(`\\/\\* ${engine === 'haosou' ? '360' : engine === 'duck' ? 'DuckDuckGo' : engine[0].toUpperCase() + engine.slice(1)} \\*\\/`))
   }
   assert.match(userscript, /const originalModeScope = `\$\{siteScope\}\[ac-layout-mode='0'\]`/)
+  assert.match(originalModeStyle, /background-color:\s*transparent\s*!important/)
+  assert.doesNotMatch(originalModeStyle, /background-color:\s*rgba\(248,\s*248,\s*248/)
   assert.doesNotMatch(originalModeStyle, /display\s*:\s*grid|grid-template|(?:^|[;{\s])(width|height|min-width|max-width|margin|padding|position|transform)\s*:/)
 })
 

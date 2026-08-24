@@ -2457,18 +2457,19 @@
           ${originalModeScope} #wrapper #content_left > .c-container,
           ${originalModeScope} #wrapper #rs,
           ${originalModeScope} #wrapper #content_right {
-            background-color: rgba(255, 255, 255, .96) !important;
+            background-color: rgba(255, 255, 255, .985) !important;
           }
           ${originalModeScope} #wrapper #content_left .result article,
           ${originalModeScope} #wrapper #content_left .result-op article,
           ${originalModeScope} #wrapper #rs_new {
-            background-color: rgba(255, 255, 255, .96) !important;
+            background-color: rgba(255, 255, 255, .985) !important;
           }
           ${originalModeScope} #wrapper #content_left .result h3[class~="c-title"],
           ${originalModeScope} #wrapper #content_left .result-op h3[class~="c-title"],
           ${originalModeScope} #wrapper #content_left .c-container h3[class~="c-title"],
           ${originalModeScope} #wrapper #rs .tt {
-            background-color: rgba(248, 248, 248, .98) !important;
+            background-color: transparent !important;
+            background-image: none !important;
           }
 
           /* Google */
@@ -2478,48 +2479,52 @@
           ${originalModeScope} #rso .g,
           ${originalModeScope} .dG2XIf,
           ${originalModeScope} div[two-father] div[two-child] {
-            background-color: rgba(255, 255, 255, .96) !important;
+            background-color: rgba(255, 255, 255, .985) !important;
           }
           ${originalModeScope} div[two-father] div[two-child] div.r,
           ${originalModeScope} div[two-father] div[two-child] h3 {
-            background-color: rgba(248, 248, 248, .98) !important;
+            background-color: transparent !important;
+            background-image: none !important;
           }
 
           /* Bing */
           ${originalModeScope} #b_header,
           ${originalModeScope} #b_content #b_results > li.b_algo,
           ${originalModeScope} #b_content #b_results > li.b_ans {
-            background-color: rgba(255, 255, 255, .96) !important;
+            background-color: rgba(255, 255, 255, .985) !important;
           }
           ${originalModeScope} #b_content #b_results li h2,
           ${originalModeScope} #b_content #b_results > li .b_title {
-            background-color: rgba(248, 248, 248, .98) !important;
+            background-color: transparent !important;
+            background-image: none !important;
           }
 
           /* DuckDuckGo */
           ${originalModeScope} #links_wrapper #links .results_links_deep,
           ${originalModeScope} #react-layout li {
-            background-color: rgba(255, 255, 255, .96) !important;
+            background-color: rgba(255, 255, 255, .985) !important;
           }
           ${originalModeScope} #links_wrapper #links .results_links_deep h2,
           ${originalModeScope} #react-layout li h2 {
-            background-color: rgba(248, 248, 248, .98) !important;
+            background-color: transparent !important;
+            background-image: none !important;
           }
 
           /* 360 */
           ${originalModeScope} #container .result > li,
           ${originalModeScope} #container #content_right {
-            background-color: rgba(255, 255, 255, .96) !important;
+            background-color: rgba(255, 255, 255, .985) !important;
           }
           ${originalModeScope} #container .res-title {
-            background-color: rgba(248, 248, 248, .98) !important;
+            background-color: transparent !important;
+            background-image: none !important;
           }
 
           /* Shared controls remain readable over a background image. */
           ${originalModeScope} .sp-separator.AC,
           ${originalModeScope} .button.ghhider,
           ${originalModeScope} button.ghhider {
-            background-color: rgba(255, 255, 255, .96) !important;
+            background-color: rgba(255, 255, 255, .985) !important;
           }
         `
         CONST.cssAutoInsert.add("originalModeStyle", originalModeStyle)
