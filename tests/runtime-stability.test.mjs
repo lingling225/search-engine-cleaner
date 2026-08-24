@@ -125,6 +125,17 @@ test('background image CSS is scoped without changing the page flow', () => {
   assert.doesNotMatch(eyeCareStyle, /^\s*(?:border(?:-radius|-width)?|line-height|min-width|overflow-wrap)\s*:/m)
 })
 
+test('original mode restores visual opacity without changing layout geometry', () => {
+  const originalModeStyle = userscript.match(/const originalModeStyle = `([\s\S]*?)`\s*\n\s*CONST\.cssAutoInsert\.add\("originalModeStyle"/)?.[1] || ''
+  assert.ok(originalModeStyle, 'original mode should have an explicit visual restore layer')
+  for (const engine of engines) {
+    assert.match(originalModeStyle, new RegExp(`\\$\\{originalModeScope\\}`))
+    assert.match(originalModeStyle, new RegExp(`\\/\\* ${engine === 'haosou' ? '360' : engine === 'duck' ? 'DuckDuckGo' : engine[0].toUpperCase() + engine.slice(1)} \\*\\/`))
+  }
+  assert.match(userscript, /const originalModeScope = `\$\{siteScope\}\[ac-layout-mode='0'\]`/)
+  assert.doesNotMatch(originalModeStyle, /display\s*:\s*grid|grid-template|(?:^|[;{\s])(width|height|min-width|max-width|margin|padding|position|transform)\s*:/)
+})
+
 test('eye-care, background-fit, and dark-mode styles are engine scoped', async () => {
   for (const path of settingStylePaths) {
     const rules = await compileStyleRules(path)
