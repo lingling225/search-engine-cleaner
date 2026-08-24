@@ -520,6 +520,122 @@
       safeRemove_xpath
     }
   })()
+
+  const splitCssSelectorList = (selectorList) => {
+    const selectors = []
+    let start = 0
+    let depth = 0
+    let quote = ''
+    for (let index = 0; index < selectorList.length; index++) {
+      const char = selectorList[index]
+      if (quote) {
+        if (char === quote && selectorList[index - 1] !== '\\') quote = ''
+        continue
+      }
+      if (char === '"' || char === "'") quote = char
+      else if (char === '(' || char === '[') depth++
+      else if (char === ')' || char === ']') depth--
+      else if (char === ',' && depth === 0) {
+        selectors.push(selectorList.slice(start, index).trim())
+        start = index + 1
+      }
+    }
+    selectors.push(selectorList.slice(start).trim())
+    return selectors.filter(Boolean)
+  }
+
+  const getLayoutStyleScope = (styleName) => {
+    const match = /^(baidu|google|bing|duck|haosou)(Common|OnePage|TwoPage|ThreePage|FourPage)Style$/.exec(styleName)
+    if (!match) return ''
+    const [, site, layout] = match
+    const mode = { Common: '', OnePage: '2', TwoPage: '3', ThreePage: '4', FourPage: '5' }[layout]
+    return `body[${site}]${mode ? `[ac-layout-mode='${mode}']` : ''}`
+  }
+
+  const scopeCompiledCSS = (cssText, scope) => {
+    if (!cssText || !scope) return cssText || ''
+    const site = scope.match(/^body\[(\w+)\]/)?.[1] || ''
+    const aliases = {
+      baidu: ['baidu', 'baidu_xueshu'],
+      google: ['google', 'google_scholar'],
+      bing: ['bing'],
+      duck: ['duck'],
+      haosou: ['haosou'],
+    }[site] || []
+    const bodySelectors = aliases.map(name => `body[${name}]`)
+    const prefixSelector = (selector) => {
+      const value = selector.trim()
+      if (!value) return value
+      for (const bodySelector of bodySelectors) {
+        if (value === bodySelector || value.startsWith(bodySelector + ' ') || value.startsWith(bodySelector + '.')) {
+          return scope + value.slice(bodySelector.length)
+        }
+      }
+      if (value === 'body') return scope
+      if (value.startsWith('body ')) return scope + value.slice(4)
+      if (value.startsWith(':root')) return scope + value.slice(5)
+      return `${scope} ${value}`
+    }
+    const findClosingBrace = (text, openIndex) => {
+      let depth = 1
+      let quote = ''
+      let comment = false
+      for (let index = openIndex + 1; index < text.length; index++) {
+        const char = text[index]
+        const next = text[index + 1]
+        if (comment) {
+          if (char === '*' && next === '/') {
+            comment = false
+            index++
+          }
+          continue
+        }
+        if (char === '/' && next === '*') {
+          comment = true
+          index++
+          continue
+        }
+        if (quote) {
+          if (char === quote && text[index - 1] !== '\\') quote = ''
+          continue
+        }
+        if (char === '"' || char === "'") quote = char
+        else if (char === '{') depth++
+        else if (char === '}' && --depth === 0) return index
+      }
+      return text.length - 1
+    }
+    const processRules = (text) => {
+      let result = ''
+      let cursor = 0
+      while (cursor < text.length) {
+        const openIndex = text.indexOf('{', cursor)
+        if (openIndex < 0) {
+          result += text.slice(cursor)
+          break
+        }
+        const closeIndex = findClosingBrace(text, openIndex)
+        const rawPrelude = text.slice(cursor, openIndex)
+        const prelude = rawPrelude.trim()
+        const leading = rawPrelude.slice(0, rawPrelude.indexOf(prelude))
+        const body = text.slice(openIndex + 1, closeIndex)
+        if (!prelude || prelude.startsWith('@keyframes') || prelude.startsWith('@-webkit-keyframes')) {
+          result += rawPrelude + '{' + body + '}'
+        } else if (prelude.startsWith('@media') || prelude.startsWith('@supports') || prelude.startsWith('@container') || prelude.startsWith('@layer')) {
+          result += rawPrelude + '{' + processRules(body) + '}'
+        } else if (prelude.startsWith('@')) {
+          result += rawPrelude + '{' + body + '}'
+        } else {
+          const scoped = splitCssSelectorList(prelude).map(prefixSelector).join(', ')
+          result += leading + scoped + '{' + body + '}'
+        }
+        cursor = closeIndex + 1
+      }
+      return result
+    }
+    return processRules(cssText)
+  }
+
   const setHostBind = () => {
     // 避免多个脚本，重复执行
     if (unsafeWindow.isACBaiduInit) {
@@ -1403,8 +1519,9 @@
 
       async function setLocalLessData(renderCSSKeyName, getLessDataFunc) {
         const { css = '' } = await less.render(await getLessDataFunc());
-        localStorage.setItem(renderCSSKeyName, css)
-        return css
+        const scopedCSS = scopeCompiledCSS(css, getLayoutStyleScope(styleName))
+        localStorage.setItem(renderCSSKeyName, scopedCSS)
+        return scopedCSS
       }
 
       async function getDebugStyle() {
