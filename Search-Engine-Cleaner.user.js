@@ -7,7 +7,7 @@
 // @license      GPL-3.0-only
 // @create     2015-11-25
 // @run-at     document-start
-// @version    1.0.28
+// @version    1.0.29
 // @connect    baidu.com
 // @connect    google.com
 // @connect    google.com.hk
@@ -42,7 +42,7 @@
 // @lastmodified  2026-08-24
 // @feedback-url  https://github.com/lingling225/search-engine-cleaner/issues
 // @note    Source: https://github.com/langren1353/GM_script (GPL-3.0-only)
-// @note    1.0.28 原始模式恢复接近搜索引擎原生的视觉层，避免护眼/背景透明样式造成灰色遮罩。
+// @note    1.0.29 收敛默认配置与配置页入口，关闭并隐藏高风险显示选项及 DuckDuckGo/360 设置。
 // @note    1.0.19 强制刷新布局资源缓存，修复 Google 结果根节点动态网格命中范围。
 // @note    1.0.18 隔离五个搜索引擎的六种布局，修复自动分页重复结果容器。
 // @note    1.0.17 解除 Google 分类导航外层固定宽度和偏移，自适应结果区域居中。
@@ -57,35 +57,35 @@
 // @note    1.0.3 修复百度、Google 和 360 搜索结果的宽度、对齐与多列布局问题。
 // @note    1.0.1 重构百度响应式布局，修复宽屏溢出、顶部错位和登录按钮被裁切。
 // @note    1.0.0 保留百度、Google、Bing、DuckDuckGo、360 搜索的完整配置与功能，清理无关内容。
-// @resource  baiduCommonStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduCommonStyle.less?v=1.0.28
-// @resource  baiduOnePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduOnePageStyle.less?v=1.0.28
-// @resource  baiduTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduTwoPageStyle.less?v=1.0.28
-// @resource  baiduThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduThreePageStyle.less?v=1.0.28
-// @resource  baiduFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduFourPageStyle.less?v=1.0.28
-// @resource  googleCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleCommonStyle.less?v=1.0.28
-// @resource  googleOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleOnePageStyle.less?v=1.0.28
-// @resource  googleTwoPageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleTwoPageStyle.less?v=1.0.28
-// @resource  googleThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleThreePageStyle.less?v=1.0.28
-// @resource  googleFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleFourPageStyle.less?v=1.0.28
-// @resource  bingCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingCommonStyle.less?v=1.0.28
-// @resource  bingOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingOnePageStyle.less?v=1.0.28
-// @resource  bingTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingTwoPageStyle.less?v=1.0.28
-// @resource  bingThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingThreePageStyle.less?v=1.0.28
-// @resource  bingFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingFourPageStyle.less?v=1.0.28
-// @resource  duckCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckCommonStyle.less?v=1.0.28
-// @resource  duckOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckOnePageStyle.less?v=1.0.28
-// @resource  duckTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckTwoPageStyle.less?v=1.0.28
-// @resource  duckThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckThreePageStyle.less?v=1.0.28
-// @resource  duckFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckFourPageStyle.less?v=1.0.28
-// @resource  haosouCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouCommonStyle.less?v=1.0.28
-// @resource  haosouOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouOnePageStyle.less?v=1.0.28
-// @resource  haosouTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouTwoPageStyle.less?v=1.0.28
-// @resource  haosouThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouThreePageStyle.less?v=1.0.28
-// @resource  haosouFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouFourPageStyle.less?v=1.0.28
-// @resource  HuYanStyle         https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuYanStyle.less?v=1.0.28
-// @resource  BgAutoFit          https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/BgAutoFit.less?v=1.0.28
-// @resource  HuaHua-ACDrakMode  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuaHua-ACDrakMode.less?v=1.0.28
-// @resource  baiduLiteStyle     https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduLiteStyle.less?v=1.0.28
+// @resource  baiduCommonStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduCommonStyle.less?v=1.0.29
+// @resource  baiduOnePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduOnePageStyle.less?v=1.0.29
+// @resource  baiduTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduTwoPageStyle.less?v=1.0.29
+// @resource  baiduThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduThreePageStyle.less?v=1.0.29
+// @resource  baiduFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduFourPageStyle.less?v=1.0.29
+// @resource  googleCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleCommonStyle.less?v=1.0.29
+// @resource  googleOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleOnePageStyle.less?v=1.0.29
+// @resource  googleTwoPageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleTwoPageStyle.less?v=1.0.29
+// @resource  googleThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleThreePageStyle.less?v=1.0.29
+// @resource  googleFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleFourPageStyle.less?v=1.0.29
+// @resource  bingCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingCommonStyle.less?v=1.0.29
+// @resource  bingOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingOnePageStyle.less?v=1.0.29
+// @resource  bingTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingTwoPageStyle.less?v=1.0.29
+// @resource  bingThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingThreePageStyle.less?v=1.0.29
+// @resource  bingFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingFourPageStyle.less?v=1.0.29
+// @resource  duckCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckCommonStyle.less?v=1.0.29
+// @resource  duckOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckOnePageStyle.less?v=1.0.29
+// @resource  duckTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckTwoPageStyle.less?v=1.0.29
+// @resource  duckThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckThreePageStyle.less?v=1.0.29
+// @resource  duckFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckFourPageStyle.less?v=1.0.29
+// @resource  haosouCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouCommonStyle.less?v=1.0.29
+// @resource  haosouOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouOnePageStyle.less?v=1.0.29
+// @resource  haosouTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouTwoPageStyle.less?v=1.0.29
+// @resource  haosouThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouThreePageStyle.less?v=1.0.29
+// @resource  haosouFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouFourPageStyle.less?v=1.0.29
+// @resource  HuYanStyle         https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuYanStyle.less?v=1.0.29
+// @resource  BgAutoFit          https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/BgAutoFit.less?v=1.0.29
+// @resource  HuaHua-ACDrakMode  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuaHua-ACDrakMode.less?v=1.0.29
+// @resource  baiduLiteStyle     https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduLiteStyle.less?v=1.0.29
 // @require   https://cdn.jsdelivr.net/npm/less@4.2.2/dist/less.min.js
 // @require   https://registry.npmmirror.com/vue/3.5.26/files/dist/vue.runtime.global.prod.js
 // @noframes
@@ -729,6 +729,39 @@
         delete result[`${invalidPrefix}Enable`]
         delete result[`${invalidPrefix}Link`]
         delete result[`${invalidPrefix}Less`]
+        if (section === 'common') {
+          Object.assign(result, {
+            isFaviconEnable: false,
+            isRightDisplayEnable: false,
+            isCounterEnable: false,
+            isDarkModeEnable: false,
+          })
+        }
+        if (section === 'duck') {
+          Object.assign(result, {
+            optimizeDuck: false,
+            adsStyleEnable: false,
+            adsStyleMode: '0',
+            HuYanMode: false,
+            BgEnable: false,
+            BgFit: false,
+            customStyleEnable: false,
+          })
+        }
+        if (section === 'haosou') {
+          Object.assign(result, {
+            optimizeHaosou: false,
+            adsStyleEnable: false,
+            adsStyleMode: '0',
+            HuYanMode: false,
+            BgEnable: false,
+            BgFit: false,
+            customStyleEnable: false,
+          })
+        }
+        if (['baidu', 'google', 'bing'].includes(section) && !['2', '3'].includes(String(result.adsStyleMode))) {
+          result.adsStyleMode = '3'
+        }
         return result
       }
       const validateSectionLess = async (section, data) => {
@@ -899,17 +932,17 @@
         return {
           common: {
             isDevMode: false, isLocalDevMode: false, localDebugBaseUrl: '',
-            isRedirectEnable: false, isAdsEnable: false, isFaviconEnable: true,
+            isRedirectEnable: false, isAdsEnable: false, isFaviconEnable: false,
             isAutopage: true, isBlockEnable: true, isBlockResultDisplay: true,
-            isBlockBtnDisplay: false, isRightDisplayEnable: true, isCounterEnable: false,
+            isBlockBtnDisplay: false, isRightDisplayEnable: false, isCounterEnable: false,
             isALineDisable: false, isDarkModeEnable: false, commonStyleEnable: true,
             commonStyleLink: '', commonStyleLess: '',
           },
           baidu: engineDefaults({ doRemoveSug: true, doRemoveAIGen: false, baiduLiteEnable: false }),
           google: engineDefaults({ useBaiduLogo: false }),
           bing: engineDefaults({ optimizeBing: true }),
-          duck: engineDefaults({ optimizeDuck: true }),
-          haosou: engineDefaults({ optimizeHaosou: true }),
+          duck: disabledEngineDefaults({ optimizeDuck: false }),
+          haosou: disabledEngineDefaults({ optimizeHaosou: false }),
         }
       }
 
@@ -918,6 +951,14 @@
           ...extra, adsStyleEnable: true, adsStyleMode: '3', HuYanMode: false,
           HuYanMode_Color: '#ffffff', BgEnable: false, BgUseUrl: '', BgFit: true,
           BgBase64Image: '', customStyleEnable: false, customStyleLink: '', customStyleLess: '',
+        }
+      }
+      function disabledEngineDefaults(extra) {
+        return {
+          ...engineDefaults(extra),
+          adsStyleEnable: false,
+          adsStyleMode: '0',
+          BgFit: false,
         }
       }
 
@@ -1158,6 +1199,18 @@
     }
   }
 
+  class DisabledBaseConfig extends BaseConfig {
+    constructor() {
+      super()
+      this.adsStyleEnable = false
+      this.adsStyleMode = '0'
+      this.HuYanMode = false
+      this.BgEnable = false
+      this.BgFit = false
+      this.customStyleEnable = false
+    }
+  }
+
   class CSSAutoInsert {
     constructor() {
       this.hasChanged = false
@@ -1253,14 +1306,14 @@
           localDebugBaseUrl: '', // 本地调试模式，本地CSS的入口地址
           isRedirectEnable: false, // 是否开启重定向功能
           isAdsEnable: false, // 是否开启去广告模式
-          isFaviconEnable: true, // 是否开启Favicon图标
+          isFaviconEnable: false, // 是否开启Favicon图标
           isAutopage: true, // 是否开启自动翻页功能
 
           isBlockEnable: true, // 是否开启去拦截模式
           isBlockResultDisplay: true, // 是否删除已拦截的条目
           isBlockBtnDisplay: false, // 是否显示block按钮
 
-          isRightDisplayEnable: true, // 是否开启右侧边栏
+          isRightDisplayEnable: false, // 是否开启右侧边栏
           isCounterEnable: false, // 是否显示计数器
           isALineDisable: false, // 是否禁止下划线
           isDarkModeEnable: false, // 是否加载暗黑模式
@@ -1283,12 +1336,12 @@
           ...new BaseConfig()
         },
         duck: {
-          optimizeDuck: true,
-          ...new BaseConfig()
+          ...new DisabledBaseConfig(),
+          optimizeDuck: false,
         },
         haosou: {
-          optimizeHaosou: true,
-          ...new BaseConfig()
+          ...new DisabledBaseConfig(),
+          optimizeHaosou: false,
         }
       };
       const parseStoredConfig = async () => {
@@ -1352,6 +1405,12 @@
         legacyCommonKeys.forEach(key => {
           if (migrated.common[key] === undefined && stored[key] !== undefined) migrated.common[key] = stored[key]
         })
+        Object.assign(migrated.common, {
+          isFaviconEnable: false,
+          isRightDisplayEnable: false,
+          isCounterEnable: false,
+          isDarkModeEnable: false,
+        })
         if (migrated.common.isBlockResultDisplay === undefined && stored.isBlockDisplay !== undefined) {
           migrated.common.isBlockResultDisplay = stored.isBlockDisplay
         }
@@ -1364,6 +1423,31 @@
           const site = { ...source }
           if (site.adsStyleMode === undefined && source.AdsStyleMode !== undefined) site.adsStyleMode = String(source.AdsStyleMode)
           if (site.BgUseUrl === undefined && source.defaultBgUrl !== undefined) site.BgUseUrl = source.defaultBgUrl
+          if (['baidu', 'google', 'bing'].includes(siteName) && !['2', '3'].includes(String(site.adsStyleMode))) {
+            site.adsStyleMode = '3'
+          }
+          if (siteName === 'duck') {
+            Object.assign(site, {
+              optimizeDuck: false,
+              adsStyleEnable: false,
+              adsStyleMode: '0',
+              HuYanMode: false,
+              BgEnable: false,
+              BgFit: false,
+              customStyleEnable: false,
+            })
+          }
+          if (siteName === 'haosou') {
+            Object.assign(site, {
+              optimizeHaosou: false,
+              adsStyleEnable: false,
+              adsStyleMode: '0',
+              HuYanMode: false,
+              BgEnable: false,
+              BgFit: false,
+              customStyleEnable: false,
+            })
+          }
           migrated[siteName] = site
         }
         return migrated

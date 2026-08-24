@@ -13,6 +13,10 @@ const less = require(join(repositoryRoot, 'ac-baidu', 'doc', 'node_modules', 'le
 const userscript = read('Search-Engine-Cleaner.user.js')
 const bridge = read('ac-baidu/doc/docs/pages/custom/bridge.ts')
 const configConsole = read('ac-baidu/doc/docs/pages/custom/ConfigConsole.vue')
+const commonConfig = read('ac-baidu/doc/docs/pages/custom/common/base.vue')
+const duckConfig = read('ac-baidu/doc/docs/pages/custom/duckduckgo/base.vue')
+const haosouConfig = read('ac-baidu/doc/docs/pages/custom/haosou/base.vue')
+const adsModeChoose = read('ac-baidu/doc/docs/pages/custom/components/AdsModeChoose.vue')
 const lessEditor = read('ac-baidu/doc/docs/pages/custom/components/LessCSSComp/index.vue')
 const saveAlert = read('ac-baidu/doc/docs/pages/custom/components/SaveAlert.vue')
 const eyeCareStyle = read('newcss/HuYanStyle.less')
@@ -93,6 +97,31 @@ test('plain host block rules do not become broad regular expressions', () => {
 test('configuration search restores temporary visibility overrides', () => {
   assert.match(configConsole, /previousDisplay/)
   assert.match(configConsole, /delete hiddenContainer\.dataset\.searchReveal/)
+})
+
+test('risky visual toggles and unstable engines are hidden and disabled by default', () => {
+  for (const key of ['isFaviconEnable', 'isRightDisplayEnable', 'isCounterEnable', 'isDarkModeEnable']) {
+    assert.doesNotMatch(commonConfig, new RegExp(`data-config-key="${key}"`))
+    assert.doesNotMatch(configConsole, new RegExp(`section: 'main', key: '${key}'`))
+    assert.match(userscript, new RegExp(`${key}: false`))
+  }
+
+  assert.doesNotMatch(configConsole, /id: 'duckduckgo'/)
+  assert.doesNotMatch(configConsole, /id: 'haosou'/)
+  assert.match(userscript, /duck: disabledEngineDefaults\(\{ optimizeDuck: false \}\)/)
+  assert.match(userscript, /haosou: disabledEngineDefaults\(\{ optimizeHaosou: false \}\)/)
+  assert.match(duckConfig, /optimizeDuck:\s*false/)
+  assert.match(haosouConfig, /optimizeHaosou:\s*false/)
+})
+
+test('configuration layout picker only exposes centered one and two column modes', () => {
+  assert.match(adsModeChoose, /<el-radio value="2">单列居中<\/el-radio>/)
+  assert.match(adsModeChoose, /<el-radio value="3">双列居中<\/el-radio>/)
+  for (const mode of ['0', '1', '4', '5']) {
+    assert.doesNotMatch(adsModeChoose, new RegExp(`<el-radio value="${mode}">`))
+  }
+  assert.match(adsModeChoose, /!\['2', '3'\]\.includes\(String\(state\.adsStyleMode\)\)/)
+  assert.match(userscript, /\['baidu', 'google', 'bing'\]\.includes\(section\) && !\['2', '3'\]\.includes\(String\(result\.adsStyleMode\)\)/)
 })
 
 test('favicon and counters reserve only their own inline space', () => {

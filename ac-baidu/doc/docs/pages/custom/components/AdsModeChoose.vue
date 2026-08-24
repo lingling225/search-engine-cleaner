@@ -3,23 +3,11 @@
     <div class="layout-mode-control">
       <el-switch inline-prompt size="large" v-model="state.adsStyleEnable" active-text="开启" inactive-text="关闭" />
       <el-radio-group v-show="state.adsStyleEnable" v-model="state.adsStyleMode">
-        <el-tooltip class="box-item" effect="dark" :hide-after=20 placement="top" content="原始模式，默认状态，不做任何显示变更" >
-          <el-radio value="0">原始模式</el-radio>
-        </el-tooltip>
-        <el-tooltip class="box-item" effect="dark" :hide-after=20 placement="top" content="单列模式，默认将显示靠左，显示效果优化" >
-          <el-radio value="1">单列模式</el-radio>
-        </el-tooltip>
         <el-tooltip class="box-item" effect="dark" :hide-after=20 placement="top" content="单列居中，显示元素居中 + 效果优化" >
           <el-radio value="2">单列居中</el-radio>
         </el-tooltip>
         <el-tooltip class="box-item" effect="dark" :hide-after=20 placement="top" content="双列居中，显示元素双列效果 + 效果优化" >
           <el-radio value="3">双列居中</el-radio>
-        </el-tooltip>
-        <el-tooltip class="box-item" effect="dark" :hide-after=20 placement="top" content="双列居中，显示元素三列效果 + 效果优化" >
-          <el-radio value="4">三列</el-radio>
-        </el-tooltip>
-        <el-tooltip class="box-item" effect="dark" :hide-after=20 placement="top" content="双列居中，显示元素四列效果 + 效果优化" >
-          <el-radio value="5">四列</el-radio>
         </el-tooltip>
       </el-radio-group>
     </div>
@@ -50,6 +38,9 @@ const defaultOptions = {
 
 const propState = toRefs(props.state)
 const state = reactive(Object.assign({}, defaultOptions, propState))
+if (!['2', '3'].includes(String(state.adsStyleMode))) {
+  state.adsStyleMode = '3'
+}
 
 watch(state, () => {
   const keys = Object.keys(defaultOptions)

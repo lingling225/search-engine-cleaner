@@ -35,39 +35,6 @@
             <el-switch inline-prompt size="large" v-model="state.isAutopage" active-text="开启" inactive-text="关闭" style="margin-left: 15px;" />
           </el-tooltip>
         </el-form-item>
-        <el-form-item data-config-key="isFaviconEnable" for="nothing" label="显示网站 Favicon" label-position="left">
-          <a-tool-tip-icon href="/pages/home/use.html#favicon" tooltipText="点击查看说明" is="QuestionFilled"></a-tool-tip-icon>
-          <el-tooltip
-            class="box-item"
-            effect="dark" :hide-after=20
-            content="显示Favicon功能，建议开启"
-            placement="right"
-          >
-             <el-switch inline-prompt size="large" v-model="state.isFaviconEnable" active-text="开启" inactive-text="关闭" style="margin-left: 15px;" />
-          </el-tooltip>
-        </el-form-item>
-        <el-form-item data-config-key="isRightDisplayEnable" for="nothing" label="显示搜索右侧栏" label-position="left">
-          <a-tool-tip-icon href="/pages/home/use.html#remove-right" tooltipText="点击查看说明" is="QuestionFilled"></a-tool-tip-icon>
-          <el-tooltip
-            class="box-item"
-            effect="dark" :hide-after=20
-            content="显示搜索右侧栏结果，按需开启"
-            placement="right"
-          >
-             <el-switch inline-prompt size="large" v-model="state.isRightDisplayEnable" active-text="开启" inactive-text="关闭" style="margin-left: 15px;" />
-          </el-tooltip>
-        </el-form-item>
-        <el-form-item data-config-key="isCounterEnable" for="nothing" label="显示搜索结果编号" label-position="left">
-          <a-tool-tip-icon href="/pages/home/use.html#number" tooltipText="点击查看说明" is="QuestionFilled"></a-tool-tip-icon>
-          <el-tooltip
-            class="box-item"
-            effect="dark" :hide-after=20
-            content="编号功能，建议关闭"
-            placement="right"
-          >
-             <el-switch inline-prompt size="large" v-model="state.isCounterEnable" active-text="开启" inactive-text="关闭" style="margin-left: 15px;" />
-          </el-tooltip>
-        </el-form-item>
         <el-form-item data-config-key="isALineDisable" for="nothing" label="移除链接文字下划线" label-position="left">
           <a-tool-tip-icon href="/pages/home/use.html#text-line" tooltipText="点击查看说明" is="QuestionFilled"></a-tool-tip-icon>
           <el-tooltip
@@ -77,18 +44,6 @@
             placement="right"
           >
              <el-switch inline-prompt size="large" v-model="state.isALineDisable" active-text="开启" inactive-text="关闭" style="margin-left: 15px;" />
-          </el-tooltip>
-        </el-form-item>
-
-        <el-form-item data-config-key="isDarkModeEnable" for="nothing" label="搜索页面暗色模式" label-position="left">
-          <a-tool-tip-icon href="/pages/home/use.html#darkmode" tooltipText="点击查看说明" is="QuestionFilled"></a-tool-tip-icon>
-          <el-tooltip
-            class="box-item"
-            effect="dark" :hide-after=20
-            content="启用后，将搜索结果适配为暗黑主题，按需开启"
-            placement="right"
-          >
-            <el-switch inline-prompt size="large" v-model="state.isDarkModeEnable" active-text="开启" inactive-text="关闭" style="margin-left: 15px;" />
           </el-tooltip>
         </el-form-item>
   
@@ -181,7 +136,7 @@ const defaultOptions = {
   localDebugBaseUrl: '',
   isRedirectEnable: false, // 是否开启重定向功能
   isAdsEnable: false, // 是否开启去广告模式
-  isFaviconEnable: true, // 是否开启Favicon图标
+  isFaviconEnable: false, // 是否开启Favicon图标
   isAutopage: true, // 是否开启自动翻页功能
 
   isBlockEnable: true, // 是否开启去拦截模式
@@ -189,7 +144,7 @@ const defaultOptions = {
   isBlockBtnDisplay: false, // 是否显示block按钮
   blockRuleList: [], // 已经加入列表的拦截记录
 
-  isRightDisplayEnable: true, // 是否开启右侧边栏
+  isRightDisplayEnable: false, // 是否开启右侧边栏
   isCounterEnable: false, // 是否显示计数器
   isALineDisable: false, // 是否禁止下划线
   isDarkModeEnable: false, // 是否启用暗黑模式
@@ -199,6 +154,12 @@ const defaultOptions = {
   commonStyleLess: '', // 自定义样式链接
 }
 const state = reactive(Object.assign({}, defaultOptions, baseData, scriptData))
+Object.assign(state, {
+  isFaviconEnable: false,
+  isRightDisplayEnable: false,
+  isCounterEnable: false,
+  isDarkModeEnable: false,
+})
 
 watch(state, () => {
   base.hasChanged = true

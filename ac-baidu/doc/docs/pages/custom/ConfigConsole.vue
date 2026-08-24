@@ -115,8 +115,6 @@ import {
   Compass,
   DocumentChecked,
   Grid,
-  Opportunity,
-  Search,
   Setting,
   WarningFilled,
 } from '@element-plus/icons-vue'
@@ -124,10 +122,8 @@ import CommonConfig from './common/base.vue'
 import BaiduConfig from './baidu/base.vue'
 import GoogleConfig from './google/base.vue'
 import BingConfig from './bing/base.vue'
-import DuckDuckGoConfig from './duckduckgo/base.vue'
-import HaosouConfig from './haosou/base.vue'
 
-type SectionId = 'main' | 'baidu' | 'google' | 'bing' | 'duckduckgo' | 'haosou'
+type SectionId = 'main' | 'baidu' | 'google' | 'bing'
 type SearchItem = { section: SectionId; key: string; label: string; keywords?: string }
 
 const sections = [
@@ -171,26 +167,6 @@ const sections = [
     icon: markRaw(Grid),
     component: markRaw(BingConfig),
   },
-  {
-    id: 'duckduckgo' as SectionId,
-    name: 'DuckDuckGo',
-    description: '隐私搜索增强',
-    eyebrow: 'DUCKDUCKGO',
-    title: 'DuckDuckGo 配置',
-    summary: '调整 DuckDuckGo 搜索增强、显示模式、背景与自定义样式。',
-    icon: markRaw(Opportunity),
-    component: markRaw(DuckDuckGoConfig),
-  },
-  {
-    id: 'haosou' as SectionId,
-    name: '360 / 好搜',
-    description: '结果布局与主题',
-    eyebrow: '360 SEARCH',
-    title: '360 / 好搜配置',
-    summary: '调整 360 搜索结果布局、护眼模式、背景与自定义样式。',
-    icon: markRaw(Search),
-    component: markRaw(HaosouConfig),
-  },
 ]
 
 const engineItems = (section: SectionId, engine: string, unique: SearchItem[] = []): SearchItem[] => [
@@ -198,7 +174,7 @@ const engineItems = (section: SectionId, engine: string, unique: SearchItem[] = 
   { section, key: 'HuYanMode', label: `${engine}护眼模式`, keywords: '主题 颜色' },
   { section, key: 'HuYanMode_Color', label: `${engine}护眼颜色`, keywords: '护眼色 主题色' },
   { section, key: 'adsStyleEnable', label: `${engine}显示优化`, keywords: '布局 样式' },
-  { section, key: 'adsStyleMode', label: `${engine}显示列数`, keywords: '原始 单列 居中 双列 三列 四列' },
+  { section, key: 'adsStyleMode', label: `${engine}显示列数`, keywords: '单列居中 双列居中' },
   { section, key: 'BgEnable', label: `${engine}背景图`, keywords: '壁纸 图片' },
   { section, key: 'BgUseUrl', label: `${engine}背景图地址`, keywords: 'URL 图片链接' },
   { section, key: 'BgFit', label: `${engine}背景自动适应`, keywords: '背景优化' },
@@ -211,11 +187,7 @@ const searchItems: SearchItem[] = [
   { section: 'main', key: 'isRedirectEnable', label: '处理搜索结果重定向', keywords: '真实链接 跳转' },
   { section: 'main', key: 'isAdsEnable', label: '去广告功能', keywords: '广告清理' },
   { section: 'main', key: 'isAutopage', label: '自动翻页', keywords: '下一页 分页' },
-  { section: 'main', key: 'isFaviconEnable', label: '显示 Favicon', keywords: '网站图标' },
-  { section: 'main', key: 'isRightDisplayEnable', label: '显示右侧栏', keywords: '侧边栏' },
-  { section: 'main', key: 'isCounterEnable', label: '结果编号', keywords: '计数 序号' },
   { section: 'main', key: 'isALineDisable', label: '移除链接下划线', keywords: '文字 下划线' },
-  { section: 'main', key: 'isDarkModeEnable', label: '暗色模式', keywords: '深色 黑暗主题' },
   { section: 'main', key: 'isBlockEnable', label: '域名拦截', keywords: '屏蔽 规则' },
   { section: 'main', key: 'isBlockBtnDisplay', label: '显示拦截按钮', keywords: 'Block 按钮' },
   { section: 'main', key: 'isBlockResultDisplay', label: '隐藏已拦截结果', keywords: '屏蔽 占位' },
@@ -233,10 +205,6 @@ const searchItems: SearchItem[] = [
     { section: 'google', key: 'useBaiduLogo', label: 'Google 使用百度 Logo', keywords: '标志 图标' },
   ]),
   ...engineItems('bing', 'Bing'),
-  ...engineItems('duckduckgo', 'DuckDuckGo', [
-    { section: 'duckduckgo', key: 'optimizeDuck', label: 'DuckDuckGo 独有优化', keywords: '鸭鸭 新标签' },
-  ]),
-  ...engineItems('haosou', '360 / 好搜'),
 ]
 
 const activeSection = ref<SectionId>('main')

@@ -69,14 +69,15 @@ const base = reactive({
 })
 
 const defaultOptions = {
-  adsStyleEnable: true, // 是否开启默认效果优化
-  adsStyleMode: '3', // 0-不带css；1-单列靠左；2-单列居中；3-双列居中
+  optimizeHaosou: false, // 是否开启优化
+  adsStyleEnable: false, // 是否开启默认效果优化
+  adsStyleMode: '0', // 0-不带css；1-单列靠左；2-单列居中；3-双列居中
   HuYanMode: false, // 护眼模式-好搜
   HuYanMode_Color: '#ffffff', // 护眼模式-好搜-颜色
 
   BgEnable: false, // 背景图-是否启用
   BgUseUrl: '', // 默认背景图
-  BgFit: true, // 背景图-是否适应
+  BgFit: false, // 背景图-是否适应
   BgBase64Image: '', // 背景图-Base64的结果
 
   customStyleEnable: false, // 自定义样式-是否启用
@@ -85,6 +86,15 @@ const defaultOptions = {
 }
 
 const state = reactive(Object.assign({}, defaultOptions, baseData, scriptData))
+Object.assign(state, {
+  optimizeHaosou: false,
+  adsStyleEnable: false,
+  adsStyleMode: '0',
+  HuYanMode: false,
+  BgEnable: false,
+  BgFit: false,
+  customStyleEnable: false,
+})
 
 const recommendStyleList = [
 ]
