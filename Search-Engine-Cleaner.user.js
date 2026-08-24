@@ -7,7 +7,7 @@
 // @license      GPL-3.0-only
 // @create     2015-11-25
 // @run-at     document-start
-// @version    1.0.24
+// @version    1.0.25
 // @connect    baidu.com
 // @connect    google.com
 // @connect    google.com.hk
@@ -42,7 +42,7 @@
 // @lastmodified  2026-08-24
 // @feedback-url  https://github.com/lingling225/search-engine-cleaner/issues
 // @note    Source: https://github.com/langren1353/GM_script (GPL-3.0-only)
-// @note    1.0.24 修复 Tampermonkey 中 Less 依赖未注入导致脚本完全不生效的问题。
+// @note    1.0.25 修复加载动画无法结束，并保持浏览器脚本初始化可见。
 // @note    1.0.19 强制刷新布局资源缓存，修复 Google 结果根节点动态网格命中范围。
 // @note    1.0.18 隔离五个搜索引擎的六种布局，修复自动分页重复结果容器。
 // @note    1.0.17 解除 Google 分类导航外层固定宽度和偏移，自适应结果区域居中。
@@ -57,35 +57,35 @@
 // @note    1.0.3 修复百度、Google 和 360 搜索结果的宽度、对齐与多列布局问题。
 // @note    1.0.1 重构百度响应式布局，修复宽屏溢出、顶部错位和登录按钮被裁切。
 // @note    1.0.0 保留百度、Google、Bing、DuckDuckGo、360 搜索的完整配置与功能，清理无关内容。
-// @resource  baiduCommonStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduCommonStyle.less?v=1.0.24
-// @resource  baiduOnePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduOnePageStyle.less?v=1.0.24
-// @resource  baiduTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduTwoPageStyle.less?v=1.0.24
-// @resource  baiduThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduThreePageStyle.less?v=1.0.24
-// @resource  baiduFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduFourPageStyle.less?v=1.0.24
-// @resource  googleCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleCommonStyle.less?v=1.0.24
-// @resource  googleOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleOnePageStyle.less?v=1.0.24
-// @resource  googleTwoPageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleTwoPageStyle.less?v=1.0.24
-// @resource  googleThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleThreePageStyle.less?v=1.0.24
-// @resource  googleFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleFourPageStyle.less?v=1.0.24
-// @resource  bingCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingCommonStyle.less?v=1.0.24
-// @resource  bingOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingOnePageStyle.less?v=1.0.24
-// @resource  bingTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingTwoPageStyle.less?v=1.0.24
-// @resource  bingThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingThreePageStyle.less?v=1.0.24
-// @resource  bingFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingFourPageStyle.less?v=1.0.24
-// @resource  duckCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckCommonStyle.less?v=1.0.24
-// @resource  duckOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckOnePageStyle.less?v=1.0.24
-// @resource  duckTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckTwoPageStyle.less?v=1.0.24
-// @resource  duckThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckThreePageStyle.less?v=1.0.24
-// @resource  duckFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckFourPageStyle.less?v=1.0.24
-// @resource  haosouCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouCommonStyle.less?v=1.0.24
-// @resource  haosouOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouOnePageStyle.less?v=1.0.24
-// @resource  haosouTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouTwoPageStyle.less?v=1.0.24
-// @resource  haosouThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouThreePageStyle.less?v=1.0.24
-// @resource  haosouFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouFourPageStyle.less?v=1.0.24
-// @resource  HuYanStyle         https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuYanStyle.less?v=1.0.24
-// @resource  BgAutoFit          https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/BgAutoFit.less?v=1.0.24
-// @resource  HuaHua-ACDrakMode  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuaHua-ACDrakMode.less?v=1.0.24
-// @resource  baiduLiteStyle     https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduLiteStyle.less?v=1.0.24
+// @resource  baiduCommonStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduCommonStyle.less?v=1.0.25
+// @resource  baiduOnePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduOnePageStyle.less?v=1.0.25
+// @resource  baiduTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduTwoPageStyle.less?v=1.0.25
+// @resource  baiduThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduThreePageStyle.less?v=1.0.25
+// @resource  baiduFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduFourPageStyle.less?v=1.0.25
+// @resource  googleCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleCommonStyle.less?v=1.0.25
+// @resource  googleOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleOnePageStyle.less?v=1.0.25
+// @resource  googleTwoPageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleTwoPageStyle.less?v=1.0.25
+// @resource  googleThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleThreePageStyle.less?v=1.0.25
+// @resource  googleFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/googleFourPageStyle.less?v=1.0.25
+// @resource  bingCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingCommonStyle.less?v=1.0.25
+// @resource  bingOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingOnePageStyle.less?v=1.0.25
+// @resource  bingTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingTwoPageStyle.less?v=1.0.25
+// @resource  bingThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingThreePageStyle.less?v=1.0.25
+// @resource  bingFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/bingFourPageStyle.less?v=1.0.25
+// @resource  duckCommonStyle    https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckCommonStyle.less?v=1.0.25
+// @resource  duckOnePageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckOnePageStyle.less?v=1.0.25
+// @resource  duckTwoPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckTwoPageStyle.less?v=1.0.25
+// @resource  duckThreePageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckThreePageStyle.less?v=1.0.25
+// @resource  duckFourPageStyle   https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/duckFourPageStyle.less?v=1.0.25
+// @resource  haosouCommonStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouCommonStyle.less?v=1.0.25
+// @resource  haosouOnePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouOnePageStyle.less?v=1.0.25
+// @resource  haosouTwoPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouTwoPageStyle.less?v=1.0.25
+// @resource  haosouThreePageStyle https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouThreePageStyle.less?v=1.0.25
+// @resource  haosouFourPageStyle  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/haosouFourPageStyle.less?v=1.0.25
+// @resource  HuYanStyle         https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuYanStyle.less?v=1.0.25
+// @resource  BgAutoFit          https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/BgAutoFit.less?v=1.0.25
+// @resource  HuaHua-ACDrakMode  https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/HuaHua-ACDrakMode.less?v=1.0.25
+// @resource  baiduLiteStyle     https://raw.githubusercontent.com/lingling225/search-engine-cleaner/main/newcss/baiduLiteStyle.less?v=1.0.25
 // @require   https://cdn.jsdelivr.net/npm/less@4.2.2/dist/less.min.js
 // @require   https://registry.npmmirror.com/vue/3.5.26/files/dist/vue.runtime.global.prod.js
 // @noframes
@@ -3397,8 +3397,11 @@
       const insertName = CONST.curConfig.enableCSS ? CONST.options.siteName : (CONST.options.siteName + '_nocss')
       if (!document.body.hasAttribute(insertName)) {
         document.body.setAttribute(insertName, '1')
-        document.body.classList.add(insertName)
-        // 添加 ac-ready 类，允许静默样式淡出展示
+      }
+      document.body.classList.add(insertName)
+      // 添加 ac-ready 类，允许静默样式淡出展示。属性可能已由首轮
+      // dataChangeFireCallback 提前设置，不能用属性存在与否作为完成条件。
+      if (!document.body.classList.contains('ac-ready')) {
         setTimeout(() => {
           document.body.classList.add('ac-ready')
         }, 400)
